@@ -146,4 +146,5 @@ FITBIT_OAUTH_CLIENT_SECRET = ''                  # fitbit secret (from dev.fitbi
 - dev.fitbit.com > Manage > Register An App > Log in
 	- `Continue with Google`
 - ![example app](https://miro.medium.com/v2/resize:fit:720/format:webp/1*UJHMOYsFZvrBmpNjFfpBJA.jpeg)
+- insert the sensitive fitbit API tokens into the `.env` file
 
