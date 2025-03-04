@@ -1,5 +1,5 @@
 
-## Motivations - Why
+# Motivations - Why
 - my wellness report was broken
 - Gather metrics and visualize large life changes on life changes
 	- ADHD meds
@@ -9,7 +9,7 @@
 - fits in my tight deadline
 	- I understand how meetings and gathering data for a novel project can balloon out the time commitment
 
-## Available Health Metrics/Data
+# Available Health Metrics/Data
 - Height
 - Weight
 - Body Fat
@@ -25,7 +25,7 @@
 	- Steps
 	- Total calories burned
 
-## Features - WHY
+# Features - WHY
 - compare multiple health metrics across a date range
 
 - Desired Visualizations or Metrics
@@ -38,7 +38,7 @@
 - create a list of notable dates
 	- notable dates will be put on the graphs as vertical lines
 
-## TODOs
+# TODOs
 - [ ] research good graphics
 	- look at Google Fit Metrics
 	- how I used my jupyter notebooks
@@ -48,8 +48,7 @@
 	- hard code my google auth
 
 
-
-### Project Steps
+## Project Steps
 - PHASE 1 - proof of concept
 	- [ ] hardcore necessary fitbit data to query fitbit api
 	- [ ] get data uploaded to GCP and migrated to Bigquery
@@ -59,22 +58,25 @@
 - PHASE 3 - hosting
 	- [ ] move job scheduling to a cloud service
 
-### Rough Outline
+## Rough Outline
 PRE: 
-- [ ] setup for repo of data proj template for it
-- [ ] add design doc
+- [x] setup for repo of data proj template for it ✅ 2025-03-04
+- [x] add design doc ✅ 2025-03-04
+
+
+- [ ] prototype py script: connect and download from fitbit/google health data API  
+
 
 - [ ] get minimalist Airflow working
-1. Api req my google data
+1. API req my google data
 2. Clean the data
 	- SQL
 	- pandas
 3. Copy
 
-- [ ] get EC2 instance running
 - [ ] get minimalist Airflow working on EC2
 
-## Resources
+# Resources
  [getting fitbit CLIENT_ID and CLIENT_SECRET - gpt](https://chatgpt.com/c/67945566-6294-8008-963e-90d98c8ffd08)
 
 
@@ -88,15 +90,18 @@ src: [reddit page](https://www.reddit.com/r/fitbit/comments/15igabx/update_i_mad
 **[fitbit-web-ui-app](https://github.com/arpanghosh8453/fitbit-web-ui-app)** - github
 https://fitbit-report.arpan.app/
 
-### Fitbit Dashboard by [jlai](https://github.com/jlai)[Jason](https://github.com/jlai)
+## Fitbit Dashboard by [jlai](https://github.com/jlai)[Jason](https://github.com/jlai)
 [dashboard.exercise.quest](https://dashboard.exercise.quest/)
 [fitness-dashboard](https://github.com/jlai/fitness-dashboard) - github
 [reddit post](https://www.reddit.com/r/fitbit/comments/1eaccv3/fitness_dashboard_an_unofficial_web_dashboard_for/)
-#### dev.fitbit.com
+
+### dev.fitbit.com
 [Fitbit OAuth 2.0 Tutorial](https://dev.fitbit.com/build/reference/web-api/troubleshooting-guide/oauth2-tutorial/?clientEncodedId=23R3K5&redirectUri=https://localhost:8000/&applicationType=PERSONAL)
 [Web API Reference](https://dev.fitbit.com/build/reference/web-api/)
 
-#### [Fitpipe](https://github.com/rickyriled/data_engineering_project_1/tree/main) DE Project
+[Collect Your Own Fitbit Data with Python](https://medium.com/towards-data-science/collect-your-own-fitbit-data-with-python-ff145fa10873) - [Stephen Hsu](https://medium.com/@shsu14?source=post_page---byline--ff145fa10873---------------------------------------) medium article
+
+## [Fitpipe](https://github.com/rickyriled/data_engineering_project_1/tree/main) DE Project
 [pt.py](https://github.com/rickyriled/data_engineering_project_1/blob/main/pt.py)
 
 
@@ -122,7 +127,7 @@ auth2_client = fitbit.Fitbit(
 ```
 
 
-#### Device Connect
+## Device Connect
 https://cloud.google.com/device-connect
 [github](https://github.com/GoogleCloudPlatform/deviceconnect)
 
@@ -131,3 +136,14 @@ https://cloud.google.com/device-connect
 FITBIT_OAUTH_CLIENT_ID = ''                          # fitbit client id (from dev.fitbit.com)
 FITBIT_OAUTH_CLIENT_SECRET = ''                  # fitbit secret (from dev.fitbit.com)
 ```
+
+
+
+# Project Step Log
+- Clone [ny-taxi-pipeline](https://github.com/MichaelSalata/ny-taxi-pipeline)
+- `gh auth login`
+- `git remote set-url origin https://github.com/MichaelSalata/compare-fitbit-periods.git`
+- dev.fitbit.com > Manage > Register An App > Log in
+	- `Continue with Google`
+- ![example app](https://miro.medium.com/v2/resize:fit:720/format:webp/1*UJHMOYsFZvrBmpNjFfpBJA.jpeg)
+
