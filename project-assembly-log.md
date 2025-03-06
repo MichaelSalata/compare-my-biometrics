@@ -79,27 +79,20 @@ PRE:
 # Resources
  [getting fitbit CLIENT_ID and CLIENT_SECRET - gpt](https://chatgpt.com/c/67945566-6294-8008-963e-90d98c8ffd08)
 
-
 Google Fit has some good charts of emulate
-
 Someone already did a Fitibit Visualization for their Data Engineering Zoomcamp Project
 
-[online fitbit wellness report website without premium](https://fitbit-report.arpan.app/)
-src: [reddit page](https://www.reddit.com/r/fitbit/comments/15igabx/update_i_made_a_website_for_all_fitbit_owners/)  [page2](https://www.reddit.com/r/fitbit/comments/18kq520/i_made_a_website_for_all_fitbit_owners_where_you/)
+## Fitbit API
 
-**[fitbit-web-ui-app](https://github.com/arpanghosh8453/fitbit-web-ui-app)** - github
-https://fitbit-report.arpan.app/
+[documentation](https://python-fitbit.readthedocs.io/en/latest/#fitbit-api)
 
-## Fitbit Dashboard by [jlai](https://github.com/jlai)[Jason](https://github.com/jlai)
-[dashboard.exercise.quest](https://dashboard.exercise.quest/)
-[fitness-dashboard](https://github.com/jlai/fitness-dashboard) - github
-[reddit post](https://www.reddit.com/r/fitbit/comments/1eaccv3/fitness_dashboard_an_unofficial_web_dashboard_for/)
+[python-fitbit](https://github.com/orcasgit/python-fitbit/tree/master) -  ==[gather_keys_oauth2.py](https://github.com/orcasgit/python-fitbit/blob/master/gather_keys_oauth2.py)==
 
-### dev.fitbit.com
-[Fitbit OAuth 2.0 Tutorial](https://dev.fitbit.com/build/reference/web-api/troubleshooting-guide/oauth2-tutorial/?clientEncodedId=23R3K5&redirectUri=https://localhost:8000/&applicationType=PERSONAL)
-[Web API Reference](https://dev.fitbit.com/build/reference/web-api/)
+https://python-fitbit.readthedocs.io/en/latest/#fitbit-api
 
-[Collect Your Own Fitbit Data with Python](https://medium.com/towards-data-science/collect-your-own-fitbit-data-with-python-ff145fa10873) - [Stephen Hsu](https://medium.com/@shsu14?source=post_page---byline--ff145fa10873---------------------------------------) medium article
+### [Fitbit OAuth 2.0 Tutorial](https://dev.fitbit.com/build/reference/web-api/troubleshooting-guide/oauth2-tutorial/)
+
+
 
 ## [Fitpipe](https://github.com/rickyriled/data_engineering_project_1/tree/main) DE Project
 [pt.py](https://github.com/rickyriled/data_engineering_project_1/blob/main/pt.py)
@@ -127,6 +120,24 @@ auth2_client = fitbit.Fitbit(
 ```
 
 
+## Fitbit Dashboard by [jlai](https://github.com/jlai)[Jason](https://github.com/jlai)
+[dashboard.exercise.quest](https://dashboard.exercise.quest/)
+[fitness-dashboard](https://github.com/jlai/fitness-dashboard) - github
+[reddit post](https://www.reddit.com/r/fitbit/comments/1eaccv3/fitness_dashboard_an_unofficial_web_dashboard_for/)
+
+
+## **[fitbit-web-ui-app](https://github.com/arpanghosh8453/fitbit-web-ui-app)** - github
+https://fitbit-report.arpan.app/
+
+[online fitbit wellness report website without premium](https://fitbit-report.arpan.app/)
+src: [reddit page](https://www.reddit.com/r/fitbit/comments/15igabx/update_i_made_a_website_for_all_fitbit_owners/)  [page2](https://www.reddit.com/r/fitbit/comments/18kq520/i_made_a_website_for_all_fitbit_owners_where_you/)
+
+### dev.fitbit.com
+[Fitbit OAuth 2.0 Tutorial](https://dev.fitbit.com/build/reference/web-api/troubleshooting-guide/oauth2-tutorial/?clientEncodedId=23R3K5&redirectUri=https://localhost:8000/&applicationType=PERSONAL)
+[Web API Reference](https://dev.fitbit.com/build/reference/web-api/)
+
+[Collect Your Own Fitbit Data with Python](https://medium.com/towards-data-science/collect-your-own-fitbit-data-with-python-ff145fa10873) - [Stephen Hsu](https://medium.com/@shsu14?source=post_page---byline--ff145fa10873---------------------------------------) medium article
+
 ## Device Connect
 https://cloud.google.com/device-connect
 [github](https://github.com/GoogleCloudPlatform/deviceconnect)
@@ -147,4 +158,5 @@ FITBIT_OAUTH_CLIENT_SECRET = ''                  # fitbit secret (from dev.fitbi
 	- `Continue with Google`
 - ![example app](https://miro.medium.com/v2/resize:fit:720/format:webp/1*UJHMOYsFZvrBmpNjFfpBJA.jpeg)
 - insert the sensitive fitbit API tokens into the `.env` file
+- `pip install fitbit`
 
