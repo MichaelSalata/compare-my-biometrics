@@ -10,6 +10,11 @@ headers = {
     # TODO: properly format header tokens
     'Authorization': f'Bearer {tokens["access_token"]}'
 }
+"""
+headers = {
+    "Authorization": f"Bearer {ACCESS_TOKEN}",
+    "Accept": "application/json"
+}"""
 
 API_website = "https://api.fitbit.com"
 
@@ -56,6 +61,7 @@ def fetch_date(endpoint, date):
 def fetch_date_range(endpoint, start, end):
     url = API_website + endpoint.format(user_id=tokens["user_id"], start=start, end=end)
     response = requests.get(url, headers=headers)
+    print("attempting", url, '\n')
     if response.status_code == 200:
         return response.json()
     elif response.status_code == 401:
@@ -69,13 +75,15 @@ def fetch_date_range(endpoint, start, end):
 end_date = datetime.now()
 start_date = end_date - timedelta(days=30)
 
+print(tokens["scope"], biometric_endpoints_daterange.keys())
+print(tokens["scope"] & biometric_endpoints_daterange.keys())
 
-
-
-for key in tokens.keys():
-    fetch_date_range()
-
-
+for key in tokens["scope"] & biometric_endpoints_daterange.keys():
+    data = fetch_date_range(biometric_endpoints_daterange[key], start_date.strftime("%Y-%m-%d"), end_date.strftime("%Y-%m-%d"))
+    if data:
+        with open(f'{key}.json', 'w') as data_file:
+            json.dump(data, data_file, indent=4)
+            print(f'Data for {key} has been saved to {key}.json')
 
 
 """
