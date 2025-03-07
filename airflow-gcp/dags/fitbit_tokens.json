@@ -1,0 +1,21 @@
+{
+    "access_token": "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyM1EzVzkiLCJzdWIiOiJDQlpINTgiLCJpc3MiOiJGaXRiaXQiLCJ0eXAiOiJhY2Nlc3NfdG9rZW4iLCJzY29wZXMiOiJyc29jIHJhY3QgcnNldCBybG9jIHJ3ZWkgcmhyIHJwcm8gcm51dCByc2xlIiwiZXhwIjoxNzQxMjUwNjk4LCJpYXQiOjE3NDEyMjE4OTh9.gd_g0m92psboHXLPn1nQD29b5jl4Pzpeggi6l2h0mcg",
+    "expires_in": 28800,
+    "refresh_token": "66c287ed8160fd61621d33ee05c3ad380f53938681e3606a4f561929aaacfba8",
+    "scope": [
+        "activity",
+        "profile",
+        "social",
+        "location",
+        "settings",
+        "heartrate",
+        "weight",
+        "sleep",
+        "nutrition"
+    ],
+    "token_type": "Bearer",
+    "user_id": "CBZH58",
+    "expires_at": 1741250698.9349825,
+    "client_id": "23Q3W9",
+    "client_secret": "097e5951c8cd7963517a4c8725d64a55"
+}
