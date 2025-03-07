@@ -50,7 +50,12 @@
 
 ## Project Steps
 - PHASE 1 - proof of concept
-	- [ ] hardcore necessary fitbit data to query fitbit api
+	- [ ] get ANY data downloaded
+		- ==hardcore necessary fitbit data to query fitbit api==
+			- ~~recreate AWS threaded download/upload script but for fitbit API:~~
+				- `/home/michael/Documents/projects/datatalks-data-engineering-hw-notes/04-analytics-engineering/load_taxi_data_4analytics.py` 
+				- `ec2_load_taxi_data_4analytics.py`
+	- [ ] research API output most similar to ny_taxi data
 	- [ ] get data uploaded to GCP and migrated to Bigquery
 - PHASE 2 - automate
 	- [ ] automate API access token retrieval for querying fitbit api
@@ -65,7 +70,7 @@ PRE:
 
 
 - [ ] prototype py script: connect and download from fitbit/google health data API  
-
+heart
 
 - [ ] get minimalist Airflow working
 1. API req my google data
@@ -160,3 +165,16 @@ FITBIT_OAUTH_CLIENT_SECRET = ''                  # fitbit secret (from dev.fitbi
 - insert the sensitive fitbit API tokens into the `.env` file
 - `pip install fitbit`
 
+# MY project development overview
+- fast prototype
+	- get ANY data from API
+		- working on place without internet, ensure I had the data
+		- reading API and following instructions
+			- create a dev.fitbit.com project
+			- using published code to get ACCESS token and USER ID
+				- getting a CLIENT_ID, CLIENT_SECRET
+				- learn about using OAuth2 to log in
+				- catching the response in a server
+				- parsing ACCESS token and USER ID
+		- 
+- 
