@@ -137,3 +137,6 @@ airflow-venv
 
 dbt
 .vscode
+heartrate.json
+sleep.json
+example_resources
