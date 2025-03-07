@@ -140,3 +140,4 @@ dbt
 heartrate.json
 sleep.json
 example_resources
+fitbit_tokens.json
