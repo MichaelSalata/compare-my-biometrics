@@ -1,13 +1,25 @@
 
 # Motivations - Why
 - my wellness report was broken
-- Gather metrics and visualize large life changes on life changes
+- visualize changes in biometrics between timeframe - facilitate the health impact of life changes
 	- ADHD meds
 	- moving
 	- exercising
-- learn about about the tech involved the DataTalks bootcamp
+- practice tech involved the DataTalks bootcamp
 - fits in my tight deadline
 	- I understand how meetings and gathering data for a novel project can balloon out the time commitment
+
+## Desired Visualizations or Metrics
+
+
+- Sleep Phases
+	- stacked bar chart or line chart over window
+	- pie chart
+- STRETCH: Heart Rate Exercise Zone Rates
+	- stacked bar chart or line chart over window
+	- pie chart?
+- STRETCH: visualize notable dates
+	- notable dates will be put on the graphs as vertical lines
 
 # Available Health Metrics/Data
 - Height
@@ -25,20 +37,82 @@
 	- Steps
 	- Total calories burned
 
-# Features - WHY
-- compare multiple health metrics across a date range
-
-- Desired Visualizations or Metrics
-	- Heart Rate Exercise Zone Rates
-		- stacked barchart or line chart over window
-		- pie chart?
-	- Sleep zones
-		- stacked barchart or line chart over window
-		- pie chart?
-- create a list of notable dates
-	- notable dates will be put on the graphs as vertical lines
-
 # TODOs
+**==NOTE==**: ***Document project steps*** in the [[project-assembly-log#Project Step Log]] below
+
+## PHASE 1 - proof of concept
+- [x] get ANY data downloaded ✅ 2025-03-08
+	- ==hardcore necessary fitbit data to query fitbit api==
+		- ~~recreate AWS threaded download/upload script but for fitbit API:~~
+			- `/home/michael/Documents/projects/datatalks-data-engineering-hw-notes/04-analytics-engineering/load_taxi_data_4analytics.py` 
+			- `ec2_load_taxi_data_4analytics.py`
+
+## PHASE 2 - get the RIGHT Data
+- [ ] download LOTS of data
+	- multiple months worth
+	- multiple dimensions
+	- fact table data
+- [ ] ensure I have data similar to ny_taxi data
+	- df.info() for ny_taxi_data
+	- check data types of key Visualizations and DBT aggregations
+- [ ] upload the data onto EC2 server
+- [ ] format .json data into something Big Query can handle  (.csv, .parquet)
+
+## PHASE 3 - move data to new GCP project, Bucket & BigQuery
+- [ ] setup new GCP *account*, project, Bucket & BigQuery
+- [ ] setup a Terraform  config to launch, apply, destroy it
+
+- [ ] upload the data
+
+## PHASE 4 - Process the Data
+ [data-engineering-zoomcamp](https://github.com/DataTalksClub/data-engineering-zoomcamp/tree/main) / [03-data-warehouse](https://github.com/DataTalksClub/data-engineering-zoomcamp/tree/main/03-data-warehouse)
+ManuelGuerra - [data-engineering-zoomcamp-notes](https://github.com/ManuelGuerra1987/data-engineering-zoomcamp-notes/tree/main) /  [3_Data-Warehouse](https://github.com/ManuelGuerra1987/data-engineering-zoomcamp-notes/tree/main/3_Data-Warehouse)
+[[SQL Resource#BigQuery]]
+
+- [ ] Big Query commands to make tables from the data in Bucket
+
+- [ ] setup DBT account
+- [ ] attach DBT to cloned git repo
+- [ ] copy DBT folder to project folder
+
+## PHASE 5 - Looker Studio Visualizations
+
+[data-engineering-zoomcamp-notes](https://github.com/ManuelGuerra1987/data-engineering-zoomcamp-notes) / [4_Analytics-Engineering](https://github.com/ManuelGuerra1987/data-engineering-zoomcamp-notes/tree/main/4_Analytics-Engineering#visualising-the-transformed-data)
+
+^
+
+## PHASE 6 - Assemble the README
+
+- [ ] put together instructions from the [[project-assembly-log#Project Step Log]] below
+
+
+## STRETCH Goals 
+*aka Goals:  3/24 -to- 4/21*
+
+- [ ] pipeline
+	- request_biometrics >> upload_data_lake >> data_warehouse >> dbt_processing >> looker_studio_dashboard
+
+- [ ] **run upload script with an Airflow pipeline**
+	- make it **idempotent**
+	- schedule it to run once a month
+
+
+- [ ] research good graphics
+	- look at Google Fit Metrics
+	- how I used my jupyter notebooks
+	- graphics on **[fitbit-web-ui-app](https://github.com/arpanghosh8453/fitbit-web-ui-app)** - github
+	- graphics on https://dashboard.exercise.quest/
+
+- integrate Batch Processing with Spark
+	- [[DataTalks DE Zoomcamp 2025 Syllabus#*Module* 5 Batch Processing - *Spark*]]
+	-  [DataTalksClub](https://github.com/DataTalksClub)/ [data-engineering-zoomcamp](https://github.com/DataTalksClub/data-engineering-zoomcamp)/ [05-batch](https://github.com/DataTalksClub/data-engineering-zoomcamp/tree/main/05-batch "05-batch")
+	-  [ManuelGuerra1987](https://github.com/ManuelGuerra1987) /  [data-engineering-zoomcamp-notes](https://github.com/ManuelGuerra1987/data-engineering-zoomcamp-notes)  / [5_Batch-Processing-Spark](https://github.com/ManuelGuerra1987/data-engineering-zoomcamp-notes/tree/main/5_Batch-Processing-Spark "5_Batch-Processing-Spark")
+
+
+
+## PHASE 3 - hosting
+- [ ] move job scheduling to a cloud service
+
 - [ ] research good graphics
 	- look at Google Fit Metrics
 	- how I used my jupyter notebooks
@@ -48,20 +122,9 @@
 	- hard code my google auth
 
 
-## Project Steps
-- PHASE 1 - proof of concept
-	- [ ] get ANY data downloaded
-		- ==hardcore necessary fitbit data to query fitbit api==
-			- ~~recreate AWS threaded download/upload script but for fitbit API:~~
-				- `/home/michael/Documents/projects/datatalks-data-engineering-hw-notes/04-analytics-engineering/load_taxi_data_4analytics.py` 
-				- `ec2_load_taxi_data_4analytics.py`
-	- [ ] research API output most similar to ny_taxi data
-	- [ ] get data uploaded to GCP and migrated to Bigquery
-- PHASE 2 - automate
-	- [ ] automate API access token retrieval for querying fitbit api
-	- [ ] create a scheduled airflow job
-- PHASE 3 - hosting
-	- [ ] move job scheduling to a cloud service
+
+
+
 
 ## Rough Outline
 PRE: 
@@ -98,7 +161,6 @@ https://python-fitbit.readthedocs.io/en/latest/#fitbit-api
 ### [Fitbit OAuth 2.0 Tutorial](https://dev.fitbit.com/build/reference/web-api/troubleshooting-guide/oauth2-tutorial/)
 
 
-
 ## [Fitpipe](https://github.com/rickyriled/data_engineering_project_1/tree/main) DE Project
 [pt.py](https://github.com/rickyriled/data_engineering_project_1/blob/main/pt.py)
 
@@ -124,12 +186,10 @@ auth2_client = fitbit.Fitbit(
 
 ```
 
-
 ## Fitbit Dashboard by [jlai](https://github.com/jlai)[Jason](https://github.com/jlai)
 [dashboard.exercise.quest](https://dashboard.exercise.quest/)
 [fitness-dashboard](https://github.com/jlai/fitness-dashboard) - github
 [reddit post](https://www.reddit.com/r/fitbit/comments/1eaccv3/fitness_dashboard_an_unofficial_web_dashboard_for/)
-
 
 ## **[fitbit-web-ui-app](https://github.com/arpanghosh8453/fitbit-web-ui-app)** - github
 https://fitbit-report.arpan.app/
@@ -147,12 +207,10 @@ src: [reddit page](https://www.reddit.com/r/fitbit/comments/15igabx/update_i_mad
 https://cloud.google.com/device-connect
 [github](https://github.com/GoogleCloudPlatform/deviceconnect)
 
-
 ```python
 FITBIT_OAUTH_CLIENT_ID = ''                          # fitbit client id (from dev.fitbit.com)
 FITBIT_OAUTH_CLIENT_SECRET = ''                  # fitbit secret (from dev.fitbit.com)
 ```
-
 
 
 # Project Step Log
@@ -164,17 +222,3 @@ FITBIT_OAUTH_CLIENT_SECRET = ''                  # fitbit secret (from dev.fitbi
 - ![example app](https://miro.medium.com/v2/resize:fit:720/format:webp/1*UJHMOYsFZvrBmpNjFfpBJA.jpeg)
 - insert the sensitive fitbit API tokens into the `.env` file
 - `pip install fitbit`
-
-# MY project development overview
-- fast prototype
-	- get ANY data from API
-		- working on place without internet, ensure I had the data
-		- reading API and following instructions
-			- create a dev.fitbit.com project
-			- using published code to get ACCESS token and USER ID
-				- getting a CLIENT_ID, CLIENT_SECRET
-				- learn about using OAuth2 to log in
-				- catching the response in a server
-				- parsing ACCESS token and USER ID
-		- 
-- 
