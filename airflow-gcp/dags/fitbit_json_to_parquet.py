@@ -1,5 +1,6 @@
 import json
 import pandas as pd
+import glob
 
 
 # def sleep_json_to_parquet(filename):
@@ -17,7 +18,7 @@ def profile_json_to_parquet(filename):
         with open(filename, 'r') as file:
             profile_data = json.load(file)["user"]
     except (FileNotFoundError, json.JSONDecodeError) as e:
-        print(f"Error loading {file} file: {e}")
+        print(f"Error loading {filename} file: {e}")
         exit(1)
     
     del profile_data["features"]
@@ -25,8 +26,14 @@ def profile_json_to_parquet(filename):
     # print(profile_data)
     profile_df = pd.DataFrame([profile_data])
 
-    # Create DataFrame
-    
+    profile_df["age"] = profile_df["age"].astype(int)
+    profile_df["dateOfBirth"] = pd.to_datetime(profile_df["dateOfBirth"])
+    profile_df["memberSince"] = pd.to_datetime(profile_df["memberSince"])
+    profile_df["weight"] = profile_df["weight"].astype(float)
+    profile_df["height"] = profile_df["height"].astype(float)
+    profile_df["strideLengthWalking"] = profile_df["strideLengthWalking"].astype(float)
+    profile_df["strideLengthRunning"] = profile_df["strideLengthRunning"].astype(float)
+
     parquet_filename = filename.replace(".json", ".parquet")
     profile_df.to_parquet(parquet_filename)
     # print(profile_df.info())
@@ -38,7 +45,7 @@ def sleep_json_to_parquet(filename):
         with open(filename, 'r') as file:
             sleep_data = json.load(file)
     except (FileNotFoundError, json.JSONDecodeError) as e:
-        print(f"Error loading {file} file: {e}")
+        print(f"Error loading {filename} file: {e}")
         exit(1)
     
 
@@ -146,7 +153,12 @@ def heartrate_json_to_parquet(filename):
     print(heartrate_df.head())
 
 if __name__ == '__main__':
-    sleep_json_to_parquet("sleep.json")
-    profile_json_to_parquet("profile.json")
-    heartrate_json_to_parquet("heartrate.json")
+    for filename in glob.glob("sleep*.json"):
+        sleep_json_to_parquet(filename)
+
+    for filename in glob.glob("profile*.json"):
+        profile_json_to_parquet(filename)
+
+    for filename in glob.glob("heartrate*.json"):
+        heartrate_json_to_parquet(filename)
 

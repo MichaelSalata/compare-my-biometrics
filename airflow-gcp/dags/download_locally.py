@@ -1,6 +1,5 @@
 import requests
 from datetime import datetime, timedelta
-
 import json
 
 with open('fitbit_tokens.json', 'r') as file:
@@ -44,19 +43,6 @@ daterange_endpoints = {
 }
 
 
-
-def fetch_date(endpoint, date):
-    url = API_website + endpoint.format(date=date)
-    response = requests.get(url, headers=headers)
-    if response.status_code == 200:
-        return response.json()
-    elif response.status_code == 401:
-        print("request requires authentication")
-        return None
-    else:
-        print(f"Failed to fetch data for {date}: {response.status_code}")
-        return None
-
 def fetch_static(endpoint_suffix):
     url = API_website + endpoint_suffix.format(user_id=tokens["user_id"])
     response = requests.get(url, headers=headers)
@@ -73,7 +59,7 @@ def fetch_static(endpoint_suffix):
 
 
 def fetch_date_range(endpoint_suffix, start, end):
-    url = API_website + endpoint_suffix.format(user_id=tokens["user_id"], start=start, end=end)
+    url = API_website + endpoint_suffix.format(user_id=tokens["user_id"], start=start.strftime("%Y-%m-%d"), end=end.strftime("%Y-%m-%d"))
     response = requests.get(url, headers=headers)
     print("attempting download", url, '\n')
     if response.status_code == 200:
@@ -84,28 +70,39 @@ def fetch_date_range(endpoint_suffix, start, end):
     else:
         print(f"{url} download FAILED for {start} to {end}: response.status_code:{response.status_code}")
         return None
+
+def download_the_past_month():
+    end_date = datetime.now()
+    start_date = end_date - timedelta(days=30)
+
+    download_date_range(start_date, end_date)
     
+
+def download_date_range(start_date, end_date, filename=None):
+    # Save data from static endpoints
+    for endpoint_name in (tokens["scope"] & static_endpoints.keys()):
+        data = fetch_static(static_endpoints[endpoint_name])
+        if data:
+            save_data(data, endpoint_name, start_date, end_date, filename)
+
+    # Get data from date range endpoints
+    for endpoint_name in tokens["scope"] & daterange_endpoints.keys():
+        data = fetch_date_range(daterange_endpoints[endpoint_name], start=start_date, end=end_date)
+        if data:
+            save_data(data, endpoint_name, start_date, end_date, filename)
+
+def save_data(data, endpoint_name, start_date=None, end_date=None, filename=None):
+    if not filename:
+        if (not start_date) and (not end_date):
+            filename = f'{endpoint_name}.json'
+        else:
+            filename = f'{endpoint_name}_{start_date.strftime("%Y-%m-%d")}_{end_date.strftime("%Y-%m-%d")}.json'
+    
+    with open(filename, 'w') as data_file:
+        json.dump(data, data_file, indent=4)
+        print(f'Data for {endpoint_name} has been saved to {filename}')
+
 
 end_date = datetime.now()
 start_date = end_date - timedelta(days=30)
-
-# print(tokens["scope"], biometric_endpoints_daterange.keys())
-# print(tokens["scope"] & biometric_endpoints_daterange.keys())
-
-# save data from static endpoints
-print(tokens["scope"])
-print(list(static_endpoints.keys()))
-for endpoint_name in (tokens["scope"] & static_endpoints.keys()):
-    data = fetch_static(static_endpoints[endpoint_name])
-    if data:
-        with open(f'{endpoint_name}.json', 'w') as data_file:
-            json.dump(data, data_file, indent=4)
-            print(f'Data for {endpoint_name} has been saved to {endpoint_name}.json')
-
-# get data from date range endpoints
-for endpoint_name in tokens["scope"] & daterange_endpoints.keys():
-    data = fetch_date_range(daterange_endpoints[endpoint_name], start=start_date.strftime("%Y-%m-%d"), end=end_date.strftime("%Y-%m-%d"))
-    if data:
-        with open(f'{endpoint_name}.json', 'w') as data_file:
-            json.dump(data, data_file, indent=4)
-            print(f'Data for {endpoint_name} has been saved to {endpoint_name}.json')
+download_the_past_month()
