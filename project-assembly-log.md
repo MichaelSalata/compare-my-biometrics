@@ -52,11 +52,11 @@
 	- multiple months worth
 	- multiple dimensions
 	- fact table data
+- [x] format .json data into something Big Query can handle  (.csv, .parquet) ✅ 2025-03-09
 - [ ] ensure I have data similar to ny_taxi data
 	- df.info() for ny_taxi_data
 	- check data types of key Visualizations and DBT aggregations
-- [ ] upload the data onto EC2 server
-- [ ] format .json data into something Big Query can handle  (.csv, .parquet)
+- ~~upload the data onto EC2 server~~
 
 ## PHASE 3 - move data to new GCP project, Bucket & BigQuery
 - [ ] setup new GCP *account*, project, Bucket & BigQuery
@@ -222,3 +222,6 @@ FITBIT_OAUTH_CLIENT_SECRET = ''                  # fitbit secret (from dev.fitbi
 - ![example app](https://miro.medium.com/v2/resize:fit:720/format:webp/1*UJHMOYsFZvrBmpNjFfpBJA.jpeg)
 - insert the sensitive fitbit API tokens into the `.env` file
 - `pip install fitbit`
+- run gather_keys script
+- run download_data script
+- run format_to_parquet script
