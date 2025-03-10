@@ -22,7 +22,7 @@ def profile_json_to_parquet(filename):
     
     del profile_data["features"]
     del profile_data["topBadges"]
-    print(profile_data)
+    # print(profile_data)
     profile_df = pd.DataFrame([profile_data])
 
     # Create DataFrame
@@ -30,7 +30,7 @@ def profile_json_to_parquet(filename):
     parquet_filename = filename.replace(".json", ".parquet")
     profile_df.to_parquet(parquet_filename)
     # print(profile_df.info())
-    # print(profile_df.head())
+    print(profile_df.head())
 
 
 def sleep_json_to_parquet(filename):
@@ -93,8 +93,60 @@ def sleep_json_to_parquet(filename):
     parquet_filename = filename.replace(".json", ".parquet")
     sleep_df.to_parquet(parquet_filename)
     # print(sleep_df.info())
-    # print(sleep_df.head())
+    print(sleep_df.head())
+
+def heartrate_json_to_parquet(filename):
+    try:
+        with open(filename, 'r') as file:
+            heartrate_data = json.load(file)
+    except (FileNotFoundError, json.JSONDecodeError) as e:
+        print(f"Error loading {file} file: {e}")
+        exit(1)
+
+
+    zone_map = {
+        "Out of Range":"Zone1",
+        "Fat Burn":"Zone2",
+        "Cardio":"Zone3",
+        "Peak":"Zone4"
+    }
+
+    rows = []
+    for heartrate in heartrate_data["activities-heart"]:
+        zname = zone_map[heartrate["value"]["heartRateZones"][0]["name"]]
+        row = {
+            "dateTime": pd.to_datetime(heartrate["dateTime"]),
+
+            "Zone1_caloriesOut": float(heartrate["value"]["heartRateZones"][0]["caloriesOut"]),
+            "Zone1_max_heartrate": int(heartrate["value"]["heartRateZones"][0]["max"]),
+            "Zone1_min_heartrate": int(heartrate["value"]["heartRateZones"][0]["min"]),
+            "Zone1_minutes": int(heartrate["value"]["heartRateZones"][0]["minutes"]),
+
+            "Zone3_caloriesOut": float(heartrate["value"]["heartRateZones"][1]["caloriesOut"]),
+            "Zone3_max_heartrate": int(heartrate["value"]["heartRateZones"][1]["max"]),
+            "Zone3_min_heartrate": int(heartrate["value"]["heartRateZones"][1]["min"]),
+            "Zone3_minutes": int(heartrate["value"]["heartRateZones"][1]["minutes"]),
+
+            "Zone3_caloriesOut": float(heartrate["value"]["heartRateZones"][2]["caloriesOut"]),
+            "Zone3_max_heartrate": int(heartrate["value"]["heartRateZones"][2]["max"]),
+            "Zone3_min_heartrate": int(heartrate["value"]["heartRateZones"][2]["min"]),
+            "Zone3_minutes": int(heartrate["value"]["heartRateZones"][2]["minutes"]),
+
+            "Zone4_caloriesOut": float(heartrate["value"]["heartRateZones"][3]["caloriesOut"]),
+            "Zone4_max_heartrate": int(heartrate["value"]["heartRateZones"][3]["max"]),
+            "Zone4_min_heartrate": int(heartrate["value"]["heartRateZones"][3]["min"]),
+            "Zone4_minutes": int(heartrate["value"]["heartRateZones"][3]["minutes"])
+        }
+
+        rows.append(row)
+
+    heartrate_df = pd.DataFrame(rows)
+    parquet_filename = filename.replace(".json", ".parquet")
+    heartrate_df.to_parquet(parquet_filename)
+    print(heartrate_df.head())
 
 if __name__ == '__main__':
     sleep_json_to_parquet("sleep.json")
     profile_json_to_parquet("profile.json")
+    heartrate_json_to_parquet("heartrate.json")
+

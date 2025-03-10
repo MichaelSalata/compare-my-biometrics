@@ -90,6 +90,7 @@ ManuelGuerra - [data-engineering-zoomcamp-notes](https://github.com/ManuelGuerra
 *aka Goals:  3/24 -to- 4/21*
 
 - [ ] pipeline
+	- map `data` directory to Airflow Docker Container
 	- request_biometrics >> upload_data_lake >> data_warehouse >> dbt_processing >> looker_studio_dashboard
 
 - [ ] **run upload script with an Airflow pipeline**
