@@ -18,7 +18,7 @@ headers = {
 
 API_website = "https://api.fitbit.com"
 
-profile_endpoints = {
+static_endpoints = {
     # "activity": "",
     # "social": "",
     # "location": "",
@@ -41,6 +41,10 @@ day_specific_endpoints = {
 daterange_endpoints = {
     "heartrate": "/1/user/{user_id}/activities/heart/date/{start}/{end}.json",
     # "nutrition": "",
+
+    # "activity": "/1/user/[user-id]/activities/[resource-path]/date/{start}/{end}.json"
+    # resource options: https://dev.fitbit.com/build/reference/web-api/activity-timeseries/get-activity-timeseries-by-date-range/#Resource-Options
+
     "sleep": "/1.2/user/{user_id}/sleep/date/{start}/{end}.json"
 }
 
@@ -58,9 +62,25 @@ def fetch_date(endpoint, date):
         print(f"Failed to fetch data for {date}: {response.status_code}")
         return None
 
+def fetch_static(endpoint_suffix):
+    url = API_website + endpoint_suffix.format(user_id=tokens["user_id"])
+    response = requests.get(url, headers=headers)
+    print("attempting download", url, '\n')
+    if response.status_code == 200:
+        print(f"Downloaded: {url}")
+        return response.json()
+    elif response.status_code == 401:
+        print("request requires authentication")
+        return None
+    else:
+        print(f"{url} download FAILED: response.status_code:{response.status_code}")
+        return None
+    
 
-def fetch_date_range(endpoint, start, end):
-    url = API_website + endpoint.format(user_id=tokens["user_id"], start=start, end=end)
+
+
+def fetch_date_range(endpoint_suffix, start, end):
+    url = API_website + endpoint_suffix.format(user_id=tokens["user_id"], start=start, end=end)
     response = requests.get(url, headers=headers)
     print("attempting", url, '\n')
     if response.status_code == 200:
@@ -69,7 +89,7 @@ def fetch_date_range(endpoint, start, end):
         print("request requires authentication")
         return None
     else:
-        print(f"Failed to fetch data for {start} to {end}: response.status_code:{response.status_code}")
+        print(f"{url} download FAILED for {start} to {end}: response.status_code:{response.status_code}")
         return None
     
 
@@ -79,13 +99,24 @@ start_date = end_date - timedelta(days=30)
 # print(tokens["scope"], biometric_endpoints_daterange.keys())
 # print(tokens["scope"] & biometric_endpoints_daterange.keys())
 
-for key in tokens["scope"] & daterange_endpoints.keys():
-    data = fetch_date_range(daterange_endpoints[key], start_date.strftime("%Y-%m-%d"), end_date.strftime("%Y-%m-%d"))
+# save data from static endpoints
+print(tokens["scope"])
+print(list(static_endpoints.keys()))
+for endpoint_name in (tokens["scope"] & static_endpoints.keys()):
+    data = fetch_static(static_endpoints[endpoint_name])
     if data:
-        with open(f'{key}.json', 'w') as data_file:
+        with open(f'{endpoint_name}.json', 'w') as data_file:
             json.dump(data, data_file, indent=4)
-            print(f'Data for {key} has been saved to {key}.json')
-
+            print(f'Data for {endpoint_name} has been saved to {endpoint_name}.json')
+"""
+# get data from date range endpoints
+for endpoint_name in tokens["scope"] & daterange_endpoints.keys():
+    data = fetch_date_range(daterange_endpoints[endpoint_name], start=start_date.strftime("%Y-%m-%d"), end=end_date.strftime("%Y-%m-%d"))
+    if data:
+        with open(f'{endpoint_name}.json', 'w') as data_file:
+            json.dump(data, data_file, indent=4)
+            print(f'Data for {endpoint_name} has been saved to {endpoint_name}.json')
+"""
 
 """
 # Fetch data for each day in the past month
