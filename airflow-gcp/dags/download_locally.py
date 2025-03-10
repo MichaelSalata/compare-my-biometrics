@@ -75,7 +75,7 @@ def fetch_static(endpoint_suffix):
 def fetch_date_range(endpoint_suffix, start, end):
     url = API_website + endpoint_suffix.format(user_id=tokens["user_id"], start=start, end=end)
     response = requests.get(url, headers=headers)
-    print("attempting", url, '\n')
+    print("attempting download", url, '\n')
     if response.status_code == 200:
         return response.json()
     elif response.status_code == 401:
