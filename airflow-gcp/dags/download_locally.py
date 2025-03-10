@@ -10,11 +10,6 @@ headers = {
     # TODO: properly format header tokens
     'Authorization': f'Bearer {tokens["access_token"]}'
 }
-"""
-headers = {
-    "Authorization": f"Bearer {ACCESS_TOKEN}",
-    "Accept": "application/json"
-}"""
 
 API_website = "https://api.fitbit.com"
 
@@ -75,8 +70,6 @@ def fetch_static(endpoint_suffix):
     else:
         print(f"{url} download FAILED: response.status_code:{response.status_code}")
         return None
-    
-
 
 
 def fetch_date_range(endpoint_suffix, start, end):
@@ -108,7 +101,7 @@ for endpoint_name in (tokens["scope"] & static_endpoints.keys()):
         with open(f'{endpoint_name}.json', 'w') as data_file:
             json.dump(data, data_file, indent=4)
             print(f'Data for {endpoint_name} has been saved to {endpoint_name}.json')
-"""
+
 # get data from date range endpoints
 for endpoint_name in tokens["scope"] & daterange_endpoints.keys():
     data = fetch_date_range(daterange_endpoints[endpoint_name], start=start_date.strftime("%Y-%m-%d"), end=end_date.strftime("%Y-%m-%d"))
@@ -116,23 +109,3 @@ for endpoint_name in tokens["scope"] & daterange_endpoints.keys():
         with open(f'{endpoint_name}.json', 'w') as data_file:
             json.dump(data, data_file, indent=4)
             print(f'Data for {endpoint_name} has been saved to {endpoint_name}.json')
-"""
-
-"""
-# Fetch data for each day in the past month
-data = {key: [] for key in biometric_endpoints_day.keys()}
-current_date = start_date
-date_str = current_date.strftime("%Y-%m-%d")
-for key, endpoint in biometric_endpoints_day.items():
-    result = fetch_date(endpoint, date_str)
-    if result:
-        data[key].append(result)
-current_date += timedelta(days=1)
-
-
-# Print the fetched data
-for key, values in data.items():
-    print(f"Data for {key}:")
-    for value in values:
-        print(value)
-"""
