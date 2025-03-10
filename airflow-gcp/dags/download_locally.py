@@ -28,16 +28,17 @@ profile_endpoints = {
 
 # src: https://dev.fitbit.com/build/reference/web-api/heartrate-timeseries/get-heartrate-timeseries-by-date/
 # example: /1/user/[user-id]/activities/heart/date/[date]/[period].json
-biometric_endpoints_day = {
+day_specific_endpoints = {
     # "sleep": "/sleep/date/{date}.json",
     # "activity": "/activities/date/{date}.json",
     # "heartrate": "/activities/heart/date/{date}/1d.json",
-    "weight": "/1/user/{user_id}/body/log/weight/date/{date}.json"
+    "weight": "/1/user/{user_id}/body/log/weight/date/{date}.json",
+    "fat": "/1/user/{user_id}/body/log/fat/date/{date}.json"
 }
 
 # src: https://dev.fitbit.com/build/reference/web-api/heartrate-timeseries/get-heartrate-timeseries-by-date-range/
 # example daterange_endpoint: /1/user/[user-id]/activities/heart/date/[start-date]/[end-date].json
-biometric_endpoints_daterange = {
+daterange_endpoints = {
     "heartrate": "/1/user/{user_id}/activities/heart/date/{start}/{end}.json",
     # "nutrition": "",
     "sleep": "/1.2/user/{user_id}/sleep/date/{start}/{end}.json"
@@ -75,11 +76,11 @@ def fetch_date_range(endpoint, start, end):
 end_date = datetime.now()
 start_date = end_date - timedelta(days=30)
 
-print(tokens["scope"], biometric_endpoints_daterange.keys())
-print(tokens["scope"] & biometric_endpoints_daterange.keys())
+# print(tokens["scope"], biometric_endpoints_daterange.keys())
+# print(tokens["scope"] & biometric_endpoints_daterange.keys())
 
-for key in tokens["scope"] & biometric_endpoints_daterange.keys():
-    data = fetch_date_range(biometric_endpoints_daterange[key], start_date.strftime("%Y-%m-%d"), end_date.strftime("%Y-%m-%d"))
+for key in tokens["scope"] & daterange_endpoints.keys():
+    data = fetch_date_range(daterange_endpoints[key], start_date.strftime("%Y-%m-%d"), end_date.strftime("%Y-%m-%d"))
     if data:
         with open(f'{key}.json', 'w') as data_file:
             json.dump(data, data_file, indent=4)
