@@ -137,11 +137,12 @@ airflow-venv
 
 dbt
 .vscode
-heartrate.json
-sleep.json
 example_resources
 fitbit_tokens.json
 fitbit_project_info.json
 
 # data files
+heartrate*.json
+sleep*.json
+profile*.json
 *.parquet
