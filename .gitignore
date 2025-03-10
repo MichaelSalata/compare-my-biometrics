@@ -141,3 +141,7 @@ heartrate.json
 sleep.json
 example_resources
 fitbit_tokens.json
+fitbit_project_info.json
+
+# data files
+*.parquet
