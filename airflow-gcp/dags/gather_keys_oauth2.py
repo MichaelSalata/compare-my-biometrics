@@ -5,6 +5,7 @@ import sys
 import threading
 import traceback
 import webbrowser
+import json
 
 from urllib.parse import urlparse
 from base64 import b64encode
@@ -82,26 +83,37 @@ class OAuth2Server:
 
 if __name__ == '__main__':
 
-    if not (len(sys.argv) == 3):
-        print("Arguments: client_id and client_secret")
-        sys.exit(1)
+    if (len(sys.argv) == 3):
+        # client_id, client_secret = sys.argv[1], sys.argv[2]
+        server = OAuth2Server(*sys.argv[1:])
+        env_variables = {}
+        env_variables["OAUTH2_CLIENT_ID"], env_variables["CLIENT_SECRET"] = sys.argv[1], sys.argv[2]
+    else:
+        print("Arguments: client_id and client_secret not found")
+        if os.path.exists(f"fitbit_project_info.json"):
+            print(f"Found fitbit_project_info.json Locally...")
+            with open('fitbit_project_info.json', 'r') as file:
+                env_variables = json.load(file)
+                server = OAuth2Server(env_variables["OAUTH2_CLIENT_ID"], env_variables["CLIENT_SECRET"])
+        else:
+            print(f"didn't find fitbit_project_info.json locally...")
+            sys.exit(1)
 
-    server = OAuth2Server(*sys.argv[1:])
     server.browser_authorize()
 
     profile = server.fitbit.user_profile_get()
     print('You are authorized to access data for the user: {}'.format(
         profile['user']['fullName']))
 
+    # saving a 
     print('TOKEN\n=====\n')
     token_dict = server.fitbit.client.session.token
+    token_dict["client_id"] = env_variables["OAUTH2_CLIENT_ID"]
+    token_dict["client_secret"] = env_variables["CLIENT_SECRET"]
+
     for key, value in token_dict.items():
         print('{} = {}'.format(key, value))
 
-    import json
-    client_id, client_secret = sys.argv[1], sys.argv[2]
-    token_dict["client_id"] = client_id
-    token_dict["client_secret"] = client_secret
     with open('fitbit_tokens.json', 'w') as token_file:
         json.dump(token_dict, token_file, indent=4)
         print('Tokens have been saved to tokens.json')
