@@ -59,6 +59,7 @@
 - ~~upload the data onto EC2 server~~
 
 ## PHASE 3 - move data to new GCP project, Bucket & BigQuery
+- [ ] move data to ECS
 - [ ] setup new GCP *account*, project, Bucket & BigQuery
 - [ ] setup a Terraform  config to launch, apply, destroy it
 
