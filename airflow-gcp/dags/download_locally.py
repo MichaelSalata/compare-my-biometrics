@@ -51,7 +51,7 @@ def fetch_static(endpoint_suffix):
         print(f"Downloaded: {url}")
         return response.json()
     elif response.status_code == 401:
-        print("request requires authentication")
+        print("authentication failed")
         return None
     else:
         print(f"{url} download FAILED: response.status_code:{response.status_code}")
@@ -65,7 +65,7 @@ def fetch_date_range(endpoint_suffix, start, end):
     if response.status_code == 200:
         return response.json()
     elif response.status_code == 401:
-        print("request requires authentication")
+        print("authentication failed")
         return None
     else:
         print(f"{url} download FAILED for {start} to {end}: response.status_code:{response.status_code}")
@@ -78,19 +78,6 @@ def download_the_past_month():
     download_date_range(start_date, end_date)
     
 
-def download_date_range(start_date, end_date, filename=None):
-    # Save data from static endpoints
-    for endpoint_name in (tokens["scope"] & static_endpoints.keys()):
-        data = fetch_static(static_endpoints[endpoint_name])
-        if data:
-            save_data(data, endpoint_name, start_date, end_date, filename)
-
-    # Get data from date range endpoints
-    for endpoint_name in tokens["scope"] & daterange_endpoints.keys():
-        data = fetch_date_range(daterange_endpoints[endpoint_name], start=start_date, end=end_date)
-        if data:
-            save_data(data, endpoint_name, start_date, end_date, filename)
-
 def save_data(data, endpoint_name, start_date=None, end_date=None, filename=None):
     if not filename:
         if (not start_date) and (not end_date):
@@ -101,6 +88,37 @@ def save_data(data, endpoint_name, start_date=None, end_date=None, filename=None
     with open(filename, 'w') as data_file:
         json.dump(data, data_file, indent=4)
         print(f'Data for {endpoint_name} has been saved to {filename}')
+
+def download_date_range(start_date, end_date, filename=None, endpoint_name=None):
+    # if an endpoint_name is specified, ONLY download from that endpoint
+    if endpoint_name:
+        if endpoint_name not in tokens["scope"]:
+            print("don't have permissions for that endpoint")
+        
+        if endpoint_name in static_endpoints.keys():
+            data = fetch_static(static_endpoints[endpoint_name])
+            if data:
+                save_data(data, endpoint_name, filename)
+            
+        if endpoint_name in daterange_endpoints.keys():
+            data = fetch_date_range(daterange_endpoints[endpoint_name], start=start_date, end=end_date)
+            if data:
+                save_data(data, endpoint_name, start_date, end_date, filename)
+        
+        return
+
+    # if no endpoint_name is specified, download from all endpoints that you have permissions(tokens) for
+    # Save data from static endpoints
+    for endpoint_name in (tokens["scope"] & static_endpoints.keys()):
+        data = fetch_static(static_endpoints[endpoint_name])
+        if data:
+            save_data(data, endpoint_name, filename)
+
+    # Get data from date range endpoints
+    for endpoint_name in tokens["scope"] & daterange_endpoints.keys():
+        data = fetch_date_range(daterange_endpoints[endpoint_name], start=start_date, end=end_date)
+        if data:
+            save_data(data, endpoint_name, start_date, end_date, filename)
 
 
 end_date = datetime.now()
