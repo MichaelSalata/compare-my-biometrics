@@ -100,7 +100,7 @@ def sleep_json_to_parquet(filename):
     parquet_filename = filename.replace(".json", ".parquet")
     sleep_df.to_parquet(parquet_filename)
     # print(sleep_df.info())
-    print(sleep_df.head())
+    # print(sleep_df.head())
 
 def heartrate_json_to_parquet(filename):
     try:
@@ -150,7 +150,7 @@ def heartrate_json_to_parquet(filename):
     heartrate_df = pd.DataFrame(rows)
     parquet_filename = filename.replace(".json", ".parquet")
     heartrate_df.to_parquet(parquet_filename)
-    print(heartrate_df.head())
+    # print(heartrate_df.head())
 
 if __name__ == '__main__':
     for filename in glob.glob("sleep*.json"):
