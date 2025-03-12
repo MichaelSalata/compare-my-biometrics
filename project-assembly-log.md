@@ -241,3 +241,7 @@ FITBIT_OAUTH_CLIENT_SECRET = ''                  # fitbit secret (from dev.fitbi
 
 - use terraform to....
 	- create project, bucket, big query dataset
+
+- moved in terraform folder
+- updated google credentials name/location in .tfs
+- switched variable names to new project names
