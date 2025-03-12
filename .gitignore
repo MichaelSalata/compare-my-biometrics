@@ -146,3 +146,7 @@ heartrate*.json
 sleep*.json
 profile*.json
 *.parquet
+
+# terraform
+.terraform*
+terraform.tfstate*
