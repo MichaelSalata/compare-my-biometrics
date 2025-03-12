@@ -227,3 +227,17 @@ FITBIT_OAUTH_CLIENT_SECRET = ''                  # fitbit secret (from dev.fitbi
 - run gather_keys script
 - run download_data script
 - run format_to_parquet script
+
+- uploading to GCS requires
+	- **PROJECT_ID**
+		- example .env line:  `GCP_PROJECT_ID=dtc-de-446723`
+	- **BUCKET**
+		- example .env line:  `GCP_GCS_BUCKET=dtc-de-446723-terraform-demo-bucket
+
+- bigquery_external_table_task
+	- requires a dataset
+		- example .env line:  `BIGQUERY_DATASET=demo_dataset
+
+
+- use terraform to....
+	- create project, bucket, big query dataset
