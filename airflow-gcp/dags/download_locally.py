@@ -143,9 +143,9 @@ if __name__ == '__main__':
     end_date = datetime.now()
     start_date = end_date.replace(day=1)
 
-    past_month_attempts = 7
-    while past_month_attempts >= 1:
+    past_month_count = 3
+    while past_month_count >= 1:
         download_date_range(start_date=start_date, end_date=end_date)
         end_date = start_date - timedelta(days=1)
         start_date = end_date - timedelta(days=calendar.monthrange(end_date.year, end_date.month)[1]-1)
-        past_month_attempts -= 1
+        past_month_count -= 1
