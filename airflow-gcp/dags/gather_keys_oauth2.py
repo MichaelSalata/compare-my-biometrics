@@ -116,4 +116,4 @@ if __name__ == '__main__':
 
     with open('fitbit_tokens.json', 'w') as token_file:
         json.dump(token_dict, token_file, indent=4)
-        print('Tokens have been saved to tokens.json')
+        print('Tokens have been saved to fitbit_tokens.json')
