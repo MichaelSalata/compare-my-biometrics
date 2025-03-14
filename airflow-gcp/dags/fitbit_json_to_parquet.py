@@ -144,10 +144,10 @@ def heartrate_json_to_parquet(filename):
                 "Zone1_min_heartrate": int(heartrate["value"]["heartRateZones"][0]["min"]),
                 "Zone1_minutes": int(heartrate["value"]["heartRateZones"][0].get("minutes")),
 
-                "Zone3_caloriesOut": float(heartrate["value"]["heartRateZones"][1].get("caloriesOut")),
-                "Zone3_max_heartrate": int(heartrate["value"]["heartRateZones"][1]["max"]),
-                "Zone3_min_heartrate": int(heartrate["value"]["heartRateZones"][1]["min"]),
-                "Zone3_minutes": int(heartrate["value"]["heartRateZones"][1].get("minutes")),
+                "Zone2_caloriesOut": float(heartrate["value"]["heartRateZones"][1].get("caloriesOut")),
+                "Zone2_max_heartrate": int(heartrate["value"]["heartRateZones"][1]["max"]),
+                "Zone2_min_heartrate": int(heartrate["value"]["heartRateZones"][1]["min"]),
+                "Zone2_minutes": int(heartrate["value"]["heartRateZones"][1].get("minutes")),
 
                 "Zone3_caloriesOut": float(heartrate["value"]["heartRateZones"][2].get("caloriesOut")),
                 "Zone3_max_heartrate": int(heartrate["value"]["heartRateZones"][2]["max"]),
@@ -159,7 +159,7 @@ def heartrate_json_to_parquet(filename):
                 "Zone4_min_heartrate": int(heartrate["value"]["heartRateZones"][3]["min"]),
                 "Zone4_minutes": int(heartrate["value"]["heartRateZones"][3].get("minutes")),
 
-                "Zone4_minutes": int(heartrate["value"].get("restingHeartRate"))
+                "restingHeartRate": int(heartrate["value"].get("restingHeartRate"))
             }
         except Exception as e:
             print(f'Error: {e} reading json file {filename} on date: {heartrate.get("dateOfSleep")}:')
