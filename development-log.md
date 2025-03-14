@@ -38,7 +38,7 @@
 	- Total calories burned
 
 # TODOs
-**==NOTE==**: ***Document project steps*** in the [[project-assembly-log#Project Step Log]] below
+**==NOTE==**: ***Document project steps*** in the [[development-log#Project Step Log]] below
 
 ## PHASE 1 - proof of concept
 - [x] get ANY data downloaded ✅ 2025-03-08
@@ -109,7 +109,7 @@ ManuelGuerra - [data-engineering-zoomcamp-notes](https://github.com/ManuelGuerra
 RESOURCE: utilize [jorge's README](https://github.com/JorgeAbrego/weather_stream_project) as a blueprint
 
 ### Project Assembly instructions
-- use [[project-assembly-log#Project Step Log]] below
+- use [[development-log#Project Step Log]] below
 - Terraform
 - Docker
 - GCP creation & permissions for (project, bucket, dataset)
