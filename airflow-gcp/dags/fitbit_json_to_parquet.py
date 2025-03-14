@@ -28,8 +28,8 @@ def profile_json_to_parquet(filename):
 
     try:
         profile_df["age"] = profile_df["age"].astype(int)
-        profile_df["dateOfBirth"] = pd.to_datetime(profile_df["dateOfBirth"])
-        profile_df["memberSince"] = pd.to_datetime(profile_df["memberSince"])
+        profile_df["dateOfBirth"] = pd.to_datetime(profile_df["dateOfBirth"]) # example_input: "1989-08-30"
+        profile_df["memberSince"] = pd.to_datetime(profile_df["memberSince"]) # example_input: "2024-11-21"
         profile_df["weight"] = profile_df["weight"].astype(float)
         profile_df["height"] = profile_df["height"].astype(float)
         profile_df["strideLengthWalking"] = profile_df["strideLengthWalking"].astype(float)
@@ -68,10 +68,11 @@ def sleep_json_to_parquet(filename):
         # TODO: Modularize the appending of row data
         try:
             row = {
-                "dateOfSleep": pd.to_datetime(sleep["dateOfSleep"]),
+                "dateOfSleep": pd.to_datetime(sleep["dateOfSleep"]),  # example_input: "2025-01-30"
+                "startTime": pd.to_datetime(sleep["startTime"]),  # example_input: "2025-01-30T01:05:00.000"
+                "endTime": pd.to_datetime(sleep["endTime"]),  # example_input: "2025-01-30T07:33:00.000"
                 "duration": int(sleep["duration"]),
                 "efficiency": float(sleep["efficiency"])/100,
-                "endTime": pd.to_datetime(sleep["endTime"]),
                 "infoCode": int(sleep["infoCode"]),
                 "isMainSleep": bool(sleep["isMainSleep"]),
                 "logId": int(sleep["logId"]),
@@ -80,7 +81,6 @@ def sleep_json_to_parquet(filename):
                 "minutesAsleep": int(sleep["minutesAsleep"]),
                 "minutesAwake": int(sleep["minutesAwake"]),
                 "minutesToFallAsleep": int(sleep["minutesToFallAsleep"]),
-                "startTime": pd.to_datetime(sleep["startTime"]),
                 "timeInBed": int(sleep["timeInBed"]),
                 "type": sleep["type"],
 
@@ -137,7 +137,7 @@ def heartrate_json_to_parquet(filename):
         # zname = zone_map[heartrate["value"]["heartRateZones"][0]["name"]]
         try:
             row = {
-                "dateTime": pd.to_datetime(heartrate["dateTime"]),
+                "dateTime": pd.to_datetime(heartrate["dateTime"]),  # example_input: "2025-02-01"
 
                 "Zone1_caloriesOut": float(heartrate["value"]["heartRateZones"][0].get("caloriesOut")),
                 "Zone1_max_heartrate": int(heartrate["value"]["heartRateZones"][0]["max"]),
