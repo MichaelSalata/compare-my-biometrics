@@ -2,7 +2,8 @@
 # Name your project! Project names should contain only lowercase characters
 # and underscores. A good package name should reflect your organization's
 # name or the intended use of these models
-name: 'fitbit-dbt-transforms'
+# github project name
+name: 'compare_my_biometrics'
 version: '1.0.0'
 config-version: 2
 
