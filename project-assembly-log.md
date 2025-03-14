@@ -48,7 +48,7 @@
 			- `ec2_load_taxi_data_4analytics.py`
 
 ## PHASE 2 - get the RIGHT Data
-- [ ] download LOTS of data
+- [x] download LOTS of data ✅ 2025-03-13
 	- multiple months worth
 	- multiple dimensions
 	- fact table data
@@ -59,45 +59,77 @@
 - ~~upload the data onto EC2 server~~
 
 ## PHASE 3 - move data to new GCP project, Bucket & BigQuery
-- [ ] move data to ECS
+- [x] move data to ECS ✅ 2025-03-12
 - [ ] setup new GCP *account*, project, Bucket & BigQuery
-- [ ] setup a Terraform  config to launch, apply, destroy it
+- [x] setup a Terraform  config to launch, apply, destroy it ✅ 2025-03-12
 
-- [ ] upload the data
+- [x] upload the data ✅ 2025-03-12
 
 ## PHASE 4 - Process the Data
  [data-engineering-zoomcamp](https://github.com/DataTalksClub/data-engineering-zoomcamp/tree/main) / [03-data-warehouse](https://github.com/DataTalksClub/data-engineering-zoomcamp/tree/main/03-data-warehouse)
 ManuelGuerra - [data-engineering-zoomcamp-notes](https://github.com/ManuelGuerra1987/data-engineering-zoomcamp-notes/tree/main) /  [3_Data-Warehouse](https://github.com/ManuelGuerra1987/data-engineering-zoomcamp-notes/tree/main/3_Data-Warehouse)
 [[SQL Resource#BigQuery]]
 
-- [ ] Big Query commands to make tables from the data in Bucket
+- [x] Big Query commands to make tables from the data in Bucket ✅ 2025-03-13
+- [ ] STRETCH: optimize BigQuery Tables
+	- PARTITION, CLUSTER, index?, etc...
+	- update dbt references
 
-- [ ] setup DBT account
-- [ ] attach DBT to cloned git repo
-- [ ] copy DBT folder to project folder
+- [x] setup DBT account ✅ 2025-03-13
+- [x] attach DBT to cloned git repo ✅ 2025-03-13
+- [x] copy DBT folder to project folder ✅ 2025-03-13
+
+- [ ] look at data and plan schema
+	- what kinda charts do I want?
+	- what kinda charts were showcased?
+
+- [ ] update dbt_resources to incorporate sleep & heartrate tables
+	- [ ] packages.yml
+	- [ ] dbt_project.yml
+	- [ ] stage files
+
+- [ ] properly cast data from sleep & heartrate
+
+- [ ] combine data into fact table
+
+- [ ] create datamart for visualization
 
 ## PHASE 5 - Looker Studio Visualizations
 
-[data-engineering-zoomcamp-notes](https://github.com/ManuelGuerra1987/data-engineering-zoomcamp-notes) / [4_Analytics-Engineering](https://github.com/ManuelGuerra1987/data-engineering-zoomcamp-notes/tree/main/4_Analytics-Engineering#visualising-the-transformed-data)
+->  [data-engineering-zoomcamp-notes](https://github.com/ManuelGuerra1987/data-engineering-zoomcamp-notes) / [4_Analytics-Engineering](https://github.com/ManuelGuerra1987/data-engineering-zoomcamp-notes/tree/main/4_Analytics-Engineering#visualising-the-transformed-data)
 
-^
+- [ ] stacked bar chart for sleep stages
+- [ ] aggregated statistics on heartrate over the time period
+
+- [ ] stacked bar chart heartrate zones
+- [ ] aggregated statistics on heartrate over the time period
+
 
 ## PHASE 6 - Assemble the README
+RESOURCE: utilize [jorge's README](https://github.com/JorgeAbrego/weather_stream_project) as a blueprint
 
-- [ ] put together instructions from the [[project-assembly-log#Project Step Log]] below
-
+### Project Assembly instructions
+- use [[project-assembly-log#Project Step Log]] below
+- Terraform
+- Docker
+- GCP creation & permissions for (project, bucket, dataset)
+- test instructions
 
 ## STRETCH Goals 
 *aka Goals:  3/24 -to- 4/21*
+*aka technical debt*
 
 - [ ] pipeline
 	- map `data` directory to Airflow Docker Container
+		- change download script to download to data folder
+	- [ ] create/reuse upload script most compatible with Airflow
 	- request_biometrics >> upload_data_lake >> data_warehouse >> dbt_processing >> looker_studio_dashboard
 
 - [ ] **run upload script with an Airflow pipeline**
 	- make it **idempotent**
 	- schedule it to run once a month
 
+- [ ] dynamically use user-id in created GCP project/bucket/bigquery dataset with Terraform
 
 - [ ] research good graphics
 	- look at Google Fit Metrics
@@ -109,22 +141,6 @@ ManuelGuerra - [data-engineering-zoomcamp-notes](https://github.com/ManuelGuerra
 	- [[DataTalks DE Zoomcamp 2025 Syllabus#*Module* 5 Batch Processing - *Spark*]]
 	-  [DataTalksClub](https://github.com/DataTalksClub)/ [data-engineering-zoomcamp](https://github.com/DataTalksClub/data-engineering-zoomcamp)/ [05-batch](https://github.com/DataTalksClub/data-engineering-zoomcamp/tree/main/05-batch "05-batch")
 	-  [ManuelGuerra1987](https://github.com/ManuelGuerra1987) /  [data-engineering-zoomcamp-notes](https://github.com/ManuelGuerra1987/data-engineering-zoomcamp-notes)  / [5_Batch-Processing-Spark](https://github.com/ManuelGuerra1987/data-engineering-zoomcamp-notes/tree/main/5_Batch-Processing-Spark "5_Batch-Processing-Spark")
-
-
-
-## PHASE 3 - hosting
-- [ ] move job scheduling to a cloud service
-
-- [ ] research good graphics
-	- look at Google Fit Metrics
-	- how I used my jupyter notebooks
-	- graphics on **[fitbit-web-ui-app](https://github.com/arpanghosh8453/fitbit-web-ui-app)** - github
-	- graphics on https://dashboard.exercise.quest/
-- [ ] find code to download data
-	- hard code my google auth
-
-
-
 
 
 
@@ -245,3 +261,28 @@ FITBIT_OAUTH_CLIENT_SECRET = ''                  # fitbit secret (from dev.fitbi
 - moved in terraform folder
 - updated google credentials name/location in .tfs
 - switched variable names to new project names
+
+- put the data into BigQuery
+```PostgreSQL
+CREATE OR REPLACE EXTERNAL TABLE dtc-de-446723.fitbit_dataset.external_heartrate
+
+OPTIONS (
+
+format = 'PARQUET',
+
+uris = ['gs://dtc-de-446723-fitbit-bucket/heartrate*.parquet']
+
+);
+```
+
+```PostgreSQL
+CREATE OR REPLACE EXTERNAL TABLE dtc-de-446723.fitbit_dataset.external_sleep
+
+OPTIONS (
+
+format = 'PARQUET',
+
+uris = ['gs://dtc-de-446723-fitbit-bucket/sleep*.parquet']
+
+);
+```
