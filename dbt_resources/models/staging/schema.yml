@@ -45,58 +45,80 @@ models:
                 - not_null:
                     severity: warn
           - name: duration 
-            description: placeholderDescription 
-          - name: pickup_datetime 
-            description: placeholderDescription 
-          - name: dropoff_datetime 
-            description: placeholderDescription 
-          - name: Passenger_count 
-            description: placeholderDescription 
-          - name: Trip_distance 
-            description: placeholderDescription 
-          - name: Pickup_locationid
-            description: placeholderDescription 
-            tests:
-              - relationships:
-                  to: ref('taxi_zone_lookup')
-                  field: locationid
-                  severity: warn
-          - name: dropoff_locationid 
-            description: placeholderDescription 
-            tests:
-              - relationships:
-                  to: ref('taxi_zone_lookup')
-                  field: locationid
-                  severity: warn
-          - name: RateCodeID 
-            description: placeholderDescription 
-          - name: Store_and_fwd_flag 
-            description: placeholderDescription 
-              This flag indicates whether the trip record was held in vehicle
-              memory before sending to the vendor, aka “store and forward,”
-              because the vehicle did not have a connection to the server.
-                Y= store and forward trip
-                N= not a store and forward trip
-          - name: Dropoff_longitude 
-            description: placeholderDescription 
-          - name: Dropoff_latitude 
-            description: placeholderDescription 
-          - name: Payment_type 
-            description: placeholderDescription 
-            tests: 
-              - accepted_values:
-                  values: "{{ var('payment_type_values') }}"
-                  severity: warn
-                  quote: false
-          - name: payment_type_description
-            description: placeholderDescription 
-          - name: Fare_amount 
-            description: placeholderDescription 
-          - name: Improvement_surcharge 
-            description: placeholderDescription 
-          - name: Tip_amount 
-            description: placeholderDescription 
-          - name: Tolls_amount 
-            description: placeholderDescription 
-          - name: Total_amount 
-            description: 
+            description: Length of the sleep in milliseconds. 
+          - name: efficiency 
+            description: Calculated sleep efficiency score. This is not the sleep score available in the mobile application. 
+          - name: endTime 
+            description: Time the sleep log ended. 
+          - name: infoCode 
+            description: >
+            An integer value representing the quality of data collected within the sleep log.0 = Sufficient data to generate a sleep log.
+            1 = Insufficient heart rate data.
+            2 = Sleep period was too short (less than 3 hours).
+            3 = Server-side issue.
+          - name: isMainSleep 
+            description: "Boolean value: true or false" 
+          # example: cross table index matching and tests
+          # - name: Pickup_locationid
+          #   description: placeholderDescription 
+          #   tests:
+          #     - relationships:
+          #         to: ref('taxi_zone_lookup')
+          #         field: locationid
+          #         severity: warn
+          # - name: Payment_type 
+          #   description: placeholderDescription 
+          #   tests: 
+          #     - accepted_values:
+          #         values: "{{ var('payment_type_values') }}"
+          #         severity: warn
+          #         quote: false
+          # - name: dropoff_locationid 
+          #   description: placeholderDescription 
+          #   tests:
+          #     - relationships:
+          #         to: ref('taxi_zone_lookup')
+          #         field: locationid
+          #         severity: warn
+          - name: logId 
+            description: Sleep log ID. 
+          - name: logType 
+            description: >
+            "The type of sleep in terms of how it was logged. See ""logType"" for more detail.
+            Supported: auto_detected | manual" 
+          - name: minutesAfterWakeup 
+            description: The total number of minutes after the user woke up. 
+          - name: minutesAsleep 
+            description: The total number of minutes the user was asleep. 
+          - name: minutesAwake 
+            description:  
+          - name: minutesToFallAsleep 
+            description: The total number of minutes before the user falls asleep. This value is generally 0 for autosleep created sleep logs. 
+          - name: startTime 
+            description: Time the sleep log begins. 
+          - name: timeInBed 
+            description: Total number of minutes the user was in bed. 
+          - name: deep_count 
+            description: Total number of times the user entered the sleep level. 
+          - name: deep_minutes 
+            description: Total number of minutes the user appeared in the sleep level. 
+          - name: deep_thirtyDayAvgMinutes 
+            description: The average sleep stage time over the past 30 days. A sleep stage log is required to generate this value. When a classic sleep log is recorded, this value will be missing. 
+          - name: light_count 
+            description: Total number of times the user entered the sleep level. 
+          - name: light_minutes 
+            description: Total number of minutes the user appeared in the sleep level. 
+          - name: light_thirtyDayAvgMinutes
+            description: The average sleep stage time over the past 30 days. A sleep stage log is required to generate this value. When a classic sleep log is recorded, this value will be missing. 
+          - name: rem_count 
+            description: Total number of times the user entered the sleep level. 
+          - name: rem_minutes 
+            description: Total number of minutes the user appeared in the sleep level. 
+          - name: rem_thirtyDayAvgMinutes 
+            description: The average sleep stage time over the past 30 days. A sleep stage log is required to generate this value. When a classic sleep log is recorded, this value will be missing. 
+          - name: wake_count 
+            description: Total number of times the user entered the sleep level. 
+          - name: wake_minutes 
+            description: Total number of minutes the user appeared in the sleep level. 
+          - name: wake_thirtyDayAvgMinutes 
+            description: The average sleep stage time over the past 30 days. A sleep stage log is required to generate this value. When a classic sleep log is recorded, this value will be missing. 
