@@ -50,12 +50,12 @@ models:
             description: Calculated sleep efficiency score. This is not the sleep score available in the mobile application. 
           - name: endTime 
             description: Time the sleep log ended. 
-          - name: infoCode 
-            description: >
-            An integer value representing the quality of data collected within the sleep log.0 = Sufficient data to generate a sleep log.
-            1 = Insufficient heart rate data.
-            2 = Sleep period was too short (less than 3 hours).
-            3 = Server-side issue.
+          - name: infoCode
+            description: > 
+                An integer value representing the quality of data collected within the sleep log.0 = Sufficient data to generate a sleep log.
+                1 = Insufficient heart rate data.
+                2 = Sleep period was too short (less than 3 hours).
+                3 = Server-side issue.
           - name: isMainSleep 
             description: "Boolean value: true or false" 
           # example: cross table index matching and tests
