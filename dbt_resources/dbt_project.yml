@@ -3,7 +3,11 @@
 # and underscores. A good package name should reflect your organization's
 # name or the intended use of these models
 # github project name
+<<<<<<< HEAD
 name: 'compare_my_biometrics'
+=======
+name: 'fitbit-dbt-transforms'
+>>>>>>> 04a2433aca0a104d4f12d5b2ca6eaff1be6978da
 version: '1.0.0'
 config-version: 2
 

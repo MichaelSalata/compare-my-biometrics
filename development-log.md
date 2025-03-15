@@ -286,3 +286,9 @@ uris = ['gs://dtc-de-446723-fitbit-bucket/sleep*.parquet']
 
 );
 ```
+
+- create a new DBT Cloud project
+	- Project subdirectory: dbt_resources
+	- Repository
+	- git://github.com/MichaelSalata/compare-my-biometrics.git
+	- Development connection - BigQuery
