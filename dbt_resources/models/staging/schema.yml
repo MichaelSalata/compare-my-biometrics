@@ -84,8 +84,8 @@ models:
             description: Sleep log ID. 
           - name: logType 
             description: >
-            "The type of sleep in terms of how it was logged. See ""logType"" for more detail.
-            Supported: auto_detected | manual" 
+                The type of sleep in terms of how it was logged. See logType for more detail.
+                Supported: auto_detected | manual
           - name: minutesAfterWakeup 
             description: The total number of minutes after the user woke up. 
           - name: minutesAsleep 
