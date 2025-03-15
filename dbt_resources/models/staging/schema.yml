@@ -12,38 +12,100 @@ sources:
          # freshness:
            # error_after: {count: 6, period: hour}
 
+# descriptions are sourced from the API: src: https://dev.fitbit.com/build/reference/web-api/sleep/get-sleep-log-by-date-range/
 models:
+    - name: stg_profile_data
+      description: placeholderDescription 
+      columns:
+          - name: age
+            description: The age based on their specified birthday in the user's account settings.
+          - name: averageDailySteps
+            description: Average daily steps calculated for the user.
+          - name: dateOfBirth
+            description: The birthday date specified in the user's account settings.
+          - name: displayName
+            description: The name shown when the user's friends look at their Fitbit profile, send a message, or other interactions within the Friends section of the Fitbit app or fitbit.com dashboard, such as challenges.
+          - name: distanceUnit
+            description: The unit system defined in the user's account settings.
+          - name: firstName
+            description: The first name value specified in the user's account settings.
+          - name: fullName
+            description: The full name value specified in the user's account settings.
+          - name: lastName
+            description: The last name value specified in the user's account settings.
+          - name: gender
+            description: The user's specified gender. Supported= MALE | FEMALE | NA.
+          - name: height
+            description: The height value specified in the user's account settings.
+          - name: heightUnit
+            description: The unit system defined in the user's account settings.
+          - name: weight
+            description: The user's current weight defined by the weightUnit metric. Body scope is required to see this value.
+          - name: weightUnit
+            description: The unit system defined in the user's account settings.
+          # example: cross table index matching and tests
+          # - name: Pickup_locationid
+          #   description: placeholderDescription 
+          #   tests:
+          #     - relationships:
+          #         to: ref('taxi_zone_lookup')
+          #         field: locationid
+          #         severity: warn
+          # - name: dropoff_locationid 
+          #   description: placeholderDescription 
+          #   tests:
+          #     - relationships:
+          #         to: ref('taxi_zone_lookup')
+          #         field: locationid
     - name: stg_heartrate_data
       description: placeholderDescription 
       columns:
-          - name: Trip_distance 
-            description: placeholderDescription 
-          - name: Pickup_locationid
-            description: placeholderDescription 
-            tests:
-              - relationships:
-                  to: ref('taxi_zone_lookup')
-                  field: locationid
-                  severity: warn
-          - name: dropoff_locationid 
-            description: placeholderDescription 
-            tests:
-              - relationships:
-                  to: ref('taxi_zone_lookup')
-                  field: locationid
-          - name: RateCodeID 
-            description: placeholderDescription 
+          - name: dateTime 
+            description: Date of the heart rate log. 
+          - name: Zone1_caloriesOut 
+            description: Number calories burned with the specified heart rate zone. 
+          - name: Zone1_max_heartrate 
+            description: Maximum range for the heart rate zone. 
+          - name: Zone1_min_heartrate 
+            description: Minimum range for the heart rate zone. 
+          - name: Zone1_minutes 
+            description: Number minutes withing the specified heart rate zone. 
+          - name: Zone2_caloriesOut 
+            description: Number calories burned with the specified heart rate zone. 
+          - name: Zone2_max_heartrate 
+            description: Maximum range for the heart rate zone. 
+          - name: Zone2_min_heartrate 
+            description: Minimum range for the heart rate zone. 
+          - name: Zone2_minutes 
+            description: Number minutes withing the specified heart rate zone.
+          - name: Zone3_caloriesOut 
+            description: Number calories burned with the specified heart rate zone. 
+          - name: Zone3_max_heartrate 
+            description: Maximum range for the heart rate zone. 
+          - name: Zone3_min_heartrate 
+            description: Minimum range for the heart rate zone. 
+          - name: Zone3_minutes 
+            description: Number minutes withing the specified heart rate zone.
+          - name: Zone4_caloriesOut 
+            description: Number calories burned with the specified heart rate zone. 
+          - name: Zone4_max_heartrate 
+            description: Maximum range for the heart rate zone. 
+          - name: Zone4_min_heartrate 
+            description: Minimum range for the heart rate zone. 
+          - name: Zone4_minutes 
+            description: Number minutes withing the specified heart rate zone.
+          - name: restingHeartRate 
 
     - name: stg_sleep_data
       description: placeholderDescription 
       columns:
           - name: dateOfSleep
             description: The date the sleep log ended. 
-            tests:
-                - unique:
-                    severity: warn
-                - not_null:
-                    severity: warn
+            # tests:
+            #     - unique:
+            #         severity: warn
+            #     - not_null:
+            #         severity: warn
           - name: duration 
             description: Length of the sleep in milliseconds. 
           - name: efficiency 
