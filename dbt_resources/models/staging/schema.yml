@@ -112,7 +112,7 @@ models:
           - name: minutesAsleep 
             description: The total number of minutes the user was asleep. 
           - name: minutesAwake 
-            description:  
+            description: placeholderDescription
           - name: minutesToFallAsleep 
             description: The total number of minutes before the user falls asleep. This value is generally 0 for autosleep created sleep logs. 
           - name: startTime 
