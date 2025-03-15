@@ -43,20 +43,6 @@ models:
             description: The user's current weight defined by the weightUnit metric. Body scope is required to see this value.
           - name: weightUnit
             description: The unit system defined in the user's account settings.
-          # example: cross table index matching and tests
-          # - name: Pickup_locationid
-          #   description: placeholderDescription 
-          #   tests:
-          #     - relationships:
-          #         to: ref('taxi_zone_lookup')
-          #         field: locationid
-          #         severity: warn
-          # - name: dropoff_locationid 
-          #   description: placeholderDescription 
-          #   tests:
-          #     - relationships:
-          #         to: ref('taxi_zone_lookup')
-          #         field: locationid
     - name: stg_heartrate_data
       description: placeholderDescription 
       columns:
@@ -101,11 +87,6 @@ models:
       columns:
           - name: dateOfSleep
             description: The date the sleep log ended. 
-            # tests:
-            #     - unique:
-            #         severity: warn
-            #     - not_null:
-            #         severity: warn
           - name: duration 
             description: Length of the sleep in milliseconds. 
           - name: efficiency 
@@ -119,33 +100,11 @@ models:
                 2 = Sleep period was too short (less than 3 hours).
                 3 = Server-side issue.
           - name: isMainSleep 
-            description: "Boolean value: true or false" 
-          # example: cross table index matching and tests
-          # - name: Pickup_locationid
-          #   description: placeholderDescription 
-          #   tests:
-          #     - relationships:
-          #         to: ref('taxi_zone_lookup')
-          #         field: locationid
-          #         severity: warn
-          # - name: Payment_type 
-          #   description: placeholderDescription 
-          #   tests: 
-          #     - accepted_values:
-          #         values: "{{ var('payment_type_values') }}"
-          #         severity: warn
-          #         quote: false
-          # - name: dropoff_locationid 
-          #   description: placeholderDescription 
-          #   tests:
-          #     - relationships:
-          #         to: ref('taxi_zone_lookup')
-          #         field: locationid
-          #         severity: warn
+            description: Boolean value= true or false 
           - name: logId 
             description: Sleep log ID. 
           - name: logType 
-            description: >
+            description: > 
                 The type of sleep in terms of how it was logged. See logType for more detail.
                 Supported: auto_detected | manual
           - name: minutesAfterWakeup 
