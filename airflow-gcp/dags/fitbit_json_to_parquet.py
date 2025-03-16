@@ -16,17 +16,18 @@ filename = f"{dimension}.json"
 def profile_json_to_parquet(filename):
     try:
         with open(filename, 'r') as file:
-            profile_data = json.load(file)["user"]
+            profile_data = json.load(file)
+            profile = profile_data["user"]
     except (FileNotFoundError, json.JSONDecodeError) as e:
         print(f"Error loading {filename} file: {e}")
         exit(1)
     
-    del profile_data["features"]
-    del profile_data["topBadges"]
-    # print(profile_data)
-    profile_df = pd.DataFrame([profile_data])
-
+    del profile["features"]
+    del profile["topBadges"]
+    profile_df = pd.DataFrame([profile])
+    
     try:
+        profile_df["user_id"] = profile_data["user_id"]
         profile_df["age"] = profile_df["age"].astype(int)
         profile_df["dateOfBirth"] = pd.to_datetime(profile_df["dateOfBirth"]) # example_input: "1989-08-30"
         profile_df["memberSince"] = pd.to_datetime(profile_df["memberSince"]) # example_input: "2024-11-21"
@@ -68,7 +69,7 @@ def sleep_json_to_parquet(filename):
         # TODO: Modularize the appending of row data
         try:
             row = {
-                "user_id": sleep["user_id"],
+                "user_id": sleep_data["user_id"],
                 "dateOfSleep": pd.to_datetime(sleep["dateOfSleep"]),  # example_input: "2025-01-30"
                 "startTime": pd.to_datetime(sleep["startTime"]),  # example_input: "2025-01-30T01:05:00.000"
                 "endTime": pd.to_datetime(sleep["endTime"]),  # example_input: "2025-01-30T07:33:00.000"
@@ -138,7 +139,7 @@ def heartrate_json_to_parquet(filename):
         # zname = zone_map[heartrate["value"]["heartRateZones"][0]["name"]]
         try:
             row = {
-                "user_id": heartrate["user_id"],
+                "user_id": heartrate_data["user_id"],
                 "dateTime": pd.to_datetime(heartrate["dateTime"]),  # example_input: "2025-02-01"
 
                 "Zone1_caloriesOut": float(heartrate["value"]["heartRateZones"][0].get("caloriesOut")),
