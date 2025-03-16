@@ -68,6 +68,7 @@ def sleep_json_to_parquet(filename):
         # TODO: Modularize the appending of row data
         try:
             row = {
+                "user_id": sleep["user_id"],
                 "dateOfSleep": pd.to_datetime(sleep["dateOfSleep"]),  # example_input: "2025-01-30"
                 "startTime": pd.to_datetime(sleep["startTime"]),  # example_input: "2025-01-30T01:05:00.000"
                 "endTime": pd.to_datetime(sleep["endTime"]),  # example_input: "2025-01-30T07:33:00.000"
@@ -137,6 +138,7 @@ def heartrate_json_to_parquet(filename):
         # zname = zone_map[heartrate["value"]["heartRateZones"][0]["name"]]
         try:
             row = {
+                "user_id": heartrate["user_id"],
                 "dateTime": pd.to_datetime(heartrate["dateTime"]),  # example_input: "2025-02-01"
 
                 "Zone1_caloriesOut": float(heartrate["value"]["heartRateZones"][0].get("caloriesOut")),
