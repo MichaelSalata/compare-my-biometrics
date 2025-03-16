@@ -3,7 +3,7 @@
 with sleep_data as 
 (
   select *,
-    row_number() over(partition by dateOfSleep, tpep_pickup_datetime) as rn
+    row_number() over(partition by dateOfSleep, logId) as rn
   from {{ source('staging','external_sleep') }}
   where dateOfSleep is not null 
 )
