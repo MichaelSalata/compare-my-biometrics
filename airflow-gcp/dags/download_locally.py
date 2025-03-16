@@ -144,7 +144,7 @@ if __name__ == '__main__':
     end_date = datetime.now()
     start_date = end_date.replace(day=1)
 
-    past_month_count = 3
+    past_month_count = 6
     while past_month_count >= 1:
         download_date_range(start_date=start_date, end_date=end_date)
         end_date = start_date - timedelta(days=1)
