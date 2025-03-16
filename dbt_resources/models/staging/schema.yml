@@ -15,8 +15,10 @@ sources:
 # descriptions are sourced from the API: src: https://dev.fitbit.com/build/reference/web-api/
 models:
     - name: stg_profile_data
-      description: placeholderDescription 
+      description: placeHolderDescription 
       columns:
+          - name: user_id
+            description: placeHolderDescription
           - name: age
             description: The age based on their specified birthday in the user's account settings.
           - name: averageDailySteps
@@ -44,8 +46,14 @@ models:
           - name: weightUnit
             description: The unit system defined in the user's account settings.
     - name: stg_heartrate_data
-      description: placeholderDescription 
+      description: placeHolderDescription 
       columns:
+          - name: user_id 
+            description: placeHolderDescription
+            tests:
+              - relationships:
+                  to: ref('external_profile')
+                  field: user_id
           - name: dateTime 
             description: Date of the heart rate log. 
           - name: Zone1_caloriesOut 
@@ -83,8 +91,14 @@ models:
           - name: restingHeartRate 
 
     - name: stg_sleep_data
-      description: placeholderDescription 
+      description: placeHolderDescription 
       columns:
+          - name: user_id 
+            description: placeHolderDescription
+            tests:
+              - relationships:
+                  to: ref('external_profile')
+                  field: user_id
           - name: dateOfSleep
             description: The date the sleep log ended. 
           - name: duration 
@@ -112,7 +126,7 @@ models:
           - name: minutesAsleep 
             description: The total number of minutes the user was asleep. 
           - name: minutesAwake 
-            description: placeholderDescription
+            description: placeHolderDescription
           - name: minutesToFallAsleep 
             description: The total number of minutes before the user falls asleep. This value is generally 0 for autosleep created sleep logs. 
           - name: startTime 
