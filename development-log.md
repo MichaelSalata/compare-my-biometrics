@@ -83,6 +83,12 @@ ManuelGuerra - [data-engineering-zoomcamp-notes](https://github.com/ManuelGuerra
 	- what kinda charts do I want?
 	- what kinda charts were showcased?
 
+- migrate to dbt-core
+	- [ ] install - [website instructions](https://docs.getdbt.com/docs/core/installation-overview)
+	- [ ] install BigQuery Adapter
+		- [website instructions](https://docs.getdbt.com/docs/core/connect-data-platform/bigquery-setup)
+- [ ] STRETCH: encapsulate dbt core inside a Docker container
+
 - [ ] update dbt_resources to incorporate sleep & heartrate tables
 	- [ ] packages.yml
 	- [ ] dbt_project.yml
@@ -292,3 +298,9 @@ uris = ['gs://dtc-de-446723-fitbit-bucket/sleep*.parquet']
 	- Repository
 	- git://github.com/MichaelSalata/compare-my-biometrics.git
 	- Development connection - BigQuery
+
+- removed a bunch of example files
+- added columns and descriptions to schema
+
+- installing dbt-core per [their website instructions](https://docs.getdbt.com/docs/core/installation-overview)
+
