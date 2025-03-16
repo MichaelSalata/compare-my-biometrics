@@ -10,7 +10,7 @@ with sleep_data as
 
 select
     -- identifiers
-    {{ dbt_utils.generate_surrogate_key(['user_id', 'dateOfSleep']) }} as sleep_id,
+    {{ dbt_utils.generate_surrogate_key(['user_id', 'logId']) }} as sleep_id,
     {{ dbt.safe_cast("user_id", api.Column.translate_type("string")) }} as user_id,
 
     -- timestamps
@@ -33,53 +33,29 @@ select
     {{ dbt.safe_cast("type", api.Column.translate_type("string")) }} as type,
 
     -- sleep stages
+    -- deep
     {{ dbt.safe_cast("deep_count", api.Column.translate_type("integer")) }} as deep_count,
     {{ dbt.safe_cast("deep_minutes", api.Column.translate_type("integer")) }} as deep_minutes,
     {{ dbt.safe_cast("deep_thirtyDayAvgMinutes", api.Column.translate_type("integer")) }} as deep_thirty_day_avg_minutes,
+
+    -- light
     {{ dbt.safe_cast("light_count", api.Column.translate_type("integer")) }} as light_count,
     {{ dbt.safe_cast("light_minutes", api.Column.translate_type("integer")) }} as light_minutes,
     {{ dbt.safe_cast("light_thirtyDayAvgMinutes", api.Column.translate_type("integer")) }} as light_thirty_day_avg_minutes,
+
+    -- rem
     {{ dbt.safe_cast("rem_count", api.Column.translate_type("integer")) }} as rem_count,
     {{ dbt.safe_cast("rem_minutes", api.Column.translate_type("integer")) }} as rem_minutes,
     {{ dbt.safe_cast("rem_thirtyDayAvgMinutes", api.Column.translate_type("integer")) }} as rem_thirty_day_avg_minutes,
+
+    -- wake
     {{ dbt.safe_cast("wake_count", api.Column.translate_type("integer")) }} as wake_count,
     {{ dbt.safe_cast("wake_minutes", api.Column.translate_type("integer")) }} as wake_minutes,
     {{ dbt.safe_cast("wake_thirtyDayAvgMinutes", api.Column.translate_type("integer")) }} as wake_thirty_day_avg_minutes
-
+    
 from sleep_data
+where rn = 1
 
-
--- select
---    -- identifiers
---     {{ dbt_utils.generate_surrogate_key(['vendorid', 'tpep_pickup_datetime']) }} as tripid,    
---     {{ dbt.safe_cast("vendorid", api.Column.translate_type("integer")) }} as vendorid,
---     {{ dbt.safe_cast("ratecodeid", api.Column.translate_type("integer")) }} as ratecodeid,
---     {{ dbt.safe_cast("pulocationid", api.Column.translate_type("integer")) }} as pickup_locationid,
---     {{ dbt.safe_cast("dolocationid", api.Column.translate_type("integer")) }} as dropoff_locationid,
-
---     -- timestamps
---     cast(tpep_pickup_datetime as timestamp) as pickup_datetime,
---     cast(tpep_dropoff_datetime as timestamp) as dropoff_datetime,
-    
---     -- trip info
---     store_and_fwd_flag,
---     {{ dbt.safe_cast("passenger_count", api.Column.translate_type("integer")) }} as passenger_count,
---     cast(trip_distance as numeric) as trip_distance,
---     -- yellow cabs are always street-hail
---     1 as trip_type,
-    
---     -- payment info
---     cast(fare_amount as numeric) as fare_amount,
---     cast(extra as numeric) as extra,
---     cast(mta_tax as numeric) as mta_tax,
---     cast(tip_amount as numeric) as tip_amount,
---     cast(tolls_amount as numeric) as tolls_amount,
---     cast(improvement_surcharge as numeric) as improvement_surcharge,
---     cast(total_amount as numeric) as total_amount,
---     coalesce({{ dbt.safe_cast("payment_type", api.Column.translate_type("integer")) }},0) as payment_type,
---     {{ get_payment_type_description('payment_type') }} as payment_type_description
--- from tripdata
--- where rn = 1
 
 -- dbt build --select <model.sql> --vars '{'is_test_run: false}'
 {% if var('is_test_run', default=true) %}
