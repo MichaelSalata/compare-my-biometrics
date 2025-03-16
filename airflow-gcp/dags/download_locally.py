@@ -79,13 +79,14 @@ def download_the_past_month():
     download_date_range(start_date, end_date)
     
 
-def save_data(data, endpoint_name, start_date=None, end_date=None, filename=None):
+def save_data(data, endpoint_name, user_id, start_date=None, end_date=None, filename=None):
     if not filename:
         if (not start_date) and (not end_date):
             filename = f'{endpoint_name}.json'
         else:
             filename = f'{endpoint_name}_{start_date.strftime("%Y-%m-%d")}_{end_date.strftime("%Y-%m-%d")}.json'
     
+    data["user_id"] = user_id
     with open(filename, 'w') as data_file:
         json.dump(data, data_file, indent=4)
         print(f'Data for {endpoint_name} has been saved to {filename}')
@@ -99,7 +100,7 @@ def download_static_data(endpoint_name):
         if endpoint_name in static_endpoints.keys():
             data = fetch_static(static_endpoints[endpoint_name])
             if data:
-                save_data(data, endpoint_name)
+                save_data(data, endpoint_name, user_id=tokens["user_id"])
         else:
             print("don't know a url for that endpoint")
             
@@ -110,7 +111,7 @@ def download_static_data(endpoint_name):
     for endpoint_name in (tokens["scope"] & static_endpoints.keys()):
         data = fetch_static(static_endpoints[endpoint_name])
         if data:
-            save_data(data, endpoint_name)
+            save_data(data, endpoint_name, user_id=tokens["user_id"])
     
 
 def download_date_range(start_date, end_date, filename=None, endpoint_name=None):
@@ -122,7 +123,7 @@ def download_date_range(start_date, end_date, filename=None, endpoint_name=None)
         if endpoint_name in daterange_endpoints.keys():
             data = fetch_date_range(daterange_endpoints[endpoint_name], start=start_date, end=end_date)
             if data:
-                save_data(data, endpoint_name, start_date, end_date, filename)
+                save_data(data, endpoint_name, user_id=tokens["user_id"], start_date=start_date, end_date=end_date, filename=filename)
         else:
             print("don't know a url for that endpoint")
         
@@ -133,7 +134,7 @@ def download_date_range(start_date, end_date, filename=None, endpoint_name=None)
     for endpoint_name in tokens["scope"] & daterange_endpoints.keys():
         data = fetch_date_range(daterange_endpoints[endpoint_name], start=start_date, end=end_date)
         if data:
-            save_data(data, endpoint_name, start_date, end_date, filename)
+            save_data(data, endpoint_name, user_id=tokens["user_id"], start_date=start_date, end_date=end_date, filename=filename)
 
 
 
