@@ -101,6 +101,8 @@ ManuelGuerra - [data-engineering-zoomcamp-notes](https://github.com/ManuelGuerra
 
 - [ ] create datamart for visualization
 
+- [ ] integrate dbt into airflow
+	- [ ] resource - [Airflow with DBT tutorial]](https://www.youtube.com/watch?v=MhCuxTDlVkE)
 ## PHASE 5 - Looker Studio Visualizations
 
 ->  [data-engineering-zoomcamp-notes](https://github.com/ManuelGuerra1987/data-engineering-zoomcamp-notes) / [4_Analytics-Engineering](https://github.com/ManuelGuerra1987/data-engineering-zoomcamp-notes/tree/main/4_Analytics-Engineering#visualising-the-transformed-data)
