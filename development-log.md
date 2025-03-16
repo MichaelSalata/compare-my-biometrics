@@ -83,10 +83,11 @@ ManuelGuerra - [data-engineering-zoomcamp-notes](https://github.com/ManuelGuerra
 	- what kinda charts do I want?
 	- what kinda charts were showcased?
 
-- migrate to dbt-core
+- STRETCH: migrate to dbt-core
 	- [ ] install - [website instructions](https://docs.getdbt.com/docs/core/installation-overview)
 	- [ ] install BigQuery Adapter
 		- [website instructions](https://docs.getdbt.com/docs/core/connect-data-platform/bigquery-setup)
+
 - [ ] STRETCH: encapsulate dbt core inside a Docker container
 
 - [ ] update dbt_resources to incorporate sleep & heartrate tables
