@@ -12,7 +12,7 @@ sources:
          # freshness:
            # error_after: {count: 6, period: hour}
 
-# descriptions are sourced from the API: src: https://dev.fitbit.com/build/reference/web-api/sleep/get-sleep-log-by-date-range/
+# descriptions are sourced from the API: src: https://dev.fitbit.com/build/reference/web-api/
 models:
     - name: stg_profile_data
       description: placeholderDescription 
