@@ -6,12 +6,15 @@
 
 WITH sleep AS (
     SELECT * FROM {{ ref('stg_sleep_data') }}
+    where user_id is not null
 ),
 heartrate AS (
     SELECT * FROM {{ ref('stg_heartrate_data') }}
+    where user_id is not null
 ),
 profile AS (
     SELECT * FROM {{ ref('stg_profile_data') }}
+    where user_id is not null
 )
 
 
@@ -58,6 +61,11 @@ FROM profile p
 LEFT JOIN sleep s ON p.user_id = s.user_id
 FULL OUTER JOIN heartrate h ON p.user_id = h.user_id AND s.date_of_sleep = h.date_time
 
+-- LEFT JOIN sleep s 
+--     ON h.user_id = s.user_id 
+--     AND h.date = s.date
+-- LEFT JOIN profile p 
+--     ON h.user_id = p.user_id
 
 {% if var('is_test_run', default=true) %}
 

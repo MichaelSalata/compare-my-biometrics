@@ -9,6 +9,7 @@ with heartrate_data as
   select *,
     row_number() over(partition by dateTime) as rn
   from {{ source('staging','external_heartrate') }}
+  where user_id is not null
 )
 
 select

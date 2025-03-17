@@ -5,7 +5,7 @@ with sleep_data as
   select *,
     row_number() over(partition by dateOfSleep, user_id) as rn
   from {{ source('staging','external_sleep') }}
-  where dateOfSleep is not null 
+  where dateOfSleep is not null
 )
 
 select
