@@ -239,7 +239,20 @@ FITBIT_OAUTH_CLIENT_ID = ''                          # fitbit client id (from de
 FITBIT_OAUTH_CLIENT_SECRET = ''                  # fitbit secret (from dev.fitbit.com)
 ```
 
-
+# Project Challenges
+- getting airflow to work??????
+- API
+	- learning about api's
+	- coding the request myself
+	- refactoring it
+- flattening JSON
+- NO INTERNET
+- datetime formatting
+- maintaining passion through harsh life events
+- maintaining data quality with fluctuating project requirements
+	- adding in user_id
+	- user_id going null
+	- datetime format changing
 # Project Step Log
 - Clone [ny-taxi-pipeline](https://github.com/MichaelSalata/ny-taxi-pipeline)
 - `gh auth login`
