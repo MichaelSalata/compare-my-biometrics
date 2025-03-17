@@ -10,16 +10,14 @@ WITH p AS (
 s AS (
     SELECT *
     FROM {{ ref('stg_sleep_data') }} as slp
-    left join p ON p.user_id = slp.user_id
 ),
 h AS (
     SELECT *
     FROM {{ ref('stg_heartrate_data') }} as hr
-    left join p ON p.user_id = hr.user_id
-),
+)
 
 SELECT 
-    p.user_id,
+    s.user_id,
     p.date_of_birth,
     p.age,
     p.gender,
@@ -58,9 +56,12 @@ SELECT
     h.zone4_min_heartrate,
     h.zone4_minutes,
     h.resting_heart_rate
-FROM sleep s
-OUTER JOIN heartrate h
+FROM s
+INNER JOIN h
     ON s.date_of_sleep = h.date_time
+    AND s.user_id = h.user_id
+LEFT JOIN p
+    ON s.user_id = p.user_id
 
 {% if var('is_test_run', default=true) %}
 
