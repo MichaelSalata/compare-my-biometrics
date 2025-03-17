@@ -17,7 +17,7 @@ profile AS (
 
 SELECT 
     p.user_id,
-    h.date,
+    h.date_time,
     p.age,
     p.gender,
     p.height,

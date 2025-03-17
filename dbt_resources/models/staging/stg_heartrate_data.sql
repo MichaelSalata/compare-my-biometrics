@@ -7,16 +7,18 @@
 with heartrate_data as 
 (
   select *,
-    row_number() over(partition by hrt_src.dateTime) as rn
-  from {{ source('staging','external_heartrate') }} as hrt_src
+    row_number() over(partition by dateTime) as rn
+  from {{ source('staging','external_heartrate') }}
 )
+
 select
     -- identifiers
     {{ dbt_utils.generate_surrogate_key(['user_id', 'dateTime']) }} as heartrate_id,
     {{ dbt.safe_cast("user_id", api.Column.translate_type("string")) }} as user_id,
 
     -- timestamps
-    TIMESTAMP_MILLIS(dateTime) as date_time,
+    TIMESTAMP_MILLIS(CAST(dateTime / 1000000 AS INT64)) as date_time,
+
 
     -- Zone 1
     {{ dbt.safe_cast("Zone1_caloriesOut", api.Column.translate_type("float")) }} as zone1_calories_out,
@@ -45,9 +47,8 @@ select
     -- Resting Heart Rate
     {{ dbt.safe_cast("restingHeartRate", api.Column.translate_type("integer")) }} as resting_heart_rate
 
-from {{ source('staging', 'external_heartrate') }} as src
-where (user_id is not null) and (rn = 1)
-
+from heartrate_data
+where rn = 1
 
 -- dbt build --select <model_name> --vars '{'is_test_run': 'false'}'
 {% if var('is_test_run', default=true) %}

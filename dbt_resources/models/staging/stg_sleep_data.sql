@@ -14,9 +14,9 @@ select
     {{ dbt.safe_cast("user_id", api.Column.translate_type("string")) }} as user_id,
 
     -- timestamps
-    TIMESTAMP_MILLIS(dateOfSleep) as date_of_sleep,
-    TIMESTAMP_MILLIS(startTime) as start_time,
-    TIMESTAMP_MILLIS(endTime) as end_time,
+    TIMESTAMP_MILLIS(CAST(dateOfSleep / 1000000 AS INT64)) as date_of_sleep,
+    TIMESTAMP_MILLIS(CAST(startTime / 1000000 AS INT64)) as start_time,
+    TIMESTAMP_MILLIS(CAST(endTime / 1000000 AS INT64)) as end_time,
 
     -- sleep info
     {{ dbt.safe_cast("duration", api.Column.translate_type("integer")) }} as duration,
