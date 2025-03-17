@@ -7,7 +7,7 @@ select
     -- profile info
     {{ dbt.safe_cast("age", api.Column.translate_type("integer")) }} as age,
     {{ dbt.safe_cast("averageDailySteps", api.Column.translate_type("integer")) }} as average_daily_steps,
-    TIMESTAMP_MILLIS(dateOfBirth as timestamp) as date_of_birth,
+    TIMESTAMP_MILLIS(dateOfBirth) as date_of_birth,
     {{ dbt.safe_cast("displayName", api.Column.translate_type("string")) }} as display_name,
     {{ dbt.safe_cast("distanceUnit", api.Column.translate_type("string")) }} as distance_unit,
     {{ dbt.safe_cast("firstName", api.Column.translate_type("string")) }} as first_name,
