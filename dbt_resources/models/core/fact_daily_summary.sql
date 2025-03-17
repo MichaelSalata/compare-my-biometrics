@@ -4,19 +4,22 @@
     )
 }}
 
-WITH sleep AS (
-    SELECT * FROM {{ ref('stg_sleep_data') }}
-    where user_id is not null
-),
-heartrate AS (
-    SELECT * FROM {{ ref('stg_heartrate_data') }}
-    where user_id is not null
-),
-profile AS (
+WITH p AS (
     SELECT * FROM {{ ref('stg_profile_data') }}
     where user_id is not null
-)
-
+),
+s AS (
+    SELECT *
+    FROM {{ ref('stg_sleep_data') }} as slp
+    where slp.user_id is not null
+    left join p ON p.user_id = slp.user_id
+),
+h AS (
+    SELECT *
+    FROM {{ ref('stg_heartrate_data') }} as hr
+    where hr.user_id is not null
+    left join profile p ON p.user_id = hr.user_id
+),
 
 SELECT 
     p.user_id,
@@ -56,16 +59,9 @@ SELECT
     h.zone4_min_heartrate,
     h.zone4_minutes,
     h.resting_heart_rate
-
-FROM profile p
-LEFT JOIN sleep s ON p.user_id = s.user_id
-FULL OUTER JOIN heartrate h ON p.user_id = h.user_id AND s.date_of_sleep = h.date_time
-
--- LEFT JOIN sleep s 
---     ON h.user_id = s.user_id 
---     AND h.date = s.date
--- LEFT JOIN profile p 
---     ON h.user_id = p.user_id
+FROM sleep s
+OUTER JOIN heartrate h
+    ON s.date_of_sleep = h.date_time
 
 {% if var('is_test_run', default=true) %}
 
