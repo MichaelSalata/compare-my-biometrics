@@ -22,12 +22,13 @@ SELECT
     p.gender,
     p.height,
     p.weight,
-    p.distanceUnit,
+    p.distance_unit,
     
     -- Sleep metrics
-    s.minutesAsleep,
-    s.minutesAwake,
-    s.minutesToFallAsleep,
+    s.duration,
+    s.efficiency,
+    s.minutes_awake,
+    s.minutes_to_fall_asleep,
     s.timeInBed,
     s.deep_minutes,
     s.light_minutes,
@@ -35,27 +36,31 @@ SELECT
     s.wake_minutes,
 
     -- Heartrate metrics
-    h.Zone1_caloriesOut,
-    h.Zone1_max_heartrate,
-    h.Zone1_min_heartrate,
-    h.Zone1_minutes,
-    h.Zone2_caloriesOut,
-    h.Zone2_max_heartrate,
-    h.Zone2_min_heartrate,
-    h.Zone2_minutes,
-    h.Zone3_caloriesOut,
-    h.Zone3_max_heartrate,
-    h.Zone3_min_heartrate,
-    h.Zone3_minutes,
-    h.Zone4_caloriesOut,
-    h.Zone4_max_heartrate,
-    h.Zone4_min_heartrate,
-    h.Zone4_minutes,
-    h.restingHeartRate
+    h.zone1_calories_out,
+    h.zone1_max_heartrate,
+    h.zone1_min_heartrate,
+    h.zone1_minutes,
+    h.zone2_calories_out,
+    h.zone2_max_heartrate,
+    h.zone2_min_heartrate,
+    h.zone2_minutes,
+    h.zone3_calories_out,
+    h.zone3_max_heartrate,
+    h.zone3_min_heartrate,
+    h.zone3_minutes,
+    h.zone4_calories_out,
+    h.zone4_max_heartrate,
+    h.zone4_min_heartrate,
+    h.zone4_minutes,
+    h.resting_heart_rate
 
-FROM heartrate h
-LEFT JOIN sleep s 
-    ON h.user_id = s.user_id 
-    AND h.date = s.date
-LEFT JOIN profile p 
-    ON h.user_id = p.user_id
+FROM profile p
+LEFT JOIN sleep s ON p.user_id = s.user_id
+FULL OUTER JOIN heartrate h ON p.user_id = h.user_id AND s.date_of_sleep = h.date_time
+
+
+{% if var('is_test_run', default=true) %}
+
+  limit 100
+
+{% endif %}
