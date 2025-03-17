@@ -6,24 +6,21 @@
 
 WITH p AS (
     SELECT * FROM {{ ref('stg_profile_data') }}
-    where user_id is not null
 ),
 s AS (
     SELECT *
     FROM {{ ref('stg_sleep_data') }} as slp
-    where slp.user_id is not null
     left join p ON p.user_id = slp.user_id
 ),
 h AS (
     SELECT *
     FROM {{ ref('stg_heartrate_data') }} as hr
-    where hr.user_id is not null
-    left join profile p ON p.user_id = hr.user_id
+    left join p ON p.user_id = hr.user_id
 ),
 
 SELECT 
     p.user_id,
-    h.date_time,
+    p.date_of_birth,
     p.age,
     p.gender,
     p.height,
@@ -31,6 +28,7 @@ SELECT
     p.distance_unit,
     
     -- Sleep metrics
+    s.date_of_sleep,
     s.duration,
     s.efficiency,
     s.minutes_awake,
@@ -42,6 +40,7 @@ SELECT
     s.wake_minutes,
 
     -- Heartrate metrics
+    h.date_time,
     h.zone1_calories_out,
     h.zone1_max_heartrate,
     h.zone1_min_heartrate,

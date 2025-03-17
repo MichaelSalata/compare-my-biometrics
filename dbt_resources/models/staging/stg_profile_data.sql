@@ -20,6 +20,7 @@ select
     {{ dbt.safe_cast("weightUnit", api.Column.translate_type("string")) }} as weight_unit
 
 from {{ source('staging', 'external_profile') }} as src
+where user_id is not null
 
 -- dbt build --select <model.sql> --vars '{'is_test_run: false}'
 {% if var('is_test_run', default=true) %}
