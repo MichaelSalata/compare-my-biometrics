@@ -7,9 +7,8 @@
 with heartrate_data as 
 (
   select *,
-    row_number() over(partition by src.dateTime) as rn
-  from {{ source('staging','external_heartrate') }} as src
-  where vendorid is not null 
+    row_number() over(partition by hrt_src.dateTime) as rn
+  from {{ source('staging','external_heartrate') }} as hrt_src
 )
 select
     -- identifiers
