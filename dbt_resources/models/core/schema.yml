@@ -1,113 +1,110 @@
 version: 2
 
 models:
-  - name: dm_monthly_zone_revenue
-    description: >
-      Aggregated table of all taxi trips corresponding to both service zones (Green and yellow) per pickup zone, month and service.
-      The table contains monthly sums of the fare elements used to calculate the monthly revenue. 
-      The table contains also monthly indicators like number of trips, and average trip distance. 
-    columns:
+  # - name: dm_daily_biometrics
+  #   description: 
+  #   columns:
     
   - name: fact_daily_summary
     description: >
         aggregate sleep, heartrate, and profile data into a single daily summary per user
     columns:
-      - name: tripid
+      - name: user_id
         data_type: string
-        description: "unique identifier conformed by the combination of vendorid and pickup time"
-
-      - name: vendorid
-        data_type: int64
-        description: ""
-
-      - name: service_type
-        data_type: string
-        description: ""
-
-      - name: ratecodeid
-        data_type: int64
-        description: ""
-
-      - name: pickup_locationid
-        data_type: int64
-        description: ""
-
-      - name: pickup_borough
-        data_type: string
-        description: ""
-
-      - name: pickup_zone
-        data_type: string
-        description: ""
-
-      - name: dropoff_locationid
-        data_type: int64
-        description: ""
-
-      - name: dropoff_borough
-        data_type: string
-        description: ""
-
-      - name: dropoff_zone
-        data_type: string
-        description: ""
-
-      - name: pickup_datetime
+        description: "The unique identifier for the user."
+      - name: date
         data_type: timestamp
-        description: ""
-
-      - name: dropoff_datetime
-        data_type: timestamp
-        description: ""
-
-      - name: store_and_fwd_flag
+        description: "The date of the recorded metrics."
+      - name: age
+        data_type: integer
+        description: "The age of the user based on their specified birthday."
+      - name: gender
         data_type: string
-        description: ""
-
-      - name: passenger_count
-        data_type: int64
-        description: ""
-
-      - name: trip_distance
-        data_type: numeric
-        description: ""
-
-      - name: trip_type
-        data_type: int64
-        description: ""
-
-      - name: fare_amount
-        data_type: numeric
-        description: ""
-
-      - name: extra
-        data_type: numeric
-        description: ""
-
-      - name: mta_tax
-        data_type: numeric
-        description: ""
-
-      - name: tip_amount
-        data_type: numeric
-        description: ""
-
-      - name: tolls_amount
-        data_type: numeric
-        description: ""
-
-      - name: improvement_surcharge
-        data_type: numeric
-        description: ""
-
-      - name: total_amount
-        data_type: numeric
-        description: ""
-
-      - name: payment_type
-        data_type: int64
-        description: ""
-
-      - name: payment_type_description
+        description: "The user's specified gender. Supported values: MALE, FEMALE, NA."
+      - name: height
+        data_type: float
+        description: "The height of the user as specified in their account settings."
+      - name: weight
+        data_type: float
+        description: "The current weight of the user as specified in their account settings."
+      - name: distance_unit
         data_type: string
-        description: ""
+        description: "The unit system defined in the user's account settings for distance."
+      - name: duration
+        data_type: integer
+        description: "The duration of the sleep in milliseconds."
+      - name: efficiency
+        data_type: float
+        description: "The calculated sleep efficiency score."
+      - name: minutes_awake
+        data_type: integer
+        description: "The total number of minutes the user was awake during the sleep period."
+      - name: minutes_to_fall_asleep
+        data_type: integer
+        description: "The total number of minutes it took for the user to fall asleep."
+      - name: time_in_bed
+        data_type: integer
+        description: "The total number of minutes the user was in bed."
+      - name: deep_minutes
+        data_type: integer
+        description: "The total number of minutes the user spent in deep sleep."
+      - name: light_minutes
+        data_type: integer
+        description: "The total number of minutes the user spent in light sleep."
+      - name: rem_minutes
+        data_type: integer
+        description: "The total number of minutes the user spent in REM sleep."
+      - name: wake_minutes
+        data_type: integer
+        description: "The total number of minutes the user was awake during the sleep period."
+      - name: zone1_calories_out
+        data_type: float
+        description: "The number of calories burned in heart rate zone 1."
+      - name: zone1_max_heartrate
+        data_type: integer
+        description: "The maximum heart rate in heart rate zone 1."
+      - name: zone1_min_heartrate
+        data_type: integer
+        description: "The minimum heart rate in heart rate zone 1."
+      - name: zone1_minutes
+        data_type: integer
+        description: "The number of minutes spent in heart rate zone 1."
+      - name: zone2_calories_out
+        data_type: float
+        description: "The number of calories burned in heart rate zone 2."
+      - name: zone2_max_heartrate
+        data_type: integer
+        description: "The maximum heart rate in heart rate zone 2."
+      - name: zone2_min_heartrate
+        data_type: integer
+        description: "The minimum heart rate in heart rate zone 2."
+      - name: zone2_minutes
+        data_type: integer
+        description: "The number of minutes spent in heart rate zone 2."
+      - name: zone3_calories_out
+        data_type: float
+        description: "The number of calories burned in heart rate zone 3."
+      - name: zone3_max_heartrate
+        data_type: integer
+        description: "The maximum heart rate in heart rate zone 3."
+      - name: zone3_min_heartrate
+        data_type: integer
+        description: "The minimum heart rate in heart rate zone 3."
+      - name: zone3_minutes
+        data_type: integer
+        description: "The number of minutes spent in heart rate zone 3."
+      - name: zone4_calories_out
+        data_type: float
+        description: "The number of calories burned in heart rate zone 4."
+      - name: zone4_max_heartrate
+        data_type: integer
+        description: "The maximum heart rate in heart rate zone 4."
+      - name: zone4_min_heartrate
+        data_type: integer
+        description: "The minimum heart rate in heart rate zone 4."
+      - name: zone4_minutes
+        data_type: integer
+        description: "The number of minutes spent in heart rate zone 4."
+      - name: resting_heart_rate
+        data_type: integer
+        description: "The user's resting heart rate."

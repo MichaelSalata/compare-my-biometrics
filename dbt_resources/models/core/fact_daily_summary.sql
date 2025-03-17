@@ -29,7 +29,7 @@ SELECT
     s.efficiency,
     s.minutes_awake,
     s.minutes_to_fall_asleep,
-    s.timeInBed,
+    s.time_in_bed,
     s.deep_minutes,
     s.light_minutes,
     s.rem_minutes,
