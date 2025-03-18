@@ -153,4 +153,4 @@ profile*.json
 terraform.tfstate*
 
 # airflow meta data
-logs
+logs/
