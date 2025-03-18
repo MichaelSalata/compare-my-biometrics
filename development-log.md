@@ -79,7 +79,7 @@ ManuelGuerra - [data-engineering-zoomcamp-notes](https://github.com/ManuelGuerra
 - [x] attach DBT to cloned git repo ✅ 2025-03-13
 - [x] copy DBT folder to project folder ✅ 2025-03-13
 
-- [ ] look at data and plan schema
+- [x] look at data and plan schema ✅ 2025-03-17
 	- what kinda charts do I want?
 	- what kinda charts were showcased?
 
@@ -90,29 +90,37 @@ ManuelGuerra - [data-engineering-zoomcamp-notes](https://github.com/ManuelGuerra
 
 - [ ] STRETCH: encapsulate dbt core inside a Docker container
 
-- [ ] update dbt_resources to incorporate sleep & heartrate tables
-	- [ ] packages.yml
-	- [ ] dbt_project.yml
-	- [ ] stage files
+- [ ] STRETCH: integrate dbt into airflow - [Airflow with DBT tutorial]](https://www.youtube.com/watch?v=MhCuxTDlVkE)
 
-- [ ] properly cast data from sleep & heartrate
+- [x] update dbt_resources to incorporate sleep & heartrate tables ✅ 2025-03-17
+	- [x] dbt_project.yml ✅ 2025-03-17
+	- [x] stage files ✅ 2025-03-17
 
-- [ ] combine data into fact table
+- [x] properly cast data from sleep & heartrate ✅ 2025-03-17
 
-- [ ] create datamart for visualization
+- [x] combine data into fact table ✅ 2025-03-17
 
-- [ ] integrate dbt into airflow
-	- [ ] resource - [Airflow with DBT tutorial]](https://www.youtube.com/watch?v=MhCuxTDlVkE)
+- [ ] STRETCH: create datamart for visualization
+
+
 ## PHASE 5 - Looker Studio Visualizations
 
 ->  [data-engineering-zoomcamp-notes](https://github.com/ManuelGuerra1987/data-engineering-zoomcamp-notes) / [4_Analytics-Engineering](https://github.com/ManuelGuerra1987/data-engineering-zoomcamp-notes/tree/main/4_Analytics-Engineering#visualising-the-transformed-data)
 
-- [ ] stacked bar chart for sleep stages
-- [ ] aggregated statistics on heartrate over the time period
+- [x] stacked bar chart for sleep stages ✅ 2025-03-17
+- [x] aggregated statistics on heartrate over the time period ✅ 2025-03-17
 
-- [ ] stacked bar chart heartrate zones
-- [ ] aggregated statistics on heartrate over the time period
+- [x] stacked bar chart heartrate zones ✅ 2025-03-17
 
+## PHASE 5.5 - Stretch Orchestration
+- adapt existing Airflow orchestration to compare-my-biometrics pipeline
+- aka generalize existing Airflow scripts to read from environment variables
+request_biometrics  |  `upload_to_datalake >> data_warehouse_transfer`
+
+- [ ] encapsulate Airflow in Docker
+
+### STRETCH STRETCH - orchestrate dbt core
+request_biometrics  |  `upload_to_datalake >> data_warehouse_transfer >> dbt_transformations`
 
 ## PHASE 6 - Assemble the README
 RESOURCE: utilize [jorge's README](https://github.com/JorgeAbrego/weather_stream_project) as a blueprint
@@ -320,3 +328,4 @@ uris = ['gs://dtc-de-446723-fitbit-bucket/sleep*.parquet']
 
 - installing dbt-core per [their website instructions](https://docs.getdbt.com/docs/core/installation-overview)
 
+- Looker Studio -> Create -> BigQuery -> project/dataset/table -> Create Report
