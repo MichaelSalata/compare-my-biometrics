@@ -57,7 +57,7 @@ SELECT
     h.zone4_minutes,
     h.resting_heart_rate
 FROM s
-INNER JOIN h
+LEFT JOIN h
     ON s.date_of_sleep = h.date_time
     AND s.user_id = h.user_id
 LEFT JOIN p
