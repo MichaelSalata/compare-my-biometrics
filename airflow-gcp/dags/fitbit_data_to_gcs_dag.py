@@ -11,14 +11,11 @@ from airflow.providers.google.cloud.operators.bigquery import BigQueryCreateExte
 import pyarrow.csv as pv
 import pyarrow.parquet as pq
 
+from download_locally import download_past_6_months
+
 PROJECT_ID = os.environ.get("GCP_PROJECT_ID", "dtc-de-446723")
 BUCKET = os.environ.get("GCP_GCS_BUCKET", f"{PROJECT_ID}-fitbit-bucket")
 BIGQUERY_DATASET = os.environ.get("BIGQUERY_DATASET", 'fitbit_dataset2')
-
-dataset_file = "yellow_tripdata_2021-01.csv.gz"
-dataset_url = f"https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/{dataset_file}"
-path_to_local_home = os.environ.get("AIRFLOW_HOME", "/opt/airflow/")
-parquet_file = dataset_file.replace('.csv.gz', '.parquet')
 
 
 def format_to_parquet(src_file):
@@ -67,11 +64,10 @@ with DAG(
     max_active_runs=3,
     tags=['dtc-de'],
 ) as dag:
-
-    # TODO: adapth this to my download_locally.py
-    download_dataset = BashOperator(
-        task_id="download_dataset",
-        bash_command=f"curl -sSL {dataset_url} > {path_to_local_home}/{dataset_file}"
+    # TODO: adapt this to my download_locally
+    download_locally = PythonOperator(
+        task_id="download_locally",
+        python_callable=download_past_6_months,
     )
 
     # TODO: adapt this to my fitbit_json_to_parquet
@@ -89,7 +85,7 @@ with DAG(
         python_callable=upload_to_gcs,
         op_kwargs={
             "bucket": BUCKET,
-            "object_name": f"raw/{parquet_file}",
+            "object_name": f"{parquet_file}",
             "local_file": f"{path_to_local_home}/{parquet_file}",
         },
     )
@@ -139,4 +135,4 @@ with DAG(
         },
     )
 
-    download_dataset >> format_to_parquet_task >> local_to_gcs >> [bq_external_profile_table, bq_external_heartrate_table, bq_external_sleep_table]
+    download_locally >> format_to_parquet_task >> local_to_gcs >> [bq_external_profile_table, bq_external_heartrate_table, bq_external_sleep_table]
