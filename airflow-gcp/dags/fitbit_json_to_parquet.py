@@ -3,15 +3,6 @@ import pandas as pd
 import glob
 
 
-# def sleep_json_to_parquet(filename):
-
-
-
-
-
-dimension = "sleep"
-filename = f"{dimension}.json"
-
 
 def profile_json_to_parquet(filename):
     try:
@@ -178,7 +169,7 @@ def heartrate_json_to_parquet(filename):
         print(f'wrote {len(rows)} entries to {parquet_filename}')
     # print(heartrate_df.head())
 
-if __name__ == '__main__':
+def profile_sleep_heartrate_jsons_to_parquet():
     for filename in glob.glob("sleep*.json"):
         sleep_json_to_parquet(filename)
 
