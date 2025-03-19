@@ -1,8 +1,4 @@
 apache-airflow-providers-google
 pyarrow
 requests
-datetime
-json
-calendar
-glob
 pandas
