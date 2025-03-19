@@ -13,6 +13,9 @@
 	- meetings with real clients and and gathering data for a novel project can balloon out the time commitment
 
 Result - [Looker Studio Data Presentation](https://lookerstudio.google.com/reporting/08b71d97-dc73-4d66-a694-e027c0d68330)
+
+PLACE HOLDER INFORMATION BELOW
+---
 Installation
 ----------------------
 ### Clone this repo to your computer.
