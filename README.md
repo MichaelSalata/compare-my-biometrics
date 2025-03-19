@@ -1,4 +1,4 @@
-Project Title
+**Compare My Biometrics**
 -----------------------
 **Intro Paragraph**:
 - My wellness report was broken
