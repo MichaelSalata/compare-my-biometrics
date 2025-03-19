@@ -55,7 +55,7 @@ x-airflow-common:
     dockerfile: ./airflow.Dockerfile
   environment:
     &airflow-common-env
-    GOOGLE_APPLICATION_CREDENTIALS: /.google/credentials/google_credentials.json
+    GOOGLE_APPLICATION_CREDENTIALS_PATH: ${GOOGLE_APPLICATION_CREDENTIALS_PATH}
     GCP_PROJECT_ID: "${GCP_PROJECT_ID}"
     GCP_GCS_BUCKET: "${GCP_GCS_BUCKET}"
     AIRFLOW_CONN_GOOGLE_CLOUD_DEFAULT: 'google-cloud-platform://?extra__google_cloud_platform__key_path=/.google/credentials/google_credentials.json'
