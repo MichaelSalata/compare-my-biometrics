@@ -113,7 +113,7 @@ ManuelGuerra - [data-engineering-zoomcamp-notes](https://github.com/ManuelGuerra
 - [x] stacked bar chart heartrate zones ✅ 2025-03-17
 
 ## PHASE 5.5 - Stretch Orchestration
-- [ ] fix broken DAG error
+- [x] fix broken DAG error ✅ 2025-03-18
 
 - Goal
 	- adapt existing Airflow orchestration to compare-my-biometrics pipeline
@@ -122,6 +122,7 @@ ManuelGuerra - [data-engineering-zoomcamp-notes](https://github.com/ManuelGuerra
 request_biometrics  |  `upload_to_datalake >> data_warehouse_transfer`
 
 - [x] encapsulate Airflow in Docker ✅ 2025-03-18
+
 
 ### for each stage
 - determine packages necessary to run  stage/Airflow Operators
@@ -134,7 +135,7 @@ request_biometrics  |  `upload_to_datalake >> data_warehouse_transfer`
 - [ ] download_locally
 - [ ] upload
 - [ ] transfer to warehouse (BigQuery)
-- [ ] 
+-
 
 #### download_locally needs
 - MY fitbit_tokens.json
