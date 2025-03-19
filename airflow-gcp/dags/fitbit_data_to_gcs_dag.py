@@ -1,9 +1,11 @@
+import glob
 import os
-import logging
+# import logging
+import time
 
 from airflow import DAG
 from airflow.utils.dates import days_ago
-from airflow.operators.bash import BashOperator
+# from airflow.operators.bash import BashOperator
 from airflow.operators.python import PythonOperator
 
 from google.cloud import storage
@@ -12,40 +14,45 @@ import pyarrow.csv as pv
 import pyarrow.parquet as pq
 
 from download_locally import download_past_6_months
+from fitbit_json_to_parquet import profile_sleep_heartrate_jsons_to_parquet
 
 PROJECT_ID = os.environ.get("GCP_PROJECT_ID", "dtc-de-446723")
-BUCKET = os.environ.get("GCP_GCS_BUCKET", f"{PROJECT_ID}-fitbit-bucket")
+GCP_GCS_BUCKET = os.environ.get("GCP_GCS_BUCKET", f"{PROJECT_ID}-fitbit-bucket")
 BIGQUERY_DATASET = os.environ.get("BIGQUERY_DATASET", 'fitbit_dataset2')
+CREDENTIALS_FILE = os.environ.get("CREDENTIALS_FILE", "google_credentials.json")
 
 
-def format_to_parquet(src_file):
-    if not src_file.endswith('.csv.gz'):
-        logging.error("Can only accept source files in CSV format, for the moment")
-        return
-    table = pv.read_csv(src_file)
-    pq.write_table(table, src_file.replace('.csv.gz', '.parquet'))
-
-
-# NOTE: takes 20 mins, at an upload speed of 800kbps. Faster if your internet has a better upload speed
-def upload_to_gcs(bucket, object_name, local_file):
-    """
-    Ref: https://cloud.google.com/storage/docs/uploading-objects#storage-upload-object-python
-    :param bucket: GCS bucket name
-    :param object_name: target path & file-name
-    :param local_file: source path & file-name
-    :return:
-    """
-    # WORKAROUND to prevent timeout for files > 6 MB on 800 kbps upload speed.
-    # (Ref: https://github.com/googleapis/python-storage/issues/74)
+def upload_to_gcs(bucket_name, max_retries=3):
+    client = storage.Client()
     storage.blob._MAX_MULTIPART_SIZE = 5 * 1024 * 1024  # 5 MB
     storage.blob._DEFAULT_CHUNKSIZE = 5 * 1024 * 1024  # 5 MB
-    # End of Workaround
 
-    client = storage.Client()
-    bucket = client.bucket(bucket)
+    bucket = client.bucket(bucket_name)
+    CHUNK_SIZE = 8 * 1024 * 1024
 
-    blob = bucket.blob(object_name)
-    blob.upload_from_filename(local_file)
+    fitbit_data_regex = ["profile*.json", "heartrate*.json", "sleep*.json"]
+    for regex in fitbit_data_regex:
+        for blob_name in glob.glob(regex):
+            blob = bucket.blob(blob_name)
+            blob.chunk_size = CHUNK_SIZE
+            
+            for attempt in range(max_retries):
+                try:
+                    print(f"Uploading {blob_name} to {bucket_name} (Attempt {attempt + 1})...")
+                    blob.upload_from_filename(blob_name)
+                    print(f"Uploaded: gs://{bucket_name}/{blob_name}")
+                    
+                    if storage.Blob(bucket=bucket, name=blob_name).exists(client):
+                        print(f"Verification successful for {blob_name}")
+                        return
+                    else:
+                        print(f"Verification failed for {blob_name}, retrying...")
+                except Exception as e:
+                    print(f"Failed to upload {blob_name} to GCS: {e}")
+                
+                time.sleep(2)  
+            
+            print(f"Giving up on {blob_name} after {max_retries} attempts.")
 
 
 default_args = {
@@ -55,7 +62,6 @@ default_args = {
     "retries": 1,
 }
 
-# NOTE: DAG declaration - using a Context Manager (an implicit way)
 with DAG(
     dag_id="data_ingestion_gcs_dag",
     schedule_interval="@monthly",
@@ -73,20 +79,14 @@ with DAG(
     # TODO: adapt this to my fitbit_json_to_parquet
     format_to_parquet_task = PythonOperator(
         task_id="format_to_parquet",
-        python_callable=format_to_parquet,
-        op_kwargs={
-            "src_file": f"{path_to_local_home}/{dataset_file}",
-        },
+        python_callable=profile_sleep_heartrate_jsons_to_parquet
     )
-
 
     local_to_gcs = PythonOperator(
         task_id="local_to_gcs",
         python_callable=upload_to_gcs,
         op_kwargs={
-            "bucket": BUCKET,
-            "object_name": f"{parquet_file}",
-            "local_file": f"{path_to_local_home}/{parquet_file}",
+            "bucket_name": GCP_GCS_BUCKET
         },
     )
 
@@ -100,7 +100,7 @@ with DAG(
             },
             "externalDataConfiguration": {
                 "sourceFormat": "PARQUET",
-                "sourceUris": [f"gs://{BUCKET}/sleep*.parquet"],
+                "sourceUris": [f"gs://{GCP_GCS_BUCKET}/sleep*.parquet"],
             },
         },
     )
@@ -115,7 +115,7 @@ with DAG(
             },
             "externalDataConfiguration": {
                 "sourceFormat": "PARQUET",
-                "sourceUris": [f"gs://{BUCKET}/heartrate*.parquet"],
+                "sourceUris": [f"gs://{GCP_GCS_BUCKET}/heartrate*.parquet"],
             },
         },
     )
@@ -130,7 +130,7 @@ with DAG(
             },
             "externalDataConfiguration": {
                 "sourceFormat": "PARQUET",
-                "sourceUris": [f"gs://{BUCKET}/profile*.parquet"],
+                "sourceUris": [f"gs://{GCP_GCS_BUCKET}/profile*.parquet"],
             },
         },
     )
