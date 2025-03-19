@@ -7,6 +7,7 @@
 	- moving
 	- exercising
 - Practice tech involved the DataTalks bootcamp
+
 **Constraints**:
 - Fits in my DataTalks.club Data Engineering Course Schedule
 	- meetings with real clients and and gathering data for a novel project can balloon out the time commitment
