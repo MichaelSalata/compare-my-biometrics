@@ -113,17 +113,47 @@ ManuelGuerra - [data-engineering-zoomcamp-notes](https://github.com/ManuelGuerra
 - [x] stacked bar chart heartrate zones ✅ 2025-03-17
 
 ## PHASE 5.5 - Stretch Orchestration
-- adapt existing Airflow orchestration to compare-my-biometrics pipeline
-- aka generalize existing Airflow scripts to read from environment variables
+- [ ] fix broken DAG error
+
+- Goal
+	- adapt existing Airflow orchestration to compare-my-biometrics pipeline
+	- ***aka*** generalize existing Airflow scripts to read from environment variables
+
 request_biometrics  |  `upload_to_datalake >> data_warehouse_transfer`
 
-- [ ] encapsulate Airflow in Docker
+- [x] encapsulate Airflow in Docker ✅ 2025-03-18
+
+### for each stage
+- determine packages necessary to run  stage/Airflow Operators
+- get variables needed
+	- encode variables in environment or json file
+	- hard code variables not able to be passed
+
+- test script on example fitbit data
+
+- [ ] download_locally
+- [ ] upload
+- [ ] transfer to warehouse (BigQuery)
+- [ ] 
+
+#### download_locally needs
+- MY fitbit_tokens.json
+	- user_id
+	- client_id
+	- client_secret
+	- access_token
+	- scope
+- recognize example data?
+	- put "example" in like fitbit_tokens.json : user_id
+	- have fitbit_tokens_example.json?
+
 
 ### STRETCH STRETCH - orchestrate dbt core
 request_biometrics  |  `upload_to_datalake >> data_warehouse_transfer >> dbt_transformations`
 
 ## PHASE 6 - Assemble the README
-RESOURCE: utilize [jorge's README](https://github.com/JorgeAbrego/weather_stream_project) as a blueprint
+
+- [ ] RESOURCE: utilize [jorge's README](https://github.com/JorgeAbrego/weather_stream_project) as a blueprint
 
 ### Project Assembly instructions
 - use [[development-log#Project Step Log]] below
@@ -131,6 +161,11 @@ RESOURCE: utilize [jorge's README](https://github.com/JorgeAbrego/weather_stream
 - Docker
 - GCP creation & permissions for (project, bucket, dataset)
 - test instructions
+
+- [ ] add example data
+- [ ] tell user about date range for example data
+- [ ] tell user about Partitioning in DBT
+
 
 ## STRETCH Goals 
 *aka Goals:  3/24 -to- 4/21*
