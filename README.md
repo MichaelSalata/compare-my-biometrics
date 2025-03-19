@@ -1,10 +1,14 @@
 Project Title
 -----------------------
 **Intro Paragraph**:
-* Project Purpose
-* what it does
-* origin & original purpose of the data
-* project background info
+- My wellness report was broken
+- Visualize changes in biometrics between timeframe - facilitate the health impact of life changes
+	- ADHD meds
+	- moving
+	- exercising
+- Practice tech involved the DataTalks bootcamp
+- Fits in my tight deadline
+	- I understand how meetings and gathering data for a novel project can balloon out the time commitment
 
 Result - [Looker Studio Data Presentation](https://lookerstudio.google.com/reporting/08b71d97-dc73-4d66-a694-e027c0d68330)
 Installation
