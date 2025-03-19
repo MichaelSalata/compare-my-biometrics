@@ -26,13 +26,13 @@ variable "location" {
 variable "bq_dataset_name" {
   description = ""
   #Update the below to what you want your dataset to be called
-  default = "fitbit_dataset"
+  default = "fitbit_demo_dataset"
 }
 
 variable "gcs_bucket_name" {
   description = "Storage Bucket Name, must be unique"
   #Update the below to a unique bucket name
-  default = "dtc-de-446723-fitbit-bucket"
+  default = "dtc-de-446723-fitbit-demo-bucket"
 }
 
 variable "gcs_storage_class" {
