@@ -124,17 +124,19 @@ request_biometrics  |  `upload_to_datalake >> data_warehouse_transfer`
 - [x] encapsulate Airflow in Docker ✅ 2025-03-18
 
 ### for each stage
-- determine packages necessary to run  stage/Airflow Operators
 - get variables needed
 	- encode variables in environment or json file
 	- hard code variables not able to be passed
+- determine packages necessary to run  stage/Airflow Operators
 
 - test script on example fitbit data
 
 - [ ] download_locally
+- [ ] format to parquet
 - [ ] upload
 - [ ] transfer to warehouse (BigQuery)
-- [ ] 
+	- look at Manuel's implementation
+
 
 #### download_locally needs
 - MY fitbit_tokens.json
