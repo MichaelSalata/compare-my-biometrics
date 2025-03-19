@@ -1,14 +1,15 @@
 **Compare My Biometrics**
 -----------------------
-**Intro Paragraph**:
-- My wellness report was broken
-- Visualize changes in biometrics between timeframe - facilitate the health impact of life changes
+**Goals**:
+- My fitbit wellness report is broken
+- Visualize changes in biometrics between timeframes and learn the health impact of life changes
 	- ADHD meds
 	- moving
 	- exercising
 - Practice tech involved the DataTalks bootcamp
-- Fits in my tight deadline
-	- I understand how meetings and gathering data for a novel project can balloon out the time commitment
+**Constraints**:
+- Fits in my DataTalks.club Data Engineering Course Schedule
+	- meetings with real clients and and gathering data for a novel project can balloon out the time commitment
 
 Result - [Looker Studio Data Presentation](https://lookerstudio.google.com/reporting/08b71d97-dc73-4d66-a694-e027c0d68330)
 Installation
