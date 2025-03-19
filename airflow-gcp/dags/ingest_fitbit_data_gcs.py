@@ -64,26 +64,28 @@ with DAG(
     schedule_interval="@monthly",
     default_args=default_args,
     catchup=False,
-    max_active_runs=1,
+    max_active_runs=3,
     tags=['dtc-de'],
 ) as dag:
 
-    download_dataset_task = BashOperator(
-        task_id="download_dataset_task",
+    # TODO: adapth this to my download_locally.py
+    download_dataset = BashOperator(
+        task_id="download_dataset",
         bash_command=f"curl -sSL {dataset_url} > {path_to_local_home}/{dataset_file}"
     )
 
+    # TODO: adapt this to my fitbit_json_to_parquet
     format_to_parquet_task = PythonOperator(
-        task_id="format_to_parquet_task",
+        task_id="format_to_parquet",
         python_callable=format_to_parquet,
         op_kwargs={
             "src_file": f"{path_to_local_home}/{dataset_file}",
         },
     )
 
-    # TODO: Homework - research and try XCOM to communicate output values between 2 tasks/operators
-    local_to_gcs_task = PythonOperator(
-        task_id="local_to_gcs_task",
+
+    local_to_gcs = PythonOperator(
+        task_id="local_to_gcs",
         python_callable=upload_to_gcs,
         op_kwargs={
             "bucket": BUCKET,
@@ -92,19 +94,49 @@ with DAG(
         },
     )
 
-    bigquery_external_table_task = BigQueryCreateExternalTableOperator(
-        task_id="bigquery_external_table_task",
+    bq_external_sleep_table = BigQueryCreateExternalTableOperator(
+        task_id="bq_external_sleep_table",
         table_resource={
             "tableReference": {
                 "projectId": PROJECT_ID,
                 "datasetId": BIGQUERY_DATASET,
-                "tableId": "external_table",
+                "tableId": "external_sleep",
             },
             "externalDataConfiguration": {
                 "sourceFormat": "PARQUET",
-                "sourceUris": [f"gs://{BUCKET}/raw/{parquet_file}"],
+                "sourceUris": [f"gs://{BUCKET}/sleep*.parquet"],
             },
         },
     )
 
-    download_dataset_task >> format_to_parquet_task >> local_to_gcs_task >> bigquery_external_table_task
+    bq_external_heartrate_table = BigQueryCreateExternalTableOperator(
+        task_id="bq_external_heartrate_table",
+        table_resource={
+            "tableReference": {
+                "projectId": PROJECT_ID,
+                "datasetId": BIGQUERY_DATASET,
+                "tableId": "external_heartrate",
+            },
+            "externalDataConfiguration": {
+                "sourceFormat": "PARQUET",
+                "sourceUris": [f"gs://{BUCKET}/heartrate*.parquet"],
+            },
+        },
+    )
+
+    bq_external_profile_table = BigQueryCreateExternalTableOperator(
+        task_id="bq_external_profile_table",
+        table_resource={
+            "tableReference": {
+                "projectId": PROJECT_ID,
+                "datasetId": BIGQUERY_DATASET,
+                "tableId": "external_profile",
+            },
+            "externalDataConfiguration": {
+                "sourceFormat": "PARQUET",
+                "sourceUris": [f"gs://{BUCKET}/profile*.parquet"],
+            },
+        },
+    )
+
+    download_dataset >> format_to_parquet_task >> local_to_gcs >> [bq_external_profile_table, bq_external_heartrate_table, bq_external_sleep_table]
