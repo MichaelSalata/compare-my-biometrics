@@ -11,14 +11,14 @@ from airflow.providers.google.cloud.operators.bigquery import BigQueryCreateExte
 import pyarrow.csv as pv
 import pyarrow.parquet as pq
 
-PROJECT_ID = os.environ.get("GCP_PROJECT_ID")
-BUCKET = os.environ.get("GCP_GCS_BUCKET")
+PROJECT_ID = os.environ.get("GCP_PROJECT_ID", "dtc-de-446723")
+BUCKET = os.environ.get("GCP_GCS_BUCKET", f"{PROJECT_ID}-fitbit-bucket")
+BIGQUERY_DATASET = os.environ.get("BIGQUERY_DATASET", 'fitbit_dataset2')
 
 dataset_file = "yellow_tripdata_2021-01.csv.gz"
 dataset_url = f"https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/{dataset_file}"
 path_to_local_home = os.environ.get("AIRFLOW_HOME", "/opt/airflow/")
 parquet_file = dataset_file.replace('.csv.gz', '.parquet')
-BIGQUERY_DATASET = os.environ.get("BIGQUERY_DATASET", 'demo_dataset')
 
 
 def format_to_parquet(src_file):

@@ -56,8 +56,8 @@ x-airflow-common:
   environment:
     &airflow-common-env
     GOOGLE_APPLICATION_CREDENTIALS: /.google/credentials/google_credentials.json
-    GCP_PROJECT_ID: 'dtc-de-446723'
-    GCP_GCS_BUCKET: 'dtc-de-446723-terraform-demo-bucket'
+    GCP_PROJECT_ID: "${GCP_PROJECT_ID}"
+    GCP_GCS_BUCKET: "${GCP_GCS_BUCKET}"
     AIRFLOW_CONN_GOOGLE_CLOUD_DEFAULT: 'google-cloud-platform://?extra__google_cloud_platform__key_path=/.google/credentials/google_credentials.json'
     AIRFLOW__CORE__EXECUTOR: LocalExecutor
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
