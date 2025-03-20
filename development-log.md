@@ -151,6 +151,8 @@ request_biometrics  |  `upload_to_datalake >> data_warehouse_transfer`
 	- put "example" in like fitbit_tokens.json : user_id
 	- have fitbit_tokens_example.json?
 
+
+- [ ] remove demo from bucket and dataset
 ### STRETCH STRETCH - orchestrate dbt core
 request_biometrics  |  `upload_to_datalake >> data_warehouse_transfer >> dbt_transformations`
 
