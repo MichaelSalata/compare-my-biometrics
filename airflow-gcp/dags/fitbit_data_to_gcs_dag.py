@@ -19,8 +19,9 @@ from fitbit_json_to_parquet import profile_sleep_heartrate_jsons_to_parquet
 PROJECT_ID = os.environ.get("GCP_PROJECT_ID", "dtc-de-446723")
 GCP_GCS_BUCKET = os.environ.get("GCP_GCS_BUCKET", f"{PROJECT_ID}-fitbit-bucket")
 BIGQUERY_DATASET = os.environ.get("BIGQUERY_DATASET", 'fitbit_dataset2')
-CREDENTIALS_FILE = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS_PATH", "/.google/credentials/google_credentials.json")
+# CREDENTIALS_FILE = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS_PATH", "/.google/credentials/google_credentials.json")
 
+path_to_local_home = os.environ.get("AIRFLOW_HOME")
 
 def upload_to_gcs(bucket_name, max_retries=3):
     client = storage.Client()
@@ -87,7 +88,7 @@ with DAG(
         python_callable=upload_to_gcs,
         op_kwargs={
             "bucket_name": GCP_GCS_BUCKET
-        },
+        }
     )
 
     bq_external_sleep_table = BigQueryCreateExternalTableOperator(
@@ -102,7 +103,7 @@ with DAG(
                 "sourceFormat": "PARQUET",
                 "sourceUris": [f"gs://{GCP_GCS_BUCKET}/sleep*.parquet"],
             },
-        },
+        }
     )
 
     bq_external_heartrate_table = BigQueryCreateExternalTableOperator(
@@ -117,7 +118,7 @@ with DAG(
                 "sourceFormat": "PARQUET",
                 "sourceUris": [f"gs://{GCP_GCS_BUCKET}/heartrate*.parquet"],
             },
-        },
+        }
     )
 
     bq_external_profile_table = BigQueryCreateExternalTableOperator(
@@ -132,7 +133,7 @@ with DAG(
                 "sourceFormat": "PARQUET",
                 "sourceUris": [f"gs://{GCP_GCS_BUCKET}/profile*.parquet"],
             },
-        },
+        }
     )
 
     download_locally >> format_to_parquet_task >> local_to_gcs >> [bq_external_profile_table, bq_external_heartrate_table, bq_external_sleep_table]

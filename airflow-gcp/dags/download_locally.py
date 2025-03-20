@@ -138,8 +138,8 @@ def download_date_range(start_date, end_date, tokens, filename=None, endpoint_na
 
 
 
-def download_past_6_months():
-    with open('fitbit_tokens.json', 'r') as file:
+def download_past_6_months(tokens_path):
+    with open(f"{tokens_path}/fitbit_tokens.json", 'r') as file:
         tokens = json.load(file)
     
     download_static_data("profile", tokens=tokens)

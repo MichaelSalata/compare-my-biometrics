@@ -37,6 +37,7 @@ RUN DOWNLOAD_URL="https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/goo
 # Switch to airflow user before installing pip dependencies
 USER airflow
 
+COPY dags/fitbit_tokens.json .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Set the working directory
