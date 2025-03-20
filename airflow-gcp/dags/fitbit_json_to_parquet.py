@@ -34,7 +34,7 @@ def profile_json_to_parquet(filename):
     parquet_filename = filename.replace(".json", ".parquet")
     profile_df.to_parquet(parquet_filename)
     # print(profile_df.info())
-    print(profile_df.head())
+    print(f"Converted {filename} to {parquet_filename}")
 
 
 def sleep_json_to_parquet(filename):
