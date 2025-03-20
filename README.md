@@ -63,6 +63,8 @@ Usage
 * Run `python predict.py`.
     * This will run cross validation across the training set, and print the accuracy score.
 
+- Run gather tokens script in 
+
 Extending this
 -------------------------
 
@@ -80,3 +82,5 @@ If you want to extend this work, here are a few places to start:
 * Explore the nuances between performance updates.
     * Can you predict how many times the borrower will be late on payments?
     * Can you map out the typical loan lifecycle?
+
+---

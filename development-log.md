@@ -113,7 +113,7 @@ ManuelGuerra - [data-engineering-zoomcamp-notes](https://github.com/ManuelGuerra
 - [x] stacked bar chart heartrate zones ✅ 2025-03-17
 
 ## PHASE 5.5 - Stretch Orchestration
-- [ ] fix broken DAG error
+- [x] fix broken DAG error ✅ 2025-03-18
 
 - Goal
 	- adapt existing Airflow orchestration to compare-my-biometrics pipeline
@@ -155,7 +155,11 @@ request_biometrics  |  `upload_to_datalake >> data_warehouse_transfer >> dbt_tra
 
 ## PHASE 6 - Assemble the README
 
-- [ ] RESOURCE: utilize [jorge's README](https://github.com/JorgeAbrego/weather_stream_project) as a blueprint
+- [ ] RESOURCES:
+	- [jorge's README](https://github.com/JorgeAbrego/weather_stream_project) as a blueprint
+	- manuel's README
+	- data proj draft README
+
 
 ### Project Assembly instructions
 - use [[development-log#Project Step Log]] below
@@ -167,6 +171,12 @@ request_biometrics  |  `upload_to_datalake >> data_warehouse_transfer >> dbt_tra
 - [ ] add example data
 - [ ] tell user about date range for example data
 - [ ] tell user about Partitioning in DBT
+
+- [ ] instruct user on running the gather_tokens script in the hardcoded location
+- [ ] tell user to put their google credentials in xyz location
+	- What is this used for?
+		- point to Terraform IaC
+		- point to DBT transformations
 
 
 ## STRETCH Goals 
