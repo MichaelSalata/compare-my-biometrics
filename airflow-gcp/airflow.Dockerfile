@@ -1,19 +1,16 @@
-# Use the latest Airflow image (replace with specific version if required)
 FROM apache/airflow:2.10.4
 
-# Set the Airflow home directory
 ENV AIRFLOW_HOME=/opt/airflow
 
 # Switch to root for package installation
+# Update and install required system packages
 USER root
 
-# Update and install required system packages
 RUN apt-get update -qq && apt-get install -y --no-install-recommends \
     vim curl \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies from requirements.txt
 COPY requirements.txt .
 
 # Install Google Cloud SDK
@@ -34,14 +31,11 @@ RUN DOWNLOAD_URL="https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/goo
     && rm -rf "${TMP_DIR}" \
     && gcloud --version
 
-# Switch to airflow user before installing pip dependencies
 USER airflow
 
 COPY dags/fitbit_tokens.json .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Set the working directory
 WORKDIR $AIRFLOW_HOME
 
-# Switch back to the airflow user
 USER $AIRFLOW_UID

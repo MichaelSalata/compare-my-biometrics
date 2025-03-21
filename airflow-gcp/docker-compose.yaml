@@ -55,10 +55,11 @@ x-airflow-common:
     dockerfile: ./airflow.Dockerfile
   environment:
     &airflow-common-env
-    # GOOGLE_APPLICATION_CREDENTIALS_PATH: ${GOOGLE_APPLICATION_CREDENTIALS_PATH}
+    GOOGLE_APPLICATION_CREDENTIALS: /opt/airflow/google_credentials.json
     GCP_PROJECT_ID: "${GCP_PROJECT_ID}"
     GCP_GCS_BUCKET: "${GCP_GCS_BUCKET}"
-    AIRFLOW_CONN_GOOGLE_CLOUD_DEFAULT: 'google-cloud-platform://?extra__google_cloud_platform__key_path=/.google/credentials/google_credentials.json'
+    BIGQUERY_DATASET: "${BIGQUERY_DATASET}"
+    AIRFLOW_CONN_GOOGLE_CLOUD_DEFAULT: "google-cloud-platform://?extra__google_cloud_platform__key_path=/opt/airflow/google_credentials.json"
     AIRFLOW__CORE__EXECUTOR: LocalExecutor
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
     PG_HOST: "${PG_HOST}"
@@ -67,8 +68,9 @@ x-airflow-common:
     PG_PORT: "${PG_PORT}"
     PG_DATABASE: "${PG_DATABASE}"
   volumes:
-    # - ~/.google/credentials/:/.google/credentials:ro
+    - ${GOOGLE_CREDENTIALS}:/opt/airflow/google_credentials.json:ro
     - ${AIRFLOW_PROJ_DIR:-.}/dags/fitbit_tokens.json:/opt/airflow/fitbit_tokens.json
+    - ${AIRFLOW_PROJ_DIR:-.}/dags/example_data:/opt/airflow/dags/example_data
     - ${AIRFLOW_PROJ_DIR:-.}/dags:/opt/airflow/dags
     - ${AIRFLOW_PROJ_DIR:-.}/logs:/opt/airflow/logs
     - ${AIRFLOW_PROJ_DIR:-.}/config:/opt/airflow/config
