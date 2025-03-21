@@ -29,11 +29,17 @@ Installation
     * At the end, you should have a bunch of text files called `Acquisition_YQX.txt`, and `Performance_YQX.txt`, where `Y` is a year, and `X` is a number from `1` to `4`.
 * delete all the '.zip' files
 
-### Install the requirements
-* make sure you're in the main "project_title" folder with "requirements.txt"
-* Install the requirements using `pip install -r requirements.txt`.
-    * Make sure you use Python 3.
-    * You may want to use a virtual environment for this.
+### Setup
+- Clone this Repo
+- dev.fitbit.com > Manage > [Register An App](https://dev.fitbit.com/apps/new/) > [Log in](https://dev.fitbit.com/login)
+	- `Continue with Google` if you use your google account
+	- **IMPORTANT**: the project `Personal` and using Callback URL `http://127.0.0.1:8080/`
+- [example image](https://miro.medium.com/v2/resize:fit:720/format:webp/1*UJHMOYsFZvrBmpNjFfpBJA.jpeg)
+- insert the sensitive fitbit API tokens into the `fitbit_tokens.json` file in `airflow-gcp/dags`
+- `pip install fitbit`
+- run gather_keys script
+- run download_data script
+- run format_to_parquet script
 
 Settings
 --------------------
