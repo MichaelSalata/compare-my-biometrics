@@ -21,22 +21,6 @@
 - STRETCH: visualize notable dates
 	- notable dates will be put on the graphs as vertical lines
 
-# Available Health Metrics/Data
-- Height
-- Weight
-- Body Fat
-- Heart rate
-- Resting Heart rate
-- Sleep
-- Activity
-	- Distance
-	- Elevation Gain
-	- Exercise
-	- Floors Climbed
-	- Speed
-	- Steps
-	- Total calories burned
-
 # TODOs
 **==NOTE==**: ***Document project steps*** in the [[development-log#Project Step Log]] below
 
@@ -271,7 +255,7 @@ src: [reddit page](https://www.reddit.com/r/fitbit/comments/15igabx/update_i_mad
 
 [Collect Your Own Fitbit Data with Python](https://medium.com/towards-data-science/collect-your-own-fitbit-data-with-python-ff145fa10873) - [Stephen Hsu](https://medium.com/@shsu14?source=post_page---byline--ff145fa10873---------------------------------------) medium article
 
-## Device Connect
+## Device Connect - Google
 https://cloud.google.com/device-connect
 [github](https://github.com/GoogleCloudPlatform/deviceconnect)
 
@@ -298,8 +282,9 @@ FITBIT_OAUTH_CLIENT_SECRET = ''                  # fitbit secret (from dev.fitbi
 - Clone [ny-taxi-pipeline](https://github.com/MichaelSalata/ny-taxi-pipeline)
 - `gh auth login`
 - `git remote set-url origin https://github.com/MichaelSalata/compare-fitbit-periods.git`
-- dev.fitbit.com > Manage > Register An App > Log in
-	- `Continue with Google`
+- dev.fitbit.com > Manage > [Register An App](https://dev.fitbit.com/apps/new/) > [Log in](https://dev.fitbit.com/login)
+	- `Continue with Google` if you use your google account
+	- **IMPORTANT**: the project `Personal` and using Callback URL `http://127.0.0.1:8080/`
 - ![example app](https://miro.medium.com/v2/resize:fit:720/format:webp/1*UJHMOYsFZvrBmpNjFfpBJA.jpeg)
 - insert the sensitive fitbit API tokens into the `fitbit_tokens.json` file
 - `pip install fitbit`
@@ -316,7 +301,6 @@ FITBIT_OAUTH_CLIENT_SECRET = ''                  # fitbit secret (from dev.fitbi
 - bigquery_external_table_task
 	- requires a dataset
 		- example .env line:  `BIGQUERY_DATASET=demo_dataset
-
 
 - use terraform to....
 	- create project, bucket, big query dataset
