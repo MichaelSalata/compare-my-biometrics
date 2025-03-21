@@ -107,10 +107,11 @@ request_biometrics  |  `upload_to_datalake >> data_warehouse_transfer`
 
 - [x] encapsulate Airflow in Docker ✅ 2025-03-18
 
-- [ ] fix download_locally script not finding fitbit_tokens
+- [x] fix download_locally script not finding fitbit_tokens ✅ 2025-03-20
 - [ ] generalize hardcoded fitbit credentials mounting on Docker container
 
 
+- [ ] get Airflow to automatically start the dag on startup
 
 ### for each stage
 - get variables needed
