@@ -32,30 +32,33 @@ def upload_to_gcs(bucket_name, max_retries=3):
     bucket = client.bucket(bucket_name)
     CHUNK_SIZE = 8 * 1024 * 1024
 
-    fitbit_data_regex = ["*.parquet"]
-    for regex in fitbit_data_regex:
-        for blob_name in glob.glob(regex):
-            blob = bucket.blob(blob_name)
-            blob.chunk_size = CHUNK_SIZE
-            
-            for attempt in range(max_retries):
-                try:
-                    print(f"Uploading {blob_name} to {bucket_name} (Attempt {attempt + 1})...")
-                    blob.upload_from_filename(blob_name)
-                    print(f"Uploaded: gs://{bucket_name}/{blob_name}")
-                    
-                    if storage.Blob(bucket=bucket, name=blob_name).exists(client):
-                        print(f"Verification successful for {blob_name}")
-                        break
-                    else:
-                        print(f"Verification failed for {blob_name}, retrying...")
-                except Exception as e:
-                    print(f"Failed to upload {blob_name} to GCS: {e}")
-                
-                time.sleep(1)
-            
-            print(f"Giving up on {blob_name} after {max_retries} attempts.")
+    # fitbit_data_regex = ["*.parquet"]
+    regex = "*.parquet"
+
+    data_files = glob.glob(regex)
+    if len(data_files) == 0:
+        print("No Data Files Found -> uploading example data")
+        regex = "/opt/airflow/example_data/" + regex
     
+    for blob_name in glob.glob(regex):
+        blob = bucket.blob(blob_name)
+        blob.chunk_size = CHUNK_SIZE
+        
+        for attempt in range(max_retries):
+            try:
+                print(f"Uploading {blob_name} to {bucket_name} (Attempt {attempt + 1}/{max_retries})...")
+                blob.upload_from_filename(blob_name)
+                
+                if storage.Blob(bucket=bucket, name=blob_name).exists(client):
+                    print(f"Upload Verification successful for gs://{bucket_name}/{blob_name}")
+                    break
+                else:
+                    print(f"Verification failed for {blob_name}, retrying...")
+            except Exception as e:
+                print(f"Failed to upload {blob_name} to GCS: {e}")
+            
+            time.sleep(1)
+            
     return
 
 

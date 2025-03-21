@@ -143,8 +143,8 @@ def download_past_6_months(tokens_path="."):
         print(f"token file found at {tokens_path}/fitbit_tokens.json")
         tokens = json.load(file)
     
-    if tokens["client_id"] == "example-23B4WW9":
-        print("client_id is example-23B4WW9 -> download is being skipped")
+    if "example" in tokens["client_id"]:
+        print("fitbit access tokens aren't valid -> download skipped -> using example data")
         return
 
     download_static_data("profile", tokens=tokens)
