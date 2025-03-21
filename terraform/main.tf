@@ -13,7 +13,6 @@ provider "google" {
   region      = var.region
 }
 
-
 resource "google_storage_bucket" "bucket-name" {
   name          = var.gcs_bucket_name
   location      = var.location
@@ -30,9 +29,8 @@ resource "google_storage_bucket" "bucket-name" {
   }
 }
 
-
-
 resource "google_bigquery_dataset" "dataset-name" {
   dataset_id = var.bq_dataset_name
   location   = var.location
 }
+
