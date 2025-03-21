@@ -169,11 +169,11 @@ def heartrate_json_to_parquet(filename):
         print(f'wrote {len(rows)} entries to {parquet_filename}')
     # print(heartrate_df.head())
 
-def profile_sleep_heartrate_jsons_to_parquet(base_path="/opt/airflow/dags"):
+def profile_sleep_heartrate_jsons_to_parquet(base_path="/opt/airflow"):
 
-    profile_files = glob.glob(f"{base_path}/profile*.json")
-    heartrate_files = glob.glob(f"{base_path}/heartrate*.json")
-    sleep_files = glob.glob(f"{base_path}/sleep*.json")
+    profile_files = glob.glob(f"{base_path}/dags/profile*.json")
+    heartrate_files = glob.glob(f"{base_path}/dags/heartrate*.json")
+    sleep_files = glob.glob(f"{base_path}/dags/sleep*.json")
 
     if (len(profile_files) + len(heartrate_files) + len(sleep_files)) == 0:
         print("No Files Found -> parsing example data")
