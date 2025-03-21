@@ -3,49 +3,24 @@ from datetime import datetime, timedelta
 import json
 import calendar
 
-with open('fitbit_tokens.json', 'r') as file:
-    tokens = json.load(file)
 
-headers = {
-    # TODO: properly format header tokens
-    'Authorization': f'Bearer {tokens["access_token"]}'
-}
+# example documentation: https://dev.fitbit.com/build/reference/web-api/heartrate-timeseries/get-heartrate-timeseries-by-date/
+# day_specific_endpoints = {
+#     # "sleep": "/sleep/date/{date}.json",
+#     # "activity": "/activities/date/{date}.json",
+#     # "heartrate": "/activities/heart/date/{date}/1d.json",
+#     "weight": "/1/user/{user_id}/body/log/weight/date/{date}.json",
+#     "fat": "/1/user/{user_id}/body/log/fat/date/{date}.json"
+# }
 
-API_website = "https://api.fitbit.com"
+def fetch_static(endpoint_suffix, tokens):
+    API_base_url = "https://api.fitbit.com"
+    headers = {
+        # TODO: properly format header tokens
+        'Authorization': f'Bearer {tokens["access_token"]}'
+    }
 
-static_endpoints = {
-    # "activity": "",
-    # "social": "",
-    # "location": "",
-    # "settings": ""
-    "profile": "/1/user/{user_id}/profile.json"
-}
-
-# src: https://dev.fitbit.com/build/reference/web-api/heartrate-timeseries/get-heartrate-timeseries-by-date/
-# example: /1/user/[user-id]/activities/heart/date/[date]/[period].json
-day_specific_endpoints = {
-    # "sleep": "/sleep/date/{date}.json",
-    # "activity": "/activities/date/{date}.json",
-    # "heartrate": "/activities/heart/date/{date}/1d.json",
-    "weight": "/1/user/{user_id}/body/log/weight/date/{date}.json",
-    "fat": "/1/user/{user_id}/body/log/fat/date/{date}.json"
-}
-
-# src: https://dev.fitbit.com/build/reference/web-api/heartrate-timeseries/get-heartrate-timeseries-by-date-range/
-# example daterange_endpoint: /1/user/[user-id]/activities/heart/date/[start-date]/[end-date].json
-daterange_endpoints = {
-    "heartrate": "/1/user/{user_id}/activities/heart/date/{start}/{end}.json",
-    # "nutrition": "",
-
-    # "activity": "/1/user/[user-id]/activities/[resource-path]/date/{start}/{end}.json"
-    # resource options: https://dev.fitbit.com/build/reference/web-api/activity-timeseries/get-activity-timeseries-by-date-range/#Resource-Options
-
-    "sleep": "/1.2/user/{user_id}/sleep/date/{start}/{end}.json"
-}
-
-
-def fetch_static(endpoint_suffix):
-    url = API_website + endpoint_suffix.format(user_id=tokens["user_id"])
+    url = API_base_url + endpoint_suffix.format(user_id=tokens["user_id"])
     response = requests.get(url, headers=headers)
     print("attempting download", url, '\n')
     if response.status_code == 200:
@@ -59,8 +34,14 @@ def fetch_static(endpoint_suffix):
         return None
 
 
-def fetch_date_range(endpoint_suffix, start, end):
-    url = API_website + endpoint_suffix.format(user_id=tokens["user_id"], start=start.strftime("%Y-%m-%d"), end=end.strftime("%Y-%m-%d"))
+def fetch_date_range(endpoint_suffix, start, end, tokens):
+    API_base_url = "https://api.fitbit.com"
+    headers = {
+        # TODO: properly format header tokens
+        'Authorization': f'Bearer {tokens["access_token"]}'
+    }
+
+    url = API_base_url + endpoint_suffix.format(user_id=tokens["user_id"], start=start.strftime("%Y-%m-%d"), end=end.strftime("%Y-%m-%d"))
     response = requests.get(url, headers=headers)
     print("attempting download", url, '\n')
     if response.status_code == 200:
@@ -91,14 +72,22 @@ def save_data(data, endpoint_name, user_id, start_date=None, end_date=None, file
         json.dump(data, data_file, indent=4)
         print(f'Data for {endpoint_name} has been saved to {filename}')
 
-def download_static_data(endpoint_name):
+def download_static_data(endpoint_name, tokens):
+    static_endpoints = {
+        # "activity": "",
+        # "social": "",
+        # "location": "",
+        # "settings": "",
+        "profile": "/1/user/{user_id}/profile.json"
+    }
+
     # if an endpoint_name is specified, ONLY download from that endpoint
     if endpoint_name:
         if endpoint_name not in tokens["scope"]:
             print("don't have permissions for that endpoint")
         
         if endpoint_name in static_endpoints.keys():
-            data = fetch_static(static_endpoints[endpoint_name])
+            data = fetch_static(static_endpoints[endpoint_name], tokens=tokens)
             if data:
                 save_data(data, endpoint_name, user_id=tokens["user_id"])
         else:
@@ -109,19 +98,30 @@ def download_static_data(endpoint_name):
     # if no endpoint_name is specified, download from all endpoints that you have permissions(tokens) for
     # Save data from static endpoints
     for endpoint_name in (tokens["scope"] & static_endpoints.keys()):
-        data = fetch_static(static_endpoints[endpoint_name])
+        data = fetch_static(static_endpoints[endpoint_name], tokens=tokens)
         if data:
             save_data(data, endpoint_name, user_id=tokens["user_id"])
     
 
-def download_date_range(start_date, end_date, filename=None, endpoint_name=None):
+def download_date_range(start_date, end_date, tokens, filename=None, endpoint_name=None):
+    # example documentation: https://dev.fitbit.com/build/reference/web-api/heartrate-timeseries/get-heartrate-timeseries-by-date-range/
+    daterange_endpoints = {
+        "heartrate": "/1/user/{user_id}/activities/heart/date/{start}/{end}.json",
+        # "nutrition": "",
+
+        # "activity": "/1/user/[user-id]/activities/[resource-path]/date/{start}/{end}.json"
+        # resource options: https://dev.fitbit.com/build/reference/web-api/activity-timeseries/get-activity-timeseries-by-date-range/#Resource-Options
+
+        "sleep": "/1.2/user/{user_id}/sleep/date/{start}/{end}.json"
+    }
+
     # if an endpoint_name is specified, ONLY download from that endpoint
     if endpoint_name:
         if endpoint_name not in tokens["scope"]:
             print("don't have permissions for that endpoint")
             
         if endpoint_name in daterange_endpoints.keys():
-            data = fetch_date_range(daterange_endpoints[endpoint_name], start=start_date, end=end_date)
+            data = fetch_date_range(daterange_endpoints[endpoint_name], start=start_date, end=end_date, tokens=tokens)
             if data:
                 save_data(data, endpoint_name, user_id=tokens["user_id"], start_date=start_date, end_date=end_date, filename=filename)
         else:
@@ -132,21 +132,29 @@ def download_date_range(start_date, end_date, filename=None, endpoint_name=None)
     # if no endpoint_name is specified, download from all endpoints that you have permissions(tokens) for
     # Get data from date range endpoints
     for endpoint_name in tokens["scope"] & daterange_endpoints.keys():
-        data = fetch_date_range(daterange_endpoints[endpoint_name], start=start_date, end=end_date)
+        data = fetch_date_range(daterange_endpoints[endpoint_name], start=start_date, end=end_date, tokens=tokens)
         if data:
             save_data(data, endpoint_name, user_id=tokens["user_id"], start_date=start_date, end_date=end_date, filename=filename)
 
 
 
-if __name__ == '__main__':
-    download_static_data("profile")
+def download_past_6_months(tokens_path="."):
+    with open(f"{tokens_path}/fitbit_tokens.json", 'r') as file:
+        print(f"token file found at {tokens_path}/fitbit_tokens.json")
+        tokens = json.load(file)
+    
+    if tokens["client_id"] == "example-23B4WW9":
+        print("client_id is example-23B4WW9 -> download is being skipped")
+        return
+
+    download_static_data("profile", tokens=tokens)
 
     end_date = datetime.now()
     start_date = end_date.replace(day=1)
 
     past_month_count = 6
     while past_month_count >= 1:
-        download_date_range(start_date=start_date, end_date=end_date)
+        download_date_range(start_date=start_date, end_date=end_date, tokens=tokens)
         end_date = start_date - timedelta(days=1)
         start_date = end_date - timedelta(days=calendar.monthrange(end_date.year, end_date.month)[1]-1)
         past_month_count -= 1

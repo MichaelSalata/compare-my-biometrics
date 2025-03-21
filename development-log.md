@@ -123,6 +123,11 @@ request_biometrics  |  `upload_to_datalake >> data_warehouse_transfer`
 
 - [x] encapsulate Airflow in Docker ✅ 2025-03-18
 
+- [ ] fix download_locally script not finding fitbit_tokens
+- [ ] generalize hardcoded fitbit credentials mounting on Docker container
+
+
+
 ### for each stage
 - get variables needed
 	- encode variables in environment or json file
@@ -135,8 +140,6 @@ request_biometrics  |  `upload_to_datalake >> data_warehouse_transfer`
 - [ ] format to parquet
 - [ ] upload
 - [ ] transfer to warehouse (BigQuery)
-	- look at Manuel's implementation
-
 
 #### download_locally needs
 - MY fitbit_tokens.json
@@ -150,6 +153,7 @@ request_biometrics  |  `upload_to_datalake >> data_warehouse_transfer`
 	- have fitbit_tokens_example.json?
 
 
+- [ ] remove demo from bucket and dataset
 ### STRETCH STRETCH - orchestrate dbt core
 request_biometrics  |  `upload_to_datalake >> data_warehouse_transfer >> dbt_transformations`
 

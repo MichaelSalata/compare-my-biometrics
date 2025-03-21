@@ -3,15 +3,6 @@ import pandas as pd
 import glob
 
 
-# def sleep_json_to_parquet(filename):
-
-
-
-
-
-dimension = "sleep"
-filename = f"{dimension}.json"
-
 
 def profile_json_to_parquet(filename):
     try:
@@ -43,7 +34,7 @@ def profile_json_to_parquet(filename):
     parquet_filename = filename.replace(".json", ".parquet")
     profile_df.to_parquet(parquet_filename)
     # print(profile_df.info())
-    print(profile_df.head())
+    print(f"Converted {filename} to {parquet_filename}")
 
 
 def sleep_json_to_parquet(filename):
@@ -178,13 +169,32 @@ def heartrate_json_to_parquet(filename):
         print(f'wrote {len(rows)} entries to {parquet_filename}')
     # print(heartrate_df.head())
 
-if __name__ == '__main__':
-    for filename in glob.glob("sleep*.json"):
-        sleep_json_to_parquet(filename)
+def profile_sleep_heartrate_jsons_to_parquet(base_path="/opt/airflow/dags"):
 
-    for filename in glob.glob("profile*.json"):
+    profile_files = glob.glob(f"{base_path}/profile*.json")
+    heartrate_files = glob.glob(f"{base_path}/heartrate*.json")
+    sleep_files = glob.glob(f"{base_path}/sleep*.json")
+
+    if (len(profile_files) + len(heartrate_files) + len(sleep_files)) == 0:
+        print("No Files Found -> parsing example data")
+        print(f"trying {base_path}/example_data/profile*.json")
+        profile_files = glob.glob(f"{base_path}/example_data/profile*.json")
+        print(f"trying {base_path}/example_data/heartrate*.json")
+        heartrate_files = glob.glob(f"{base_path}/example_data/heartrate*.json")
+        print(f"trying {base_path}/example_data/sleep*.json")
+        sleep_files = glob.glob(f"{base_path}/example_data/sleep*.json")
+        print(f"Attempting to parse files: {sleep_files}")
+        print(f"Attempting to parse files: {profile_files}")
+        print(f"Attempting to parse files: {heartrate_files}")
+    
+
+    for filename in sleep_files:
+        sleep_json_to_parquet(filename)
+    
+    for filename in profile_files:
         profile_json_to_parquet(filename)
 
-    for filename in glob.glob("heartrate*.json"):
+    for filename in heartrate_files:
         heartrate_json_to_parquet(filename)
+
 

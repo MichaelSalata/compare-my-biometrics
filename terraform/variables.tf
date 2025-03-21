@@ -5,7 +5,6 @@ variable "credentials" {
   #saved there as my-creds.json you could use default = "./keys/my-creds.json"
 }
 
-
 variable "project" {
   description = "Unique Project Name"
   default     = "dtc-de-446723"
@@ -23,19 +22,19 @@ variable "location" {
   default = "US"
 }
 
-variable "bq_dataset_name" {
-  description = ""
-  #Update the below to what you want your dataset to be called
-  default = "fitbit_dataset"
+variable "gcs_storage_class" {
+  description = "Bucket Storage Class"
+  default     = "STANDARD"
 }
+
 
 variable "gcs_bucket_name" {
   description = "Storage Bucket Name, must be unique"
   #Update the below to a unique bucket name
   default = "dtc-de-446723-fitbit-bucket"
 }
-
-variable "gcs_storage_class" {
-  description = "Bucket Storage Class"
-  default     = "STANDARD"
+variable "bq_dataset_name" {
+  description = ""
+  #Update the below to what you want your dataset to be called
+  default = "fitbit_dataset"
 }
