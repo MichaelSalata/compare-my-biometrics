@@ -64,17 +64,16 @@ def upload_to_gcs(bucket_name, max_retries=3):
 
 default_args = {
     "owner": "airflow",
-    "start_date": days_ago(1),
-    "depends_on_past": False,
+    "start_date": days_ago(1),  # TODO: update this to when the fitbit was first worn
     "retries": 1,
 }
 
 with DAG(
     dag_id="fitbit_data_to_gcs_dag",
-    schedule_interval="@monthly",
+    description='Download Fitbit data and upload to GCS and BigQuery',
     default_args=default_args,
+    schedule_interval=None,
     catchup=False,
-    max_active_runs=3,
     tags=['dtc-de'],
 ) as dag:
     download_locally_task = PythonOperator(
