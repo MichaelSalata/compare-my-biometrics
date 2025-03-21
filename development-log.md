@@ -136,11 +136,10 @@ request_biometrics  |  `upload_to_datalake >> data_warehouse_transfer`
 
 - test script on example fitbit data
 
-- [ ] download_locally
-- [ ] format to parquet
-- [ ] upload
-- [ ] transfer to warehouse (BigQuery)
-
+- [x] download_locally ✅ 2025-03-20
+- [x] upload ✅ 2025-03-20
+- [x] transfer to warehouse (BigQuery) ✅ 2025-03-20
+- [x] transfer to warehouse (BigQuery) ✅ 2025-03-20
 #### download_locally needs
 - MY fitbit_tokens.json
 	- user_id
@@ -152,8 +151,8 @@ request_biometrics  |  `upload_to_datalake >> data_warehouse_transfer`
 	- put "example" in like fitbit_tokens.json : user_id
 	- have fitbit_tokens_example.json?
 
-
-- [ ] remove demo from bucket and dataset
+- [x] remove demo from bucket and dataset ✅ 2025-03-20
+- [ ] remove extra dependencies for running the airflow container
 ### STRETCH STRETCH - orchestrate dbt core
 request_biometrics  |  `upload_to_datalake >> data_warehouse_transfer >> dbt_transformations`
 
