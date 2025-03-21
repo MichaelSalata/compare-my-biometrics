@@ -37,7 +37,11 @@ Installation
 - [example image](https://miro.medium.com/v2/resize:fit:720/format:webp/1*UJHMOYsFZvrBmpNjFfpBJA.jpeg)
 - insert the sensitive fitbit API tokens into the `fitbit_tokens.json` file in `airflow-gcp/dags`
 - `pip install fitbit`
-- run gather_keys script
+- run gather_keys script in the a
+ 	- stores your fitbit authentication tokens locally (in fitbit_tokens.json) 
+  	- allows your data to be downloaded for analysis
+   	- it may need to be rerun later when your access token expires
+  - 	- 
 - run download_data script
 - run format_to_parquet script
 
