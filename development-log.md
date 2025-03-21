@@ -357,3 +357,8 @@ uris = ['gs://dtc-de-446723-fitbit-bucket/sleep*.parquet']
 - installing dbt-core per [their website instructions](https://docs.getdbt.com/docs/core/installation-overview)
 
 - Looker Studio -> Create -> BigQuery -> project/dataset/table -> Create Report
+
+- found [dbt-bigquer docker image](https://github.com/dbt-labs/dbt-bigquery/pkgs/container/dbt-bigquery)
+- pulled dbt-bigquery docker image with `docker pull ghcr.io/dbt-labs/dbt-bigquery:1.9.latest`
+
+- took the docker build files from [dbt-bigquery official repo](https://github.com/dbt-labs/dbt-adapters/tree/main/dbt-bigquery/docker)
