@@ -138,10 +138,15 @@ def download_date_range(start_date, end_date, tokens, filename=None, endpoint_na
 
 
 
-def download_past_6_months(tokens_path):
+def download_past_6_months(tokens_path="."):
     with open(f"{tokens_path}/fitbit_tokens.json", 'r') as file:
+        print(f"token file found at {tokens_path}/fitbit_tokens.json")
         tokens = json.load(file)
     
+    if tokens["client_id"] == "example-23B4WW9":
+        print("client_id is example-23B4WW9 -> download is being skipped")
+        return
+
     download_static_data("profile", tokens=tokens)
 
     end_date = datetime.now()

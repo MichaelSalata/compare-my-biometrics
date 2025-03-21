@@ -16,12 +16,13 @@ import pyarrow.parquet as pq
 from download_locally import download_past_6_months
 from fitbit_json_to_parquet import profile_sleep_heartrate_jsons_to_parquet
 
-PROJECT_ID = os.environ.get("GCP_PROJECT_ID", "dtc-de-446723")
-GCP_GCS_BUCKET = os.environ.get("GCP_GCS_BUCKET", f"{PROJECT_ID}-fitbit-bucket")
-BIGQUERY_DATASET = os.environ.get("BIGQUERY_DATASET", 'fitbit_dataset2')
-# CREDENTIALS_FILE = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS_PATH", "/.google/credentials/google_credentials.json")
+PROJECT_ID = str(os.environ.get("GCP_PROJECT_ID", "dtc-de-446723"))
+GCP_GCS_BUCKET = str(os.environ.get("GCP_GCS_BUCKET", f"{PROJECT_ID}-fitbit-bucket"))
+BIGQUERY_DATASET = str(os.environ.get("BIGQUERY_DATASET", "fitbit_dataset"))
+# CREDENTIALS_FILE = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS", "google_credentials.json")
 
 path_to_local_home = os.environ.get("AIRFLOW_HOME")
+
 
 def upload_to_gcs(bucket_name, max_retries=3):
     client = storage.Client()
@@ -31,7 +32,7 @@ def upload_to_gcs(bucket_name, max_retries=3):
     bucket = client.bucket(bucket_name)
     CHUNK_SIZE = 8 * 1024 * 1024
 
-    fitbit_data_regex = ["profile*.json", "heartrate*.json", "sleep*.json"]
+    fitbit_data_regex = ["*.parquet"]
     for regex in fitbit_data_regex:
         for blob_name in glob.glob(regex):
             blob = bucket.blob(blob_name)
@@ -45,15 +46,17 @@ def upload_to_gcs(bucket_name, max_retries=3):
                     
                     if storage.Blob(bucket=bucket, name=blob_name).exists(client):
                         print(f"Verification successful for {blob_name}")
-                        return
+                        break
                     else:
                         print(f"Verification failed for {blob_name}, retrying...")
                 except Exception as e:
                     print(f"Failed to upload {blob_name} to GCS: {e}")
                 
-                time.sleep(2)  
+                time.sleep(1)
             
             print(f"Giving up on {blob_name} after {max_retries} attempts.")
+    
+    return
 
 
 default_args = {
@@ -64,31 +67,35 @@ default_args = {
 }
 
 with DAG(
-    dag_id="data_ingestion_gcs_dag",
+    dag_id="fitbit_data_to_gcs_dag",
     schedule_interval="@monthly",
     default_args=default_args,
     catchup=False,
     max_active_runs=3,
     tags=['dtc-de'],
 ) as dag:
-    # TODO: adapt this to my download_locally
-    download_locally = PythonOperator(
-        task_id="download_locally",
+    download_locally_task = PythonOperator(
+        task_id="download_locally_task",
         python_callable=download_past_6_months,
+        op_kwargs={
+            "tokens_path": path_to_local_home,
+        },
     )
 
-    # TODO: adapt this to my fitbit_json_to_parquet
-    format_to_parquet_task = PythonOperator(
-        task_id="format_to_parquet",
-        python_callable=profile_sleep_heartrate_jsons_to_parquet
+    fitbit_to_parquet_task = PythonOperator(
+        task_id="fitbit_to_parquet_task",
+        python_callable=profile_sleep_heartrate_jsons_to_parquet,
+        op_kwargs={
+            "base_path": path_to_local_home,
+        },
     )
 
-    local_to_gcs = PythonOperator(
-        task_id="local_to_gcs",
+    upload_to_gcs_task = PythonOperator(
+        task_id="upload_to_gcs_task",
         python_callable=upload_to_gcs,
         op_kwargs={
-            "bucket_name": GCP_GCS_BUCKET
-        }
+            "bucket_name": GCP_GCS_BUCKET,
+        },
     )
 
     bq_external_sleep_table = BigQueryCreateExternalTableOperator(
@@ -103,7 +110,7 @@ with DAG(
                 "sourceFormat": "PARQUET",
                 "sourceUris": [f"gs://{GCP_GCS_BUCKET}/sleep*.parquet"],
             },
-        }
+        },
     )
 
     bq_external_heartrate_table = BigQueryCreateExternalTableOperator(
@@ -118,7 +125,7 @@ with DAG(
                 "sourceFormat": "PARQUET",
                 "sourceUris": [f"gs://{GCP_GCS_BUCKET}/heartrate*.parquet"],
             },
-        }
+        },
     )
 
     bq_external_profile_table = BigQueryCreateExternalTableOperator(
@@ -133,7 +140,7 @@ with DAG(
                 "sourceFormat": "PARQUET",
                 "sourceUris": [f"gs://{GCP_GCS_BUCKET}/profile*.parquet"],
             },
-        }
+        },
     )
 
-    download_locally >> format_to_parquet_task >> local_to_gcs >> [bq_external_profile_table, bq_external_heartrate_table, bq_external_sleep_table]
+    download_locally_task >> fitbit_to_parquet_task >> upload_to_gcs_task >> bq_external_profile_table >> bq_external_heartrate_table >> bq_external_sleep_table
