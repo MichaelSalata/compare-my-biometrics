@@ -163,6 +163,8 @@ request_biometrics  |  `upload_to_datalake >> data_warehouse_transfer >> dbt_tra
 	- manuel's README
 	- data proj draft README
 
+**WHAT PROBLEM DOES IT SOLVE**? - course project req
+
 
 ### Project Assembly instructions
 - use [[development-log#Project Step Log]] below
@@ -209,25 +211,6 @@ request_biometrics  |  `upload_to_datalake >> data_warehouse_transfer >> dbt_tra
 	-  [DataTalksClub](https://github.com/DataTalksClub)/ [data-engineering-zoomcamp](https://github.com/DataTalksClub/data-engineering-zoomcamp)/ [05-batch](https://github.com/DataTalksClub/data-engineering-zoomcamp/tree/main/05-batch "05-batch")
 	-  [ManuelGuerra1987](https://github.com/ManuelGuerra1987) /  [data-engineering-zoomcamp-notes](https://github.com/ManuelGuerra1987/data-engineering-zoomcamp-notes)  / [5_Batch-Processing-Spark](https://github.com/ManuelGuerra1987/data-engineering-zoomcamp-notes/tree/main/5_Batch-Processing-Spark "5_Batch-Processing-Spark")
 
-
-
-## Rough Outline
-PRE: 
-- [x] setup for repo of data proj template for it ✅ 2025-03-04
-- [x] add design doc ✅ 2025-03-04
-
-
-- [ ] prototype py script: connect and download from fitbit/google health data API  
-heart
-
-- [ ] get minimalist Airflow working
-1. API req my google data
-2. Clean the data
-	- SQL
-	- pandas
-3. Copy
-
-- [ ] get minimalist Airflow working on EC2
 
 # Resources
  [getting fitbit CLIENT_ID and CLIENT_SECRET - gpt](https://chatgpt.com/c/67945566-6294-8008-963e-90d98c8ffd08)
@@ -311,14 +294,14 @@ FITBIT_OAUTH_CLIENT_SECRET = ''                  # fitbit secret (from dev.fitbi
 	- adding in user_id
 	- user_id going null
 	- datetime format changing
-# Project Step Log
+# Progress Log
 - Clone [ny-taxi-pipeline](https://github.com/MichaelSalata/ny-taxi-pipeline)
 - `gh auth login`
 - `git remote set-url origin https://github.com/MichaelSalata/compare-fitbit-periods.git`
 - dev.fitbit.com > Manage > Register An App > Log in
 	- `Continue with Google`
 - ![example app](https://miro.medium.com/v2/resize:fit:720/format:webp/1*UJHMOYsFZvrBmpNjFfpBJA.jpeg)
-- insert the sensitive fitbit API tokens into the `.env` file
+- insert the sensitive fitbit API tokens into the `fitbit_tokens.json` file
 - `pip install fitbit`
 - run gather_keys script
 - run download_data script
@@ -375,6 +358,17 @@ uris = ['gs://dtc-de-446723-fitbit-bucket/sleep*.parquet']
 
 - removed a bunch of example files
 - added columns and descriptions to schema
+
+- coded staging
+- coded fact merging
+
+- create Looker Studio project
+
+- Airflow
+	- got download & formatting working with fitbit Auth
+	- got BQ upload & SQL injection working with fitbit Auth download
+	- got Airflow to find & use example data when no download
+
 
 - installing dbt-core per [their website instructions](https://docs.getdbt.com/docs/core/installation-overview)
 
