@@ -1,4 +1,6 @@
 apache-airflow-providers-google
 pyarrow
-requests
 pandas
+dbt-core
+dbt-bigquery
+requests

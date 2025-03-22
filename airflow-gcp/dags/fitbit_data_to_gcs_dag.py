@@ -5,13 +5,13 @@ import time
 
 from airflow import DAG
 from airflow.utils.dates import days_ago
-# from airflow.operators.bash import BashOperator
+from airflow.operators.bash import BashOperator
 from airflow.operators.python import PythonOperator
 
 from google.cloud import storage
 from airflow.providers.google.cloud.operators.bigquery import BigQueryCreateExternalTableOperator
-import pyarrow.csv as pv
-import pyarrow.parquet as pq
+# import pyarrow.csv as pv
+# import pyarrow.parquet as pq
 
 from download_locally import download_past_6_months
 from fitbit_json_to_parquet import profile_sleep_heartrate_jsons_to_parquet
@@ -21,7 +21,7 @@ GCP_GCS_BUCKET = str(os.environ.get("GCP_GCS_BUCKET", f"{PROJECT_ID}-fitbit-buck
 BIGQUERY_DATASET = str(os.environ.get("BIGQUERY_DATASET", "fitbit_dataset"))
 # CREDENTIALS_FILE = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS", "google_credentials.json")
 
-path_to_local_home = os.environ.get("AIRFLOW_HOME")
+local_home_path = os.environ.get("AIRFLOW_HOME")
 
 
 def upload_to_gcs(bucket_name, max_retries=3):
@@ -74,14 +74,14 @@ with DAG(
     schedule_interval="@monthly",
     default_args=default_args,
     catchup=False,
-    max_active_runs=3,
+    max_active_runs=1,
     tags=['dtc-de'],
 ) as dag:
     download_locally_task = PythonOperator(
         task_id="download_locally_task",
         python_callable=download_past_6_months,
         op_kwargs={
-            "tokens_path": path_to_local_home,
+            "tokens_path": local_home_path,
         },
     )
 
@@ -89,7 +89,7 @@ with DAG(
         task_id="fitbit_to_parquet_task",
         python_callable=profile_sleep_heartrate_jsons_to_parquet,
         op_kwargs={
-            "base_path": path_to_local_home,
+            "base_path": local_home_path,
         },
     )
 
@@ -146,4 +146,10 @@ with DAG(
         },
     )
 
-    download_locally_task >> fitbit_to_parquet_task >> upload_to_gcs_task >> bq_external_profile_table >> bq_external_heartrate_table >> bq_external_sleep_table
+    dbt_transforms_task = BashOperator(
+        task_id='dbt_transforms_task',
+        bash_command=f'cd {local_home_path}/dbt_resources && dbt build',
+        trigger_rule="all_success"
+    )
+
+    download_locally_task >> fitbit_to_parquet_task >> upload_to_gcs_task >> bq_external_profile_table >> bq_external_heartrate_table >> bq_external_sleep_table >> dbt_transforms_task

@@ -11,8 +11,6 @@ RUN apt-get update -qq && apt-get install -y --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt .
-
 # Install Google Cloud SDK
 ARG CLOUD_SDK_VERSION=480.0.0
 ENV GCLOUD_HOME=/opt/google-cloud-sdk
@@ -32,6 +30,8 @@ RUN DOWNLOAD_URL="https://dl.google.com/dl/cloudsdk/channels/rapid/downloads/goo
     && gcloud --version
 
 USER airflow
+RUN mkdir /home/airflow/.dbt
+COPY requirements.txt .
 
 COPY dags/fitbit_tokens.json .
 RUN pip install --no-cache-dir -r requirements.txt
