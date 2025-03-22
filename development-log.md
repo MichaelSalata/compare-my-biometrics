@@ -149,7 +149,16 @@ request_biometrics  |  `upload_to_datalake >> data_warehouse_transfer >> dbt_tra
 
 **WHAT PROBLEM DOES IT SOLVE**? - course project req
 
-
+- [ ] add Special Mentions part 
+Thanks to Alexey and his community from [datatalks club](https://datatalks.club/), create this project without the course of [Data Engineering](https://github.com/DataTalksClub/data-engineering-zoomcamp) would have been much more difficult.
+- [ ] future improvements section
+	- ~~partition core tables, for performance~~
+	- Add a cost analysis of a full pipeline run
+	- extract more value from steam reviews --> new dashboard ?
+	- USE CASE: matrix factorization for recommendations
+	- ~~github action for upload spark script to bucket~~
+	- More tests on the pipeline
+	- Fully normalize the tables as exercise
 ### Project Assembly instructions
 - use [[development-log#Project Step Log]] below
 - Terraform
@@ -362,3 +371,6 @@ uris = ['gs://dtc-de-446723-fitbit-bucket/sleep*.parquet']
 - pulled dbt-bigquery docker image with `docker pull ghcr.io/dbt-labs/dbt-bigquery:1.9.latest`
 
 - took the docker build files from [dbt-bigquery official repo](https://github.com/dbt-labs/dbt-adapters/tree/main/dbt-bigquery/docker)
+
+- installed dbt-bigquery
+- setup and link ~/.dbt/profile.yml to project and injected SQL code into bq 
