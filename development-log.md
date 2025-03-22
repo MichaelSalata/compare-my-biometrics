@@ -373,4 +373,5 @@ uris = ['gs://dtc-de-446723-fitbit-bucket/sleep*.parquet']
 - took the docker build files from [dbt-bigquery official repo](https://github.com/dbt-labs/dbt-adapters/tree/main/dbt-bigquery/docker)
 
 - installed dbt-bigquery
-- setup and link ~/.dbt/profile.yml to project and injected SQL code into bq 
+	- pip install dbt-core dbt-bigquery
+- setup and link ~/.dbt/profile.yml to project and injected SQL code into bq
