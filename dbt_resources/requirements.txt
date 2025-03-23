@@ -1,6 +1,2 @@
-apache-airflow-providers-google
-pyarrow
-pandas
 dbt-core
 dbt-bigquery
-requests
