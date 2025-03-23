@@ -38,11 +38,11 @@ def upload_to_gcs(bucket_name, max_retries=3):
     if len(data_files) == 0:
         print("No Data Files Found -> uploading example data")
         regex = os.path.join(airflow_path,"example_data","*.parquet")
-        data_files = glob.glob(regex)
+        data_files = glob.glob(regex)   
     
     for file_w_path in data_files:
         file_name = os.path.basename(file_w_path)
-        blob = bucket.blob(file_name)
+        blob = bucket.blob(file_name)   # IMPORTANT: path on str passed into bucket.blob will be were it's stored in the bucket
         blob.chunk_size = CHUNK_SIZE
         
         for attempt in range(max_retries):
