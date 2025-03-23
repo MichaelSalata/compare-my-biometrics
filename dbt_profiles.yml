@@ -8,4 +8,4 @@ compare_my_biometrics_docker_profile:
       dataset: "{{ env_var('BIGQUERY_DATASET') }}"
       location: US
       threads: 4
-      keyfile: "{{ env_var('GOOGLE_CREDENTIALS') }}"
+      keyfile: "{{ env_var('GOOGLE_APPLICATION_CREDENTIALS') }}"
