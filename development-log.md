@@ -228,9 +228,16 @@ Thanks to Alexey and his community from [datatalks club](https://datatalks.club
 - GCP creation & permissions for (project, bucket, dataset)
 - test instructions
 
-- [ ] add example data
+- [ ] add example data to project
 - [ ] tell user about date range for example data
 - [ ] tell user about Partitioning in DBT
+
+- [ ] create instructions on how to spin up appropriate GCP resources
+	- [ ] install Terraform, run terraform commands in project terraform directory
+	- [ ] create
+
+- [ ] **==look up how I can create a create a service account json with a monetary processing restriction==**
+- [ ] instruct user how to create a service account json
 
 - [ ] instruct user on running the gather_tokens script in the hardcoded location
 - [ ] tell user to put their google credentials in xyz location
@@ -238,6 +245,16 @@ Thanks to Alexey and his community from [datatalks club](https://datatalks.club
 		- point to Terraform IaC
 		- point to DBT transformations
 
+- [ ] instructions on how the docker command to run it
+
+- [ ] make dag run immediately on start
+	**OR**
+- [ ] give instructions on
+	- log with airflow  airflow
+	- run dag
+
+## PHASE 7 - STRETCH post README -> more DBT transformations
+?
 
 ## STRETCH Goals 
 *aka Goals:  3/24 -to- 4/21*
@@ -252,6 +269,9 @@ Thanks to Alexey and his community from [datatalks club](https://datatalks.club
 - [ ] **run upload script with an Airflow pipeline**
 	- make it **idempotent**
 	- schedule it to run once a month
+
+- [ ] make pipeline **idempotent
+- [ ] schedule it to run once a month**
 
 - [ ] dynamically use user-id in created GCP project/bucket/bigquery dataset with Terraform
 
