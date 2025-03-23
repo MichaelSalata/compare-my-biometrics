@@ -1,4 +1,4 @@
-compare_my_biometrics_docker_profile:
+compare_my_biometrics_profile:
   target: dev
   outputs:
     dev:
