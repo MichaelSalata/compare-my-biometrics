@@ -32,5 +32,6 @@ resource "google_storage_bucket" "bucket-name" {
 resource "google_bigquery_dataset" "dataset-name" {
   dataset_id = var.bq_dataset_name
   location   = var.location
+  delete_contents_on_destroy = true
 }
 

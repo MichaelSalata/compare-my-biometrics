@@ -5,13 +5,13 @@ import time
 
 from airflow import DAG
 from airflow.utils.dates import days_ago
-# from airflow.operators.bash import BashOperator
+from airflow.operators.bash import BashOperator
 from airflow.operators.python import PythonOperator
 
 from google.cloud import storage
 from airflow.providers.google.cloud.operators.bigquery import BigQueryCreateExternalTableOperator
-import pyarrow.csv as pv
-import pyarrow.parquet as pq
+# import pyarrow.csv as pv
+# import pyarrow.parquet as pq
 
 from download_locally import download_past_6_months
 from fitbit_json_to_parquet import profile_sleep_heartrate_jsons_to_parquet
@@ -21,7 +21,7 @@ GCP_GCS_BUCKET = str(os.environ.get("GCP_GCS_BUCKET", f"{PROJECT_ID}-fitbit-buck
 BIGQUERY_DATASET = str(os.environ.get("BIGQUERY_DATASET", "fitbit_dataset"))
 # CREDENTIALS_FILE = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS", "google_credentials.json")
 
-path_to_local_home = os.environ.get("AIRFLOW_HOME")
+airflow_path = os.environ.get("AIRFLOW_HOME")
 
 
 def upload_to_gcs(bucket_name, max_retries=3):
@@ -33,33 +33,32 @@ def upload_to_gcs(bucket_name, max_retries=3):
     CHUNK_SIZE = 8 * 1024 * 1024
 
     # fitbit_data_regex = ["*.parquet"]
-    regex = "*.parquet"
-
+    regex = "*.parquet"     # currently download_locally.py dumps it's data in the dags folder
     data_files = glob.glob(regex)
     if len(data_files) == 0:
         print("No Data Files Found -> uploading example data")
-        regex = "/opt/airflow/example_data/" + regex
+        regex = os.path.join(airflow_path,"example_data","*.parquet")
+        data_files = glob.glob(regex)   
     
-    for blob_name in glob.glob(regex):
-        blob = bucket.blob(blob_name)
+    for file_w_path in data_files:
+        file_name = os.path.basename(file_w_path)
+        blob = bucket.blob(file_name)   # IMPORTANT: path on str passed into bucket.blob will be were it's stored in the bucket
         blob.chunk_size = CHUNK_SIZE
         
         for attempt in range(max_retries):
             try:
-                print(f"Uploading {blob_name} to {bucket_name} (Attempt {attempt + 1}/{max_retries})...")
-                blob.upload_from_filename(blob_name)
+                print(f"Uploading {file_w_path} to {bucket_name} (Attempt {attempt + 1}/{max_retries})...")
+                blob.upload_from_filename(file_w_path)
                 
-                if storage.Blob(bucket=bucket, name=blob_name).exists(client):
-                    print(f"Upload Verification successful for gs://{bucket_name}/{blob_name}")
+                if blob.exists():
+                    print(f"Upload Verification successful for gs://{bucket_name}/{file_name}")
                     break
                 else:
-                    print(f"Verification failed for {blob_name}, retrying...")
+                    print(f"Verification failed for {file_w_path}, retrying...")
             except Exception as e:
-                print(f"Failed to upload {blob_name} to GCS: {e}")
+                print(f"Failed to upload {file_w_path} to GCS: {e}")
             
-            time.sleep(1)
-            
-    return
+            time.sleep(2)
 
 
 default_args = {
@@ -81,7 +80,7 @@ with DAG(
         task_id="download_locally_task",
         python_callable=download_past_6_months,
         op_kwargs={
-            "tokens_path": path_to_local_home,
+            "tokens_path": airflow_path,
         },
     )
 
@@ -89,7 +88,7 @@ with DAG(
         task_id="fitbit_to_parquet_task",
         python_callable=profile_sleep_heartrate_jsons_to_parquet,
         op_kwargs={
-            "base_path": path_to_local_home,
+            "base_path": airflow_path,
         },
     )
 
@@ -146,4 +145,10 @@ with DAG(
         },
     )
 
-    download_locally_task >> fitbit_to_parquet_task >> upload_to_gcs_task >> bq_external_profile_table >> bq_external_heartrate_table >> bq_external_sleep_table
+    dbt_transforms_task = BashOperator(
+        task_id='dbt_transforms_task',
+        bash_command=f'cd {airflow_path}/dbt_resources && dbt build',
+        trigger_rule="all_success"
+    )
+
+    download_locally_task >> fitbit_to_parquet_task >> upload_to_gcs_task >> bq_external_profile_table >> bq_external_heartrate_table >> bq_external_sleep_table >> dbt_transforms_task

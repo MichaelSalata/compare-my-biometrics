@@ -49,7 +49,7 @@ x-airflow-common:
   # In order to add custom dependencies or upgrade provider packages you can use your extended image.
   # Comment the image line, place your Dockerfile in the directory where you placed the docker-compose.yaml
   # and uncomment the "build" line below, Then run `docker-compose build` to build the images.
-  image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:2.10.4}
+  image: ${AIRFLOW_IMAGE_NAME:-apache/airflow}:reqs-lockedv0.1
   build:
     context: .
     dockerfile: ./airflow.Dockerfile
@@ -68,9 +68,11 @@ x-airflow-common:
     PG_PORT: "${PG_PORT}"
     PG_DATABASE: "${PG_DATABASE}"
   volumes:
+    - ../dbt_resources:/opt/airflow/dbt_resources
+    - ../dbt_profiles.yml:/home/airflow/.dbt/profiles.yml
     - ${GOOGLE_CREDENTIALS}:/opt/airflow/google_credentials.json:ro
-    - ${AIRFLOW_PROJ_DIR:-.}/dags/fitbit_tokens.json:/opt/airflow/fitbit_tokens.json
     - ${AIRFLOW_PROJ_DIR:-.}/example_data:/opt/airflow/example_data
+    - ${AIRFLOW_PROJ_DIR:-.}/dags/fitbit_tokens.json:/opt/airflow/fitbit_tokens.json
     - ${AIRFLOW_PROJ_DIR:-.}/dags:/opt/airflow/dags
     - ${AIRFLOW_PROJ_DIR:-.}/logs:/opt/airflow/logs
     - ${AIRFLOW_PROJ_DIR:-.}/config:/opt/airflow/config

@@ -141,6 +141,61 @@ request_biometrics  |  `upload_to_datalake >> data_warehouse_transfer`
 ### STRETCH STRETCH - orchestrate dbt core
 request_biometrics  |  `upload_to_datalake >> data_warehouse_transfer >> dbt_transformations`
 
+- [ ] see how other people orchestrate dbt
+	- how do they handle dbt files being in other directories?
+		- mount???????
+- [ ] add bash operator import
+from airflow.operators.bash import BashOperator
+#### [steam-data-engineering](https://github.com/VicenteYago/steam-data-engineering/tree/main)
+- steam-data=engineering
+	- bash command - [steam ingest reviews](https://github.com/VicenteYago/steam-data-engineering/blob/main/airflow/dags/custom_dags/reviews_ingest_dag.py)
+		- DBT_DIR = os.path.join(AIRFLOW_HOME, "dbt")
+		- BashOperator
+
+```python
+	run_dbt_task = BashOperator(
+	task_id='run_dbt',
+	bash_command=f'cd {DBT_DIR} && dbt run --profile airflow',
+	trigger_rule="all_success"
+	)
+```
+
+- requirements.txt has
+	- apache-airflow-providers-google
+	- pyarrow
+	- kaggle
+	- dbt-bigquery
+	- pandas?????
+-  volumes:
+	- ./dags:/opt/airflow/dags
+	- ./logs:/opt/airflow/logs
+	- ./plugins:/opt/airflow/plugins
+	- ../dbt:/opt/airflow/dbt
+	- /home/vyago-gcp/.google/credentials/:/.google/credentials:ro
+	- /home/vyago-gcp/.dbt:/home/airflow/.dbt:ro
+#### [ShowPulse_Ticketmaster](https://github.com/nburkett/ShowPulse_Ticketmaster/tree/main)
+
+- compose volumns
+	- ../dbt:/dbt
+    - ~/.dbt:/home/airflow/.dbt:ro
+- requirements
+	- apache-airflow-providers-google
+	- pyarrow
+	- pandas
+	- dbt-bigquery
+
+#### OTHER
+lixx21 repo - [airflow-dbt-gcp](https://github.com/lixx21/airflow-dbt-gcp)
+ng-hiep repo - [airflow-dbt-gcp-datapipeline](https://github.com/ng-hiep/airflow-dbt-gcp-datapipeline)
+
+- [x] get dbt the profile info ✅ 2025-03-21
+- [x] pip install dbt & it's requirements ✅ 2025-03-21
+- [x] only orchestrate on trigger_rule="all_success" ✅ 2025-03-21
+    
+
+### get dbt to run in Airflow image
+
+
 ## PHASE 6 - Assemble the README
 
 - [ ] RESOURCES:
@@ -149,7 +204,22 @@ request_biometrics  |  `upload_to_datalake >> data_warehouse_transfer >> dbt_tra
 	- data proj draft README
 
 **WHAT PROBLEM DOES IT SOLVE**? - course project req
+- [ ] add dev.fitbit project creation image to repo and readme
 
+- add personal data config files to repo
+	- [ ] add `fitbit_tokens.json`
+	- [ ] add `.env` 
+
+- [ ] add Special Mentions part 
+Thanks to Alexey and his community from [datatalks club](https://datatalks.club/), create this project without the course of [Data Engineering](https://github.com/DataTalksClub/data-engineering-zoomcamp) would have been much more difficult.
+- [ ] future improvements section
+	- ~~partition core tables, for performance~~
+	- Add a cost analysis of a full pipeline run
+	- extract more value from steam reviews --> new dashboard ?
+	- USE CASE: matrix factorization for recommendations
+	- ~~github action for upload spark script to bucket~~
+	- More tests on the pipeline
+	- Fully normalize the tables as exercise
 
 ### Project Assembly instructions
 - use [[development-log#Project Step Log]] below
@@ -358,3 +428,12 @@ uris = ['gs://dtc-de-446723-fitbit-bucket/sleep*.parquet']
 - installing dbt-core per [their website instructions](https://docs.getdbt.com/docs/core/installation-overview)
 
 - Looker Studio -> Create -> BigQuery -> project/dataset/table -> Create Report
+
+- found [dbt-bigquer docker image](https://github.com/dbt-labs/dbt-bigquery/pkgs/container/dbt-bigquery)
+- pulled dbt-bigquery docker image with `docker pull ghcr.io/dbt-labs/dbt-bigquery:1.9.latest`
+
+- took the docker build files from [dbt-bigquery official repo](https://github.com/dbt-labs/dbt-adapters/tree/main/dbt-bigquery/docker)
+
+- installed dbt-bigquery
+	- pip install dbt-core dbt-bigquery
+- setup and link ~/.dbt/profile.yml to project and injected SQL code into bq
