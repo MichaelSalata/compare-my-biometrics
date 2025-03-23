@@ -1,79 +1,83 @@
 **Compare My Biometrics**
 -----------------------
-**Goals**:
-- My fitbit wellness report is broken
-- Visualize changes in biometrics between timeframes and learn the health impact of life changes
-	- ADHD meds
-	- moving
-	- exercising
-- Practice tech involved the DataTalks bootcamp
+# **Goals**:
+- Visualize changes in health across time periods
+	- **WHY**: my fitbit wellness report is currently broken and I would like to see how these things impact my health
+		- new medications
+		- exercising
+		- stressful life events
+- Learn and Practice building a pipeline in the [DataTalks.club Data Engineering Course](https://github.com/DataTalksClub/data-engineering-zoomcamp)
 
-**Constraints**:
-- Fits in my DataTalks.club Data Engineering Course Schedule
+# **Constraints**
+- Meet submission deadlines for DataTalks.club Course Schedule
 	- meetings with real clients and and gathering data for a novel project can balloon out the time commitment
 
-Result - [Looker Studio Data Presentation](https://lookerstudio.google.com/reporting/08b71d97-dc73-4d66-a694-e027c0d68330)
+# Result - [Looker Studio Data Presentation](https://lookerstudio.google.com/reporting/08b71d97-dc73-4d66-a694-e027c0d68330)
 
-PLACE HOLDER INFORMATION BELOW
----
-Installation
-----------------------
-### Clone this repo to your computer.
-### Download the data
-* Download data files into a "data" folder 
-    * create an account at [insert_website.com](http://www.insert_website.com)
-    * You can find data_file1 at [this link](http://google.com).
-    * You can find data_file2 at [this link](http://google.com).
-* Extract all of the `.zip` files you downloaded.
-    * On OSX, you can run `find ./ -name \*.zip -exec unzip {} \;`.
-    * At the end, you should have a bunch of text files called `Acquisition_YQX.txt`, and `Performance_YQX.txt`, where `Y` is a year, and `X` is a number from `1` to `4`.
-* delete all the '.zip' files
 
-### Setup
-- Clone this Repo
-- dev.fitbit.com > Manage > [Register An App](https://dev.fitbit.com/apps/new/) > [Log in](https://dev.fitbit.com/login)
+# Technologies Used
+
+
+# Building this Yourself
+## Requirements
+- [Docker](https://docs.docker.com/get-docker/)
+- [Docker Compose](https://docs.docker.com/compose/install/) v2
+
+
+## Installation
+
+### Clone this repo to your computer
+
+```bash
+git clone <repo-url>
+cd <repo-dir>
+```
+
+### OPTIONAL: Include Your Fitbit Data
+By default, the project uses example fitbit data if you cannot include your own.
+
+#### Steps to use your Fitbit data with the project
+##### Find your CLIENT_ID and CLIENT_SECRET
+- [dev.fitbit.com](https://dev.fitbit.com/) > Manage > [Register An App](https://dev.fitbit.com/apps/new/) > [Log in](https://dev.fitbit.com/login)
 	- `Continue with Google` if you use your google account
-	- **IMPORTANT**: the project `Personal` and using Callback URL `http://127.0.0.1:8080/`
-- [example image](https://miro.medium.com/v2/resize:fit:720/format:webp/1*UJHMOYsFZvrBmpNjFfpBJA.jpeg)
-- insert the sensitive fitbit API tokens into the `fitbit_tokens.json` file in `airflow-gcp/dags`
-- `pip install fitbit`
-- run gather_keys script in the a
+	- **IMPORTANT**: mark the project `Personal` and use Callback URL `http://127.0.0.1:8080/`
+	- [example image](https://miro.medium.com/v2/resize:fit:720/format:webp/1*UJHMOYsFZvrBmpNjFfpBJA.jpeg)
+##### Find your ACCESS_TOKEN
+
+OPTION 1:
+- run this in the dag directory
+```bash
+python3 /gather_keys_oauth2.py CLIENT_ID CLIENT_SECRET
+```
+- replace CLIENT_ID and CLIENT_SECRET with what was shown on your app
+- this writes `fitbit_tokens.json` in it the dag directory
+
  	- stores your fitbit authentication tokens locally (in fitbit_tokens.json) 
   	- allows your data to be downloaded for analysis
-   	- it may need to be rerun later when your access token expires
-  - 	- 
-- run download_data script
-- run format_to_parquet script
+   	- `python3 /gather_keys_oauth2.py` may need to be rerun later when your access token expires
+	   	- note: it reuses CLIENT_ID and CLIENT_SECRET which get stored in `fitbit_tokens.json`
 
-Settings
---------------------
 
-Look in `settings.py` for the configuration options.
-Configuration Option Overview:
+### Settings
 
-* `EXAMPLE_CONFIG0` -- config description
-* `EXAMPLE_CONFIG1` -- config description
-* `EXAMPLE_CONFIG2` -- config description
+Set `.env` variables
 
-Private Settings
---------------------
-* Create a file named `private.py` in this folder.
-    * Add a value named `PRIVATE_TOKEN_EG`
-    * Assign your API token to it.
+```
+AIRFLOW_UID=1000
+PG_HOST=pgdatabase
+PG_USER=root
+PG_PASSWORD=root
+PG_PORT=5432
+PG_DATABASE=fitbit_db
+GOOGLE_CREDENTIALS=/home/michael/.google/credentials/google_credentials.json
+GCP_PROJECT_ID=dtc-de-446723
+GCP_GCS_BUCKET=dtc-de-446723-fitbit-bucket
+BIGQUERY_DATASET=fitbit_dataset
+```
 
 Usage
 -----------------------
 
-* Run `mkdir processed` to create a directory for our processed datasets.
-* Run `python assemble.py` to combine the `Acquisition` and `Performance` datasets.
-    * This will create `Acquisition.txt` and `Performance.txt` in the `processed` folder.
-* Run `python annotate.py`.
-    * This will create training data from `Acquisition.txt` and `Performance.txt`.
-    * It will add a file called `train.csv` to the `processed` folder.
-* Run `python predict.py`.
-    * This will run cross validation across the training set, and print the accuracy score.
-
-- Run gather tokens script in 
 
 Extending this
 -------------------------
