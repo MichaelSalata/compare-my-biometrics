@@ -137,14 +137,14 @@ request_biometrics  |  `upload_to_datalake >> data_warehouse_transfer`
 	- have fitbit_tokens_example.json?
 
 - [x] remove demo from bucket and dataset ✅ 2025-03-20
-- [ ] remove extra dependencies for running the airflow container
+- [x] remove extra dependencies for running the airflow container ✅ 2025-03-20
 ### STRETCH STRETCH - orchestrate dbt core
 request_biometrics  |  `upload_to_datalake >> data_warehouse_transfer >> dbt_transformations`
 
 - [ ] see how other people orchestrate dbt
 	- how do they handle dbt files being in other directories?
 		- mount???????
-- [ ] add bash operator import
+- [x] add bash operator import ✅ 2025-03-20
 from airflow.operators.bash import BashOperator
 #### [steam-data-engineering](https://github.com/VicenteYago/steam-data-engineering/tree/main)
 - steam-data=engineering
@@ -232,7 +232,7 @@ Thanks to Alexey and his community from [datatalks club](https://datatalks.club
 	- [x] anonymize example data ✅ 2025-03-23
 	- [ ] env
 	- [x] fitbit_tokens ✅ 2025-03-23
-- [ ] tell user about date range for example data
+- [x] tell user about date range for example data ✅ 2025-03-23
 - [ ] tell user about Partitioning in DBT
 
 - [ ] create instructions on how to spin up appropriate GCP resources
@@ -258,18 +258,22 @@ Thanks to Alexey and his community from [datatalks club](https://datatalks.club
 
 ## PHASE 7 - STRETCH post README -> more DBT transformations
 ?
+- [ ] look up clustering best practices -> apply them to my schema in DBT
+- [ ] find useful data ratios I can visualize
+- [ ] create a data mart -> useful data transformations 
 
 ## STRETCH Goals 
 *aka Goals:  3/24 -to- 4/21*
 *aka technical debt*
 
-- [ ] add bars to the barchart
+- [ ] look a
+
+- [ ] add more bars to the barchart
 
 - integrate Batch Processing with Spark
 	- [[DataTalks DE Zoomcamp 2025 Syllabus#*Module* 5 Batch Processing - *Spark*]]
 	-  [DataTalksClub](https://github.com/DataTalksClub)/ [data-engineering-zoomcamp](https://github.com/DataTalksClub/data-engineering-zoomcamp)/ [05-batch](https://github.com/DataTalksClub/data-engineering-zoomcamp/tree/main/05-batch "05-batch")
 	-  [ManuelGuerra1987](https://github.com/ManuelGuerra1987) /  [data-engineering-zoomcamp-notes](https://github.com/ManuelGuerra1987/data-engineering-zoomcamp-notes)  / [5_Batch-Processing-Spark](https://github.com/ManuelGuerra1987/data-engineering-zoomcamp-notes/tree/main/5_Batch-Processing-Spark "5_Batch-Processing-Spark")
-
 
 - [ ] pipeline
 	- map `data` directory to Airflow Docker Container

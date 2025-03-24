@@ -1,3 +1,5 @@
+INCOMPLETE
+---
 # Goals
 - Visualize changes in health across time periods
 	- **WHY**: my fitbit wellness report is currently broken and I would like to see activities impact my health
@@ -5,23 +7,23 @@
 		- medications
 		- stressful life events
 - Meet [DataTalks Engineering Course Project Evaluation Criteria](https://github.com/DataTalksClub/data-engineering-zoomcamp/tree/main/projects#evaluation-criteria)
-- Practice building data pipelines with the [DataTalks.club Data Engineering Course](https://github.com/DataTalksClub/data-engineering-zoomcamp)
-	- read each technology's documentation and best practices
-	- implement features to accomplish goals
-	- receive and implement feedback through the course's peer review process
+- Practice building data pipelines with the [DataTalks.club Data Engineering Course](https://github.com/DataTalksClub/data-engineering-zoomcamp) and best practices
+	1. develop a schema based on the Data API and Analysis needs
+	2. incrementally read each technology's documentation and build pipeline
+	3. implement pipeline steps with key metrics in mind
+	4. learn from feedback from the course peer review process
 
 # Constraints
 - Meet submission deadlines for [DataTalks.club 2025 Course Schedule](https://courses.datatalks.club/de-zoomcamp-2025/)
-	- meetings with real clients and and gathering data for a novel project can balloon out the time commitment
 
 # Results - Overview
-- ==INSERT DATA PIPELINE EXPLAINATION HERE==
+- ==INSERT DATA PIPELINE EXPLANATION HERE==
 	- image
 
 - [Looker Studio Data Presentation](https://lookerstudio.google.com/reporting/08b71d97-dc73-4d66-a694-e027c0d68330)
 
 ## Technologies Used
-
+==TECH LIST HERE==
 
 # Building the Project Yourself
 ## Requirements
@@ -40,15 +42,15 @@ cd <repo-dir>
 ```
 
 ### OPTIONAL: Include Your Fitbit Data
-By default, the project uses [example fitbit data](https://github.com/MichaelSalata/compare-my-biometrics/tree/main/airflow-gcp/example_data) for 1 user spanning **11-21-2024**  to  **3-16-2025**
+By default, the project uses [my example fitbit data](https://github.com/MichaelSalata/compare-my-biometrics/tree/main/airflow-gcp/example_data)  spanning **11-21-2024**  to  **3-16-2025**
 
-#### Get a CLIENT_ID and CLIENT_SECRET
+#### Get your CLIENT_ID and CLIENT_SECRET
 - [dev.fitbit.com](https://dev.fitbit.com/) > Manage > [Register An App](https://dev.fitbit.com/apps/new/) > [Log in](https://dev.fitbit.com/login)
 	- `Continue with Google` if you use your google account
 	- **IMPORTANT**: mark the project `Personal` and use Callback URL `http://127.0.0.1:8080/`
 	- [example image](https://miro.medium.com/v2/resize:fit:720/format:webp/1*UJHMOYsFZvrBmpNjFfpBJA.jpeg)
 
-#### Find your ACCESS_TOKEN
+#### Get your ACCESS_TOKEN
 OPTION 1:
 - run this in the dag directory
 ```bash
@@ -66,6 +68,8 @@ python3 /dags/gather_keys_oauth2.py CLIENT_ID CLIENT_SECRET
 - create a service account
 - download credentials for service account
 - Set personal variables in the `.env` file
+
+
 ### OPTIONAL: .gitignore files with personal data
 add `fitbit_tokens.json` to the .gitignore file
 ```bash
@@ -85,3 +89,9 @@ docker compose up airflow-init && docker compose up -d
 
 log into Airflow and run the dag at `localhost:8080`
 
+# Future Goals
+- [ ] get the project **hosted in the cloud** solution
+- [ ] make **Idempotent**
+- [ ] implement **CI/CD**
+- [ ] **expose my BigQuery DB**
+	- (allowing connections from tools like PowerBI, Metabase, Looker Studio)
