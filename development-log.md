@@ -96,6 +96,7 @@ ManuelGuerra - [data-engineering-zoomcamp-notes](https://github.com/ManuelGuerra
 
 - [x] stacked bar chart heartrate zones ✅ 2025-03-17
 
+- [ ] create distribution visualization
 ## PHASE 5.5 - Stretch Orchestration
 - [x] fix broken DAG error ✅ 2025-03-18
 
@@ -108,7 +109,7 @@ request_biometrics  |  `upload_to_datalake >> data_warehouse_transfer`
 - [x] encapsulate Airflow in Docker ✅ 2025-03-18
 
 - [x] fix download_locally script not finding fitbit_tokens ✅ 2025-03-20
-- [ ] generalize hardcoded fitbit credentials mounting on Docker container
+- [x] generalize hardcoded fitbit credentials mounting on Docker container
 
 
 - [ ] get Airflow to automatically start the dag on startup
@@ -263,10 +264,8 @@ Thanks to Alexey and his community from [datatalks club](https://datatalks.club
 - [ ] create a data mart -> useful data transformations 
 
 ## STRETCH Goals 
-*aka Goals:  3/24 -to- 4/21*
+*aka Goals:  README-completion _to_ 4/14*
 *aka technical debt*
-
-- [ ] look a
 
 - [ ] add more bars to the barchart
 
@@ -294,6 +293,7 @@ Thanks to Alexey and his community from [datatalks club](https://datatalks.club
 
 - [ ] learn how to cost estimate pipeline
 	- gcp financial reports?
+
 # Resources
  [getting fitbit CLIENT_ID and CLIENT_SECRET - gpt](https://chatgpt.com/c/67945566-6294-8008-963e-90d98c8ffd08)
 
@@ -464,3 +464,5 @@ uris = ['gs://dtc-de-446723-fitbit-bucket/sleep*.parquet']
 - installed dbt-bigquery
 	- pip install dbt-core dbt-bigquery
 - setup and link ~/.dbt/profile.yml to project and injected SQL code into bq
+
+- airflow orchestrating every step
