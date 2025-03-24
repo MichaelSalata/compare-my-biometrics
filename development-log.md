@@ -260,26 +260,7 @@ Thanks to Alexey and his community from [datatalks club](https://datatalks.club
 *aka Goals:  3/24 -to- 4/21*
 *aka technical debt*
 
-- [ ] pipeline
-	- map `data` directory to Airflow Docker Container
-		- change download script to download to data folder
-	- [ ] create/reuse upload script most compatible with Airflow
-	- request_biometrics >> upload_data_lake >> data_warehouse >> dbt_processing >> looker_studio_dashboard
-
-- [ ] **run upload script with an Airflow pipeline**
-	- make it **idempotent**
-	- schedule it to run once a month
-
-- [ ] make pipeline **idempotent
-- [ ] schedule it to run once a month**
-
-- [ ] dynamically use user-id in created GCP project/bucket/bigquery dataset with Terraform
-
-- [ ] research good graphics
-	- look at Google Fit Metrics
-	- how I used my jupyter notebooks
-	- graphics on **[fitbit-web-ui-app](https://github.com/arpanghosh8453/fitbit-web-ui-app)** - github
-	- graphics on https://dashboard.exercise.quest/
+- [ ] add bars to the barchart
 
 - integrate Batch Processing with Spark
 	- [[DataTalks DE Zoomcamp 2025 Syllabus#*Module* 5 Batch Processing - *Spark*]]
@@ -287,6 +268,25 @@ Thanks to Alexey and his community from [datatalks club](https://datatalks.club
 	-  [ManuelGuerra1987](https://github.com/ManuelGuerra1987) /  [data-engineering-zoomcamp-notes](https://github.com/ManuelGuerra1987/data-engineering-zoomcamp-notes)  / [5_Batch-Processing-Spark](https://github.com/ManuelGuerra1987/data-engineering-zoomcamp-notes/tree/main/5_Batch-Processing-Spark "5_Batch-Processing-Spark")
 
 
+- [ ] pipeline
+	- map `data` directory to Airflow Docker Container
+		- change download script to download to data folder
+	- [ ] create/reuse upload script most compatible with Airflow
+	- request_biometrics >> upload_data_lake >> data_warehouse >> dbt_processing >> looker_studio_dashboard
+
+- [ ] research good graphics
+	- look at Google Fit Metrics
+	- how I used my jupyter notebooks
+	- graphics on **[fitbit-web-ui-app](https://github.com/arpanghosh8453/fitbit-web-ui-app)** - github
+	- graphics on https://dashboard.exercise.quest/
+
+- [ ] make pipeline **idempotent
+- [ ] schedule it to run once a month**
+
+- [ ] dynamically use user-id in created GCP project/bucket/bigquery dataset with Terraform
+
+- [ ] learn how to cost estimate pipeline
+	- gcp financial reports?
 # Resources
  [getting fitbit CLIENT_ID and CLIENT_SECRET - gpt](https://chatgpt.com/c/67945566-6294-8008-963e-90d98c8ffd08)
 
