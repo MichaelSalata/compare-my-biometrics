@@ -6,25 +6,32 @@
 		- new medications
 		- exercising
 		- stressful life events
-- Learn and Practice building a pipeline in the [DataTalks.club Data Engineering Course](https://github.com/DataTalksClub/data-engineering-zoomcamp)
+- Meet [DataTalks Engineering Course Project Evaluation Criteria](https://github.com/DataTalksClub/data-engineering-zoomcamp/tree/main/projects#evaluation-criteria)
+- Learn and Practice building a Data Pipeline pipeline through the [DataTalks.club Data Engineering Course](https://github.com/DataTalksClub/data-engineering-zoomcamp)
+	- read each technology's documentation and best practices
+	- implement features necessary to accomplish goals
+	- receive and implement feedback through the course's peer review process
 
 # **Constraints**
 - Meet submission deadlines for DataTalks.club Course Schedule
 	- meetings with real clients and and gathering data for a novel project can balloon out the time commitment
 
-# Result - [Looker Studio Data Presentation](https://lookerstudio.google.com/reporting/08b71d97-dc73-4d66-a694-e027c0d68330)
+# Results - Overview
+- ==INSERT DATA PIPELINE EXPLAINATION HERE==
+	- image
+
+- [Looker Studio Data Presentation](https://lookerstudio.google.com/reporting/08b71d97-dc73-4d66-a694-e027c0d68330)
+
+## Technologies Used
 
 
-# Technologies Used
-
-
-# Building this Yourself
+# Building the Project Yourself
 ## Requirements
 - [Docker](https://docs.docker.com/get-docker/)
 - [Docker Compose](https://docs.docker.com/compose/install/) v2
 
-
 ## Installation
+
 
 ### Clone this repo to your computer
 
@@ -34,7 +41,7 @@ cd <repo-dir>
 ```
 
 ### OPTIONAL: Include Your Fitbit Data
-By default, the project uses example fitbit data if you cannot include your own.
+By default, the project uses example fitbit data in the example_data directory.
 
 #### Steps to use your Fitbit data with the project
 ##### Find your CLIENT_ID and CLIENT_SECRET
@@ -42,17 +49,18 @@ By default, the project uses example fitbit data if you cannot include your own.
 	- `Continue with Google` if you use your google account
 	- **IMPORTANT**: mark the project `Personal` and use Callback URL `http://127.0.0.1:8080/`
 	- [example image](https://miro.medium.com/v2/resize:fit:720/format:webp/1*UJHMOYsFZvrBmpNjFfpBJA.jpeg)
+
 ##### Find your ACCESS_TOKEN
 
 OPTION 1:
 - run this in the dag directory
 ```bash
-python3 /gather_keys_oauth2.py CLIENT_ID CLIENT_SECRET
+python3 /dags/gather_keys_oauth2.py CLIENT_ID CLIENT_SECRET
 ```
 - replace CLIENT_ID and CLIENT_SECRET with what was shown on your app
 - this writes `fitbit_tokens.json` in it the dag directory
 
- 	- stores your fitbit authentication tokens locally (in fitbit_tokens.json) 
+ 	- stores your fitbit authentication tokens locally (in `/dags/fitbit_tokens.json`) 
   	- allows your data to be downloaded for analysis
    	- `python3 /gather_keys_oauth2.py` may need to be rerun later when your access token expires
 	   	- note: it reuses CLIENT_ID and CLIENT_SECRET which get stored in `fitbit_tokens.json`
@@ -60,7 +68,7 @@ python3 /gather_keys_oauth2.py CLIENT_ID CLIENT_SECRET
 
 ### Settings
 
-Set `.env` variables
+Set personal variables in the `.env` file
 
 ```
 AIRFLOW_UID=1000
@@ -74,6 +82,13 @@ GCP_PROJECT_ID=dtc-de-446723
 GCP_GCS_BUCKET=dtc-de-446723-fitbit-bucket
 BIGQUERY_DATASET=fitbit_dataset
 ```
+
+### OPTIONAL: .gitignore files with personal data
+add `fitbit_tokens.json` to the .gitignore file
+```bash
+echo "fitbit_tokens.json" >> .gitignore
+```
+
 
 Usage
 -----------------------
@@ -97,4 +112,3 @@ If you want to extend this work, here are a few places to start:
     * Can you predict how many times the borrower will be late on payments?
     * Can you map out the typical loan lifecycle?
 
----
