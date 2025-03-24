@@ -108,7 +108,8 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-.env
+# added this to repo for user to fill out
+# .env
 .venv
 env/
 venv/
