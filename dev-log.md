@@ -222,7 +222,10 @@ Thanks to Alexey and his community from [datatalks club](https://datatalks.club
 	- More tests on the pipeline
 	- Fully normalize the tables as exercise
 
-### Project Assembly instructions
+
+- [ ] tell user about Partitioning in DBT
+
+### Project Run Instructions
 - use [[development-log#Project Step Log]] below
 - Terraform
 - Docker
@@ -231,31 +234,33 @@ Thanks to Alexey and his community from [datatalks club](https://datatalks.club
 
 - [x] add example data to project ✅ 2025-03-23
 	- [x] anonymize example data ✅ 2025-03-23
-	- [ ] env
+	- [x] env ✅ 2025-03-24
 	- [x] fitbit_tokens ✅ 2025-03-23
 - [x] tell user about date range for example data ✅ 2025-03-23
-- [ ] tell user about Partitioning in DBT
+- [x] instruct user on running the gather_tokens script in the hardcoded location ✅ 2025-03-24
+
+- [x] instructions on how the docker command to run it ✅ 2025-03-24
 
 - [ ] create instructions on how to spin up appropriate GCP resources
 	- [ ] install Terraform, run terraform commands in project terraform directory
 	- [ ] create instructions on launching cloud resources
 
-- [ ] **==look up how I can create a create a service account json with a monetary processing restriction==**
-- [ ] instruct user how to create a service account json
-
-- [ ] instruct user on running the gather_tokens script in the hardcoded location
 - [ ] tell user to put their google credentials in xyz location
 	- What is this used for?
 		- point to Terraform IaC
 		- point to DBT transformations
 
-- [ ] instructions on how the docker command to run it
-
-- [ ] make dag run immediately on start
-	**OR**
 - [ ] give instructions on
-	- log with airflow  airflow
+	- log with airflow airflow
 	- run dag
+
+### STRETCH
+- [ ] make dag run immediately on start
+	- remove instructions on logging into Airflow
+	- OPTIONAL: Log in and explore airlfow, explore Data in your BigQuery Database with Looker Studio 
+
+- [ ] **==look up how I can create a create a service account json with a monetary processing restriction==**
+	- add these instructions into the README
 
 ## PHASE 7 - STRETCH post README -> more DBT transformations
 ?
@@ -268,6 +273,8 @@ Thanks to Alexey and his community from [datatalks club](https://datatalks.club
 *aka technical debt*
 
 - [ ] add more bars to the barchart
+
+- [ ] add data test in DBT
 
 - integrate Batch Processing with Spark
 	- [[DataTalks DE Zoomcamp 2025 Syllabus#*Module* 5 Batch Processing - *Spark*]]
