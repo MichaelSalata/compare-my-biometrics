@@ -228,13 +228,16 @@ Thanks to Alexey and his community from [datatalks club](https://datatalks.club
 - GCP creation & permissions for (project, bucket, dataset)
 - test instructions
 
-- [ ] add example data to project
+- [x] add example data to project ✅ 2025-03-23
+	- [x] anonymize example data ✅ 2025-03-23
+	- [ ] env
+	- [x] fitbit_tokens ✅ 2025-03-23
 - [ ] tell user about date range for example data
 - [ ] tell user about Partitioning in DBT
 
 - [ ] create instructions on how to spin up appropriate GCP resources
 	- [ ] install Terraform, run terraform commands in project terraform directory
-	- [ ] create
+	- [ ] create instructions on launching cloud resources
 
 - [ ] **==look up how I can create a create a service account json with a monetary processing restriction==**
 - [ ] instruct user how to create a service account json
