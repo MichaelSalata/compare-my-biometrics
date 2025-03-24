@@ -143,9 +143,9 @@ fitbit_tokens.json
 fitbit_project_info.json
 
 # data files
-heartrate*.json
-sleep*.json
-profile*.json
+# heartrate*.json
+# sleep*.json
+# profile*.json
 *.parquet
 
 # terraform
