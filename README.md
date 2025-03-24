@@ -23,7 +23,7 @@ INCOMPLETE
 - [Looker Studio Data Presentation](https://lookerstudio.google.com/reporting/08b71d97-dc73-4d66-a694-e027c0d68330)
 
 ## Technologies Used
-==TECH LIST HERE==
+==TECH LISTED HERE==
 
 # Building the Project Yourself
 ## Requirements
@@ -31,44 +31,28 @@ INCOMPLETE
 - [Docker Compose](https://docs.docker.com/compose/install/) v2
 - [Terraform](https://developer.hashicorp.com/terraform/install?product_intent=terraform)
 
-## Installation
-
+## SETUP
 
 ### Clone this repo to your computer
-
 ```bash
-git clone <repo-url>
-cd <repo-dir>
+gh repo clone MichaelSalata/compare-my-biometrics
+cd compare-my-biometrics
 ```
 
-### OPTIONAL: Include Your Fitbit Data
-By default, the project uses [my example fitbit data](https://github.com/MichaelSalata/compare-my-biometrics/tree/main/airflow-gcp/example_data)  spanning **11-21-2024**  to  **3-16-2025**
+### OPTIONAL: [Use YOUR Fitbit Data](https://github.com/MichaelSalata/compare-my-biometrics/blob/main/Include-Your-Fitbit-Data.md)
+**NOTE:** By default, the project uses [my example fitbit data](https://github.com/MichaelSalata/compare-my-biometrics/tree/main/airflow-gcp/example_data)  spanning **11-21-2024**  to  **3-16-2025**
 
-#### Get your CLIENT_ID and CLIENT_SECRET
-- [dev.fitbit.com](https://dev.fitbit.com/) > Manage > [Register An App](https://dev.fitbit.com/apps/new/) > [Log in](https://dev.fitbit.com/login)
-	- `Continue with Google` if you use your google account
-	- **IMPORTANT**: mark the project `Personal` and use Callback URL `http://127.0.0.1:8080/`
-	- [example image](https://miro.medium.com/v2/resize:fit:720/format:webp/1*UJHMOYsFZvrBmpNjFfpBJA.jpeg)
-
-#### Get your ACCESS_TOKEN
-OPTION 1:
-- run this in the dag directory
-```bash
-python3 /dags/gather_keys_oauth2.py CLIENT_ID CLIENT_SECRET
-```
-- replace CLIENT_ID and CLIENT_SECRET with what was shown on your app
-- this writes `fitbit_tokens.json` in it the dag directory
-
- 	- stores your fitbit authentication tokens locally (in `/dags/fitbit_tokens.json`) 
-  	- allows your data to be downloaded for analysis
-   	- `python3 /gather_keys_oauth2.py` may need to be rerun later when your access token expires
-	   	- note: it reuses CLIENT_ID and CLIENT_SECRET which get stored in `fitbit_tokens.json`
-
-### Setting up google cloud
+### Setup a Project and Service Account
 - create a service account
-- download credentials for service account
-- Set personal variables in the `.env` file
 
+- download credentials.json for service account
+
+- Set set your project name and and the path to you GCP service account credentials
+	- **REQUIRED:**
+		- .env -> set `GOOGLE_CREDENTIALS` to the path of your GCP service account credentials 
+		- .env -> set `GCP_PROJECT_ID` to `your-projects-name`
+		- variables.tf -> variable "project" -> default =  `your-projects-name`
+	- **OPTIONAL:** changing `GCP_GCS_BUCKET` and/or `BIGQUERY_DATASET` requires updating variables.tf file
 
 ### OPTIONAL: .gitignore files with personal data
 add `fitbit_tokens.json` to the .gitignore file
