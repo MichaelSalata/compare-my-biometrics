@@ -1,0 +1,21 @@
+{
+    "access_token": "example-eyJhdWQiOiIyM1EzVzkiLCJzdWIiOiJDQlpINTgiLCJpc3MiOiJGaXRiaXQiLCJ0eXAiOiJhY2Nlc3NfdG9rZW4iLCJzY29wZXMiOiJyc29jIHJhY3QgcnNldCBybG9jIHJ3ZWkgcmhyIHJwcm8gcm51dCByc2xlIiwiZXhwIjoxNzQyNTE4MzE4LCJpYXQiOjE3NDI0ODk1MTh9.2tmG7HdWvws9BMiQU2_jlvvF72_1eQ35leY2__ibWds",
+    "expires_in": 28800,
+    "refresh_token": "example_b70b27e43e0033356ce91_example_d914e9fa1146ee0d404f00817467b",
+    "scope": [
+        "profile",
+        "nutrition",
+        "social",
+        "activity",
+        "location",
+        "weight",
+        "settings",
+        "heartrate",
+        "sleep"
+    ],
+    "token_type": "Bearer",
+    "user_id": "example",
+    "expires_at": 1742518318.7285721,
+    "client_id": "example",
+    "client_secret": "example_097e5951c8c_example_4c8725d64a55"
+}
