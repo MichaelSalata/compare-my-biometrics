@@ -62,10 +62,11 @@ replace `GOOGLE_CREDENTIALS` and `GCP_PROJECT_ID` with yours and run this script
 GOOGLE_CREDENTIALS="/the/path/to/your/gcp-credentials.json"
 GCP_PROJECT_ID="your_project_name"
 
-# Perform replacements in airflow-gcp/.env and terraform/variables.tf
-sed -i "s|/home/michael/.google/credentials/google_credentials.json|$GOOGLE_CREDENTIALS|g" "airflow-gcp/.env"
-sed -i "s|dtc-de-446723|$GCP_PROJECT_ID|" "airflow-gcp/.env"
-sed -i "s|dtc-de-446723|$GCP_PROJECT_ID|" "terraform/variables.tf"
+# Replace only the first occurrence in airflow-gcp/.env and terraform/variables.tf
+sed -i "0,/\/home\/michael\/.google\/credentials\/google_credentials.json/s|/home/michael/.google/credentials/google_credentials.json|$GOOGLE_CREDENTIALS|" "airflow-gcp/.env"
+sed -i "0,/dtc-de-446723/s|dtc-de-446723|$GCP_PROJECT_ID|" "airflow-gcp/.env"
+sed -i "0,/dtc-de-446723/s|dtc-de-446723|$GCP_PROJECT_ID|" "terraform/variables.tf"
+
 ```
 #### Option 2: Manual Variable setting
 - `airflow-gcp/.env` -> set `GOOGLE_CREDENTIALS=/the/path/to/your/gcp-credentials.json` 
