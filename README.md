@@ -5,7 +5,7 @@
 		- fitness routine
 		- medication
 		- stressful life event
-- Practice building a robust and scalable data pipeline with each technology's best practices
+- Practice building a scalable data pipeline with best practices and fault tolerance
 	1. develop a schema based on the Data API and Analysis needs
 	2. incrementally read each technology's documentation and build pipeline
 	3. implement pipeline steps with key metrics in mind
@@ -22,7 +22,7 @@
 4. **Create BigQuery Profile, Heart Rate and Sleep Table** – Establishes an external BigQuery table for user profiles, sleep data and heart rate data stored in GCS.
 5. **Transform Data with dbt** – Applies SQL-based transformations in BigQuery using dbt to clean, standardize, and prepare data for analysis.
 
-- [Looker Studio Data Presentation](https://lookerstudio.google.com/reporting/62d48d66-0361-4d53-9927-ed9a604cafd9/page/30qCF)
+## [Looker Studio Data Presentation](https://lookerstudio.google.com/reporting/62d48d66-0361-4d53-9927-ed9a604cafd9/page/30qCF)
 ![Looker Studio Preview](https://github.com/MichaelSalata/compare-my-biometrics/blob/main/imgs/Screenshot%20from%202025-03-24%2020-08-14.png)
 
 ## Technologies Used
@@ -62,18 +62,16 @@ assign `GOOGLE_CREDENTIALS` and `GCP_PROJECT_ID`  and run this script in the pro
 GOOGLE_CREDENTIALS="/the/path/to/your/gcp-credentials.json"
 GCP_PROJECT_ID="your_project_name"
 
-# Replace only the first occurrence in airflow-gcp/.env and terraform/variables.tf
 sed -i "0,/\/home\/michael\/.google\/credentials\/google_credentials.json/s|/home/michael/.google/credentials/google_credentials.json|$GOOGLE_CREDENTIALS|" "airflow-gcp/.env"
 sed -i "0,/dtc-de-446723/s|dtc-de-446723|$GCP_PROJECT_ID|" "airflow-gcp/.env"
 sed -i "0,/dtc-de-446723/s|dtc-de-446723|$GCP_PROJECT_ID|" "terraform/variables.tf"
-
 ```
 #### OPTION 2: Manual Variable setting
 - `airflow-gcp/.env` -> set `GOOGLE_CREDENTIALS=/the/path/to/your/gcp-credentials.json` 
 - `airflow-gcp/.env` -> set `GCP_PROJECT_ID=your_project_name`
 - `terraform/variables.tf` -> `variable "project"` -> `default = your-projects-name`
 
-**NOTE:** changing `GCP_GCS_BUCKET` and/or `BIGQUERY_DATASET` requires updating `terraform/variables.tf` file
+***NOTE*:** changing `GCP_GCS_BUCKET` and/or `BIGQUERY_DATASET` requires updating `terraform/variables.tf` file
 
 # Usage
 ## create cloud infrastructure
@@ -82,22 +80,24 @@ cd terraform
 terraform init
 terraform apply
 ```
-## Build the Image
+***NOTE**:* remember to run `terraform destroy `after you're done
+## Build the Docker Image
 ```bash
 DOCKER_BUILDKIT=1 docker compose build
 ```
-*NOTE*: building the Docker image may take a LONG time
-## Run the Image
+***NOTE***: building the Docker image may take a LONG time
+## Run the Docker Image
 ```bash
 docker compose up airflow-init && docker compose up -d
 ```
+***NOTE**:* starting the image takes ~15 minutes
 ## Run the Airflow Dag
 visit [localhost:8080](http://localhost:8080/)
 log into Airflow with user:pass = airflow:airflow
 run the dag 
 
 # Future Goals
-- [ ] get the project **hosted in the cloud** solution
+- [ ] get the project **hosted in the cloud**
 - [ ] make **Idempotent**
 - [ ] implement **CI/CD**
 - [ ] **expose my BigQuery DB**
