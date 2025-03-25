@@ -55,8 +55,8 @@ cd compare-my-biometrics
 	4. 3 dots below Actions -> Manage keys -> Add key -> Create new key -> JSON -> Create
 
 ### Set **Project Name** and the **path to your  .json key file**
-#### Option 1: bash script
-replace `GOOGLE_CREDENTIALS` and `GCP_PROJECT_ID` with yours and run this script.
+#### OPTION 1: bash script
+assign `GOOGLE_CREDENTIALS` and `GCP_PROJECT_ID`  and run this script in the project folder
 ```bash
 #!/bin/bash
 GOOGLE_CREDENTIALS="/the/path/to/your/gcp-credentials.json"
@@ -68,7 +68,7 @@ sed -i "0,/dtc-de-446723/s|dtc-de-446723|$GCP_PROJECT_ID|" "airflow-gcp/.env"
 sed -i "0,/dtc-de-446723/s|dtc-de-446723|$GCP_PROJECT_ID|" "terraform/variables.tf"
 
 ```
-#### Option 2: Manual Variable setting
+#### OPTION 2: Manual Variable setting
 - `airflow-gcp/.env` -> set `GOOGLE_CREDENTIALS=/the/path/to/your/gcp-credentials.json` 
 - `airflow-gcp/.env` -> set `GCP_PROJECT_ID=your_project_name`
 - `terraform/variables.tf` -> `variable "project"` -> `default = your-projects-name`
