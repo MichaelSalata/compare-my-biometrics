@@ -14,9 +14,13 @@
 - Meet submission deadlines for [DataTalks.club 2025 Course Schedule](https://courses.datatalks.club/de-zoomcamp-2025/)
 
 # Results - Overview
-- ==INSERT DATA PIPELINE EXPLANATION HERE==
-
 ![Data Pipeline visualized](https://github.com/MichaelSalata/compare-my-biometrics/blob/main/imgs/orchestration_visualized.png)
+
+1. **Download Fitbit Data** – Retrieves biometric data from the Fitbit API and stores it locally in JSON format.
+2. **Flattens JSON Tables and Converts Parquet** – Transforms the locally stored JSON files into Parquet format for optimized storage, transmission, and processing.
+3. **Upload Data to Google Cloud Storage (GCS)** – Transfers the Parquet files to GCS for centralized cloud storage and accessibility.
+4. **Create BigQuery Profile, Heart Rate and Sleep Table** – Establishes an external BigQuery table for user profiles, sleep data and heart rate data stored in GCS.
+5. **Transform Data with dbt** – Applies SQL-based transformations in BigQuery using dbt to clean, standardize, and prepare data for analysis.
 
 - [Looker Studio Data Presentation](https://lookerstudio.google.com/reporting/62d48d66-0361-4d53-9927-ed9a604cafd9/page/30qCF)
 ![Looker Studio Preview](https://github.com/MichaelSalata/compare-my-biometrics/blob/main/imgs/Screenshot%20from%202025-03-24%2020-08-14.png)
@@ -34,7 +38,7 @@
 [Docker](https://docs.docker.com/get-docker/),  [Docker Compose](https://docs.docker.com/compose/install/) v2,  [Terraform](https://developer.hashicorp.com/terraform/install?product_intent=terraform),  [Google Cloud Platform Project](https://console.cloud.google.com/),  
 
 ## SETUP
-### Clone this repo to your computer
+### Clone this Repository
 ```bash
 gh repo clone MichaelSalata/compare-my-biometrics
 cd compare-my-biometrics
@@ -52,6 +56,7 @@ cd compare-my-biometrics
 
 ### Set **Project Name** and the **path to your  .json key file**
 #### Option 1: bash script
+replace `GOOGLE_CREDENTIALS` and `GCP_PROJECT_ID` with yours and run this script.
 ```bash
 #!/bin/bash
 GOOGLE_CREDENTIALS="/the/path/to/your/gcp-credentials.json"
@@ -59,8 +64,8 @@ GCP_PROJECT_ID="your_project_name"
 
 # Perform replacements in airflow-gcp/.env and terraform/variables.tf
 sed -i "s|/home/michael/.google/credentials/google_credentials.json|$GOOGLE_CREDENTIALS|g" "airflow-gcp/.env"
-sed -i "s|dtc-de-446723|$GCP_PROJECT_ID|g" "airflow-gcp/.env"
-sed -i "s|dtc-de-446723|$GCP_PROJECT_ID|g" "$terraform_vars_file"
+sed -i "s|dtc-de-446723|$GCP_PROJECT_ID|" "airflow-gcp/.env"
+sed -i "s|dtc-de-446723|$GCP_PROJECT_ID|" "terraform/variables.tf"
 ```
 #### Option 2: Manual Variable setting
 - `airflow-gcp/.env` -> set `GOOGLE_CREDENTIALS=/the/path/to/your/gcp-credentials.json` 

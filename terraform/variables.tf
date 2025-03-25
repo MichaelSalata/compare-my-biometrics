@@ -1,13 +1,13 @@
+variable "project" {
+  description = "Unique Project Name"
+  default     = "dtc-de-446723"
+}
+
 variable "credentials" {
   description = "My Credentials"
   default     = "~/.google/credentials/dtc-de-446723-477851964567.json"
   #ex: if you have a directory where this file is called keys with your service account json file
   #saved there as my-creds.json you could use default = "./keys/my-creds.json"
-}
-
-variable "project" {
-  description = "Unique Project Name"
-  default     = "dtc-de-446723"
 }
 
 variable "region" {
