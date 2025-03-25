@@ -1,5 +1,3 @@
-INCOMPLETE
----
 # Goals
 - Visualize changes in fitbit biometrics across time periods
 	- **WHY**: my fitbit wellness report has been broken for months and I would like to see how activities impact my health
@@ -11,13 +9,14 @@ INCOMPLETE
 	1. develop a schema based on the Data API and Analysis needs
 	2. incrementally read each technology's documentation and build pipeline
 	3. implement pipeline steps with key metrics in mind
-	4. learn from feedback from the course peer review processf61d6c417221313eb768e635ec28532dd8ac85f4
+	4. learn from feedback from the course peer review process
 
 - Meet submission deadlines for [DataTalks.club 2025 Course Schedule](https://courses.datatalks.club/de-zoomcamp-2025/)
 
 # Results - Overview
 - ==INSERT DATA PIPELINE EXPLANATION HERE==
-![Data Pipeline Preview Image]()
+
+![Data Pipeline visualized](https://github.com/MichaelSalata/compare-my-biometrics/blob/main/imgs/orchestration_visualized.png)
 
 - [Looker Studio Data Presentation](https://lookerstudio.google.com/reporting/62d48d66-0361-4d53-9927-ed9a604cafd9/page/30qCF)
 ![Looker Studio Preview](https://github.com/MichaelSalata/compare-my-biometrics/blob/main/imgs/Screenshot%20from%202025-03-24%2020-08-14.png)
