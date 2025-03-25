@@ -20,7 +20,7 @@ INCOMPLETE
 - ==INSERT DATA PIPELINE EXPLANATION HERE==
 	- image
 
-- [Looker Studio Data Presentation](https://lookerstudio.google.com/reporting/08b71d97-dc73-4d66-a694-e027c0d68330)
+- [Looker Studio Data Presentation](https://lookerstudio.google.com/reporting/62d48d66-0361-4d53-9927-ed9a604cafd9/page/30qCF)
 
 ## Technologies Used
 - **Python** to **connect and download** from the Fitbit API and **reformat** the downloaded json files to parquet
