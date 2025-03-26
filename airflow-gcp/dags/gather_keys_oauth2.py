@@ -82,38 +82,35 @@ class OAuth2Server:
 
 
 if __name__ == '__main__':
-
     if (len(sys.argv) == 3):
-        # client_id, client_secret = sys.argv[1], sys.argv[2]
         server = OAuth2Server(*sys.argv[1:])
         env_variables = {}
-        env_variables["OAUTH2_CLIENT_ID"], env_variables["CLIENT_SECRET"] = sys.argv[1], sys.argv[2]
+        env_variables["client_id"], env_variables["client_secret"] = sys.argv[1], sys.argv[2]
     else:
-        print("Arguments: client_id and client_secret not found")
-        if os.path.exists(f"fitbit_project_info.json"):
-            print(f"Found fitbit_project_info.json Locally...")
-            with open('fitbit_project_info.json', 'r') as file:
+        print("proper argument count:3 wasn't used")
+        if os.path.exists(f"fitbit_tokens.json"):
+            print(f"Found fitbit_tokens.json Locally...")
+            with open('fitbit_tokens.json', 'r') as file:
                 env_variables = json.load(file)
-                server = OAuth2Server(env_variables["OAUTH2_CLIENT_ID"], env_variables["CLIENT_SECRET"])
+                server = OAuth2Server(client_id=env_variables["client_id"], client_secret=env_variables["client_secret"])
         else:
-            print(f"didn't find fitbit_project_info.json locally...")
+            print(f"didn't find fitbit_tokens.json locally...")
             sys.exit(1)
 
     server.browser_authorize()
 
     profile = server.fitbit.user_profile_get()
-    print('You are authorized to access data for the user: {}'.format(
-        profile['user']['fullName']))
+    print(f'You are authorized to access data for the user: {profile['user']['fullName']}')
 
     # saving a 
-    print('TOKEN\n=====\n')
+    print('TOKENS\n=====\n')
     token_dict = server.fitbit.client.session.token
-    token_dict["client_id"] = env_variables["OAUTH2_CLIENT_ID"]
-    token_dict["client_secret"] = env_variables["CLIENT_SECRET"]
+    token_dict["client_id"] = env_variables["client_id"]
+    token_dict["client_secret"] = env_variables["client_secret"]
 
     for key, value in token_dict.items():
-        print('{} = {}'.format(key, value))
+        print(key,' = ', value)
 
     with open('fitbit_tokens.json', 'w') as token_file:
         json.dump(token_dict, token_file, indent=4)
-        print('Tokens have been saved to fitbit_tokens.json')
+        print('tokens saved to fitbit_tokens.json')
