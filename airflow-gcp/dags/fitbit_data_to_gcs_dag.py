@@ -22,6 +22,8 @@ BIGQUERY_DATASET = str(os.environ.get("BIGQUERY_DATASET", "fitbit_dataset"))
 # CREDENTIALS_FILE = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS", "google_credentials.json")
 
 airflow_path = os.environ.get("AIRFLOW_HOME")
+dbt_is_production_var = "'{is_test_run: false}'"
+
 
 
 def upload_to_gcs(bucket_name, max_retries=3):
@@ -147,7 +149,7 @@ with DAG(
 
     dbt_transforms_task = BashOperator(
         task_id='dbt_transforms_task',
-        bash_command=f'cd {airflow_path}/dbt_resources && dbt build',
+        bash_command=f"cd {airflow_path}/dbt_resources && dbt build --vars {dbt_is_production_var}",
         trigger_rule="all_success"
     )
 
