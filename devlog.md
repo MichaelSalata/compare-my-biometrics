@@ -22,7 +22,7 @@
 	- notable dates will be put on the graphs as vertical lines
 
 # TODOs
-**==NOTE==**: ***Document project steps*** in the [[development-log#Project Step Log]] below
+**==NOTE==**: ***Document project steps*** in the [[devlog#Project Step Log]] below
 
 ## PHASE 1 - proof of concept
 - [x] get ANY data downloaded ✅ 2025-03-08
@@ -67,14 +67,8 @@ ManuelGuerra - [data-engineering-zoomcamp-notes](https://github.com/ManuelGuerra
 	- what kinda charts do I want?
 	- what kinda charts were showcased?
 
-- STRETCH: migrate to dbt-core
-	- [ ] install - [website instructions](https://docs.getdbt.com/docs/core/installation-overview)
-	- [ ] install BigQuery Adapter
-		- [website instructions](https://docs.getdbt.com/docs/core/connect-data-platform/bigquery-setup)
-
-- [ ] STRETCH: encapsulate dbt core inside a Docker container
-
-- [ ] STRETCH: integrate dbt into airflow - [Airflow with DBT tutorial]](https://www.youtube.com/watch?v=MhCuxTDlVkE)
+- [x] STRETCH: encapsulate dbt core inside a Docker container ✅ 2025-03-22
+	- [Airflow with DBT tutorial]](https://www.youtube.com/watch?v=MhCuxTDlVkE)
 
 - [x] update dbt_resources to incorporate sleep & heartrate tables ✅ 2025-03-17
 	- [x] dbt_project.yml ✅ 2025-03-17
@@ -205,11 +199,11 @@ ng-hiep repo - [airflow-dbt-gcp-datapipeline](https://github.com/ng-hiep/airflow
 	- data proj draft README
 
 **WHAT PROBLEM DOES IT SOLVE**? - course project req
-- [ ] add dev.fitbit project creation image to repo and readme
+- [x] add dev.fitbit project creation image to repo and readme ✅ 2025-03-25
 
 - add personal data config files to repo
-	- [ ] add `fitbit_tokens.json`
-	- [ ] add `.env` 
+	- [x] add `fitbit_tokens.json` ✅ 2025-03-25
+	- [x] add `.env` ✅ 2025-03-25
 
 - [ ] add Special Mentions part 
 Thanks to Alexey and his community from [datatalks club](https://datatalks.club/), create this project without the course of [Data Engineering](https://github.com/DataTalksClub/data-engineering-zoomcamp) would have been much more difficult.
@@ -222,11 +216,10 @@ Thanks to Alexey and his community from [datatalks club](https://datatalks.club
 	- More tests on the pipeline
 	- Fully normalize the tables as exercise
 
-
 - [ ] tell user about Partitioning in DBT
 
 ### Project Run Instructions
-- use [[development-log#Project Step Log]] below
+- use [[devlog#Project Step Log]] below
 - Terraform
 - Docker
 - GCP creation & permissions for (project, bucket, dataset)
@@ -241,26 +234,18 @@ Thanks to Alexey and his community from [datatalks club](https://datatalks.club
 
 - [x] instructions on how the docker command to run it ✅ 2025-03-24
 
-- [ ] create instructions on how to spin up appropriate GCP resources
-	- [ ] install Terraform, run terraform commands in project terraform directory
-	- [ ] create instructions on launching cloud resources
+- [x] create instructions on how to spin up appropriate GCP resources ✅ 2025-03-24
+	- [x] install Terraform, run terraform commands in project terraform directory ✅ 2025-03-24
+	- [x] create instructions on launching cloud resources ✅ 2025-03-24
 
-- [ ] tell user to put their google credentials in xyz location
+- [x] tell user to download credentials ✅ 2025-03-24
 	- What is this used for?
 		- point to Terraform IaC
 		- point to DBT transformations
 
-- [ ] give instructions on
+- [x] give instructions on ✅ 2025-03-24
 	- log with airflow airflow
 	- run dag
-
-### STRETCH
-- [ ] make dag run immediately on start
-	- remove instructions on logging into Airflow
-	- OPTIONAL: Log in and explore airlfow, explore Data in your BigQuery Database with Looker Studio 
-
-- [ ] **==look up how I can create a create a service account json with a monetary processing restriction==**
-	- add these instructions into the README
 
 ## PHASE 7 - STRETCH post README -> more DBT transformations
 ?
@@ -268,24 +253,43 @@ Thanks to Alexey and his community from [datatalks club](https://datatalks.club
 - [ ] find useful data ratios I can visualize
 - [ ] create a data mart -> useful data transformations 
 
-## STRETCH Goals 
-*aka Goals:  README-completion _to_ 4/14*
-*aka technical debt*
+## Submission 1 Goals 
+*aka Goals for 3/31*
 
-- [ ] add more bars to the barchart
+
+
+## Submission 2 Goals 
+*aka Goals for 4/14*
+
+
+## Interview Ready Goals 
+
+
+- [ ] make dag run immediately on start
+	- remove instructions on logging into Airflow
+	- OPTIONAL: Log in and explore Airlfow, explore Data in your BigQuery Database with Looker Studio 
+
+- [ ] **==look up how I can create a create a service account json with a monetary processing restriction==**
+	- add these instructions into the README
 
 - [ ] add data test in DBT
+
+
+- [ ] get a larger dataset analyzed
+	- utilize PySpark
+	- intraday data
+	- find some sort of sleep or heartrate study
 
 - integrate Batch Processing with Spark
 	- [[DataTalks DE Zoomcamp 2025 Syllabus#*Module* 5 Batch Processing - *Spark*]]
 	-  [DataTalksClub](https://github.com/DataTalksClub)/ [data-engineering-zoomcamp](https://github.com/DataTalksClub/data-engineering-zoomcamp)/ [05-batch](https://github.com/DataTalksClub/data-engineering-zoomcamp/tree/main/05-batch "05-batch")
 	-  [ManuelGuerra1987](https://github.com/ManuelGuerra1987) /  [data-engineering-zoomcamp-notes](https://github.com/ManuelGuerra1987/data-engineering-zoomcamp-notes)  / [5_Batch-Processing-Spark](https://github.com/ManuelGuerra1987/data-engineering-zoomcamp-notes/tree/main/5_Batch-Processing-Spark "5_Batch-Processing-Spark")
 
-- [ ] pipeline
-	- map `data` directory to Airflow Docker Container
-		- change download script to download to data folder
-	- [ ] create/reuse upload script most compatible with Airflow
-	- request_biometrics >> upload_data_lake >> data_warehouse >> dbt_processing >> looker_studio_dashboard
+- [ ] make pipeline **idempotent
+
+- [ ] implement CI/CD
+
+- [x] add more bars to the barchart ✅ 2025-03-24
 
 - [ ] research good graphics
 	- look at Google Fit Metrics
@@ -293,13 +297,13 @@ Thanks to Alexey and his community from [datatalks club](https://datatalks.club
 	- graphics on **[fitbit-web-ui-app](https://github.com/arpanghosh8453/fitbit-web-ui-app)** - github
 	- graphics on https://dashboard.exercise.quest/
 
-- [ ] make pipeline **idempotent
 - [ ] schedule it to run once a month**
 
 - [ ] dynamically use user-id in created GCP project/bucket/bigquery dataset with Terraform
 
 - [ ] learn how to cost estimate pipeline
 	- gcp financial reports?
+
 
 # Resources
  [getting fitbit CLIENT_ID and CLIENT_SECRET - gpt](https://chatgpt.com/c/67945566-6294-8008-963e-90d98c8ffd08)
@@ -324,7 +328,6 @@ https://python-fitbit.readthedocs.io/en/latest/#fitbit-api
 
 fitbit's CLIENT_ID, CLIENT_SECRET  >  Oauth2 token  >  ACCESS_TOKEN, REFRESH_TOKEN  >  Client
 
-
 ```python
 with open("fitbit_login_info.json", "r") as openfile:
     fitbit_info=json.load(openfile)
@@ -339,8 +342,6 @@ auth2_client = fitbit.Fitbit(
 							 oauth2=True, 
 							 access_token=ACCESS_TOKEN, 
 							 refresh_token=REFRESH_TOKEN)
-
-
 ```
 
 ## Fitbit Dashboard by [jlai](https://github.com/jlai)[Jason](https://github.com/jlai)
