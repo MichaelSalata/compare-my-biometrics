@@ -84,7 +84,7 @@ def download_static_data(endpoint_name, tokens):
     # if an endpoint_name is specified, ONLY download from that endpoint
     if endpoint_name:
         if endpoint_name not in tokens["scope"]:
-            print("don't have permissions for that endpoint")
+            print("that data source wasn't in permitted scope")
         
         if endpoint_name in static_endpoints.keys():
             data = fetch_static(static_endpoints[endpoint_name], tokens=tokens)
@@ -107,8 +107,17 @@ def download_date_range(start_date, end_date, tokens, filename=None, endpoint_na
     # example documentation: https://dev.fitbit.com/build/reference/web-api/heartrate-timeseries/get-heartrate-timeseries-by-date-range/
     daterange_endpoints = {
         "heartrate": "/1/user/{user_id}/activities/heart/date/{start}/{end}.json",
+        "hrv": "/1/user/{user_id}/hrv/date/{start}/{end}/all.json",    # intraday
+        "spO2": "/1/user/{user_id}/spo2/date/{start}/{end}/all.json",    # intraday
+        "spO2": "/1/user/{user_id}/spo2/date/{start}/{end}/all.json",    # intraday
+        "azm": "/1/user/{user_id}/activities/active-zone-minutes/date/{start}/{end}/1min.json",    # intraday
+        "hr_intraday": "/1/user/{user_id}/activities/heart/date/{start}/{end}/1min.json",    # intraday
+        "calories": "/1/user/{user_id}/activities/calories/date/{start}/{end}/1min.json",    # intraday
+        "distance": "/1/user/{user_id}/activities/distance/date/{start}/{end}/1min.json",    # intraday
+        "elevation": "/1/user/{user_id}/activities/elevation/date/{start}/{end}/1min.json",    # intraday
+        "floors": "/1/user/{user_id}/activities/floors/date/{start}/{end}/1min.json",    # intraday
+        "steps": "/1/user/{user_id}/activities/steps/date/{start}/{end}/1min.json",    # intraday
         # "nutrition": "",
-
         # "activity": "/1/user/[user-id]/activities/[resource-path]/date/{start}/{end}.json"
         # resource options: https://dev.fitbit.com/build/reference/web-api/activity-timeseries/get-activity-timeseries-by-date-range/#Resource-Options
 
@@ -118,7 +127,7 @@ def download_date_range(start_date, end_date, tokens, filename=None, endpoint_na
     # if an endpoint_name is specified, ONLY download from that endpoint
     if endpoint_name:
         if endpoint_name not in tokens["scope"]:
-            print("don't have permissions for that endpoint")
+            print(f"{endpoint_name} not in permissions scope")
             
         if endpoint_name in daterange_endpoints.keys():
             data = fetch_date_range(daterange_endpoints[endpoint_name], start=start_date, end=end_date, tokens=tokens)
@@ -126,7 +135,6 @@ def download_date_range(start_date, end_date, tokens, filename=None, endpoint_na
                 save_data(data, endpoint_name, user_id=tokens["user_id"], start_date=start_date, end_date=end_date, filename=filename)
         else:
             print("don't know a url for that endpoint")
-        
         return
 
     # if no endpoint_name is specified, download from all endpoints that you have permissions(tokens) for
