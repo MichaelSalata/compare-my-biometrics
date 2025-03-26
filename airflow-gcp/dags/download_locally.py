@@ -6,9 +6,16 @@ import calendar
 
 # example documentation: https://dev.fitbit.com/build/reference/web-api/heartrate-timeseries/get-heartrate-timeseries-by-date/
 # day_specific_endpoints = {
-#     # "sleep": "/sleep/date/{date}.json",
-#     # "activity": "/activities/date/{date}.json",
-#     # "heartrate": "/activities/heart/date/{date}/1d.json",
+#     "azm": "/1/user/{user_id}/activities/active-zone-minutes/date/{date}/{date}/1min.json",    # intraday
+#     "hr_intraday": "/1/user/{user_id}/activities/heart/date/{date}/{date}/1min.json",    # intraday
+#     "calories": "/1/user/{user_id}/activities/calories/date/{date}/{date}/1min.json",    # intraday
+#     "distance": "/1/user/{user_id}/activities/distance/date/{date}/{date}/1min.json",    # intraday
+#     "elevation": "/1/user/{user_id}/activities/elevation/date/{date}/{date}/1min.json",   # intraday
+#     "floors": "/1/user/{user_id}/activities/floors/date/{date}/{date}/1min.json",         # intraday
+#     "steps": "/1/user/{user_id}/activities/steps/date/{date}/{date}/1min.json",    # intraday
+#     "sleep": "/sleep/date/{date}.json",
+#     "activity": "/activities/date/{date}.json",
+#     "heartrate": "/activities/heart/date/{date}/1d.json",
 #     "weight": "/1/user/{user_id}/body/log/weight/date/{date}.json",
 #     "fat": "/1/user/{user_id}/body/log/fat/date/{date}.json"
 # }
@@ -109,14 +116,6 @@ def download_date_range(start_date, end_date, tokens, filename=None, endpoint_na
         "heartrate": "/1/user/{user_id}/activities/heart/date/{start}/{end}.json",
         "hrv": "/1/user/{user_id}/hrv/date/{start}/{end}/all.json",    # intraday
         "spO2": "/1/user/{user_id}/spo2/date/{start}/{end}/all.json",    # intraday
-        "spO2": "/1/user/{user_id}/spo2/date/{start}/{end}/all.json",    # intraday
-        "azm": "/1/user/{user_id}/activities/active-zone-minutes/date/{start}/{end}/1min.json",    # intraday
-        "hr_intraday": "/1/user/{user_id}/activities/heart/date/{start}/{end}/1min.json",    # intraday
-        "calories": "/1/user/{user_id}/activities/calories/date/{start}/{end}/1min.json",    # intraday
-        "distance": "/1/user/{user_id}/activities/distance/date/{start}/{end}/1min.json",    # intraday
-        "elevation": "/1/user/{user_id}/activities/elevation/date/{start}/{end}/1min.json",    # intraday
-        "floors": "/1/user/{user_id}/activities/floors/date/{start}/{end}/1min.json",    # intraday
-        "steps": "/1/user/{user_id}/activities/steps/date/{start}/{end}/1min.json",    # intraday
         # "nutrition": "",
         # "activity": "/1/user/[user-id]/activities/[resource-path]/date/{start}/{end}.json"
         # resource options: https://dev.fitbit.com/build/reference/web-api/activity-timeseries/get-activity-timeseries-by-date-range/#Resource-Options
