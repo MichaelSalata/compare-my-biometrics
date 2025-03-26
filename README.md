@@ -96,6 +96,9 @@ visit [localhost:8080](http://localhost:8080/)
 log into Airflow with user:pass = airflow:airflow
 run the dag 
 
+# Special Thanks
+Thanks to [Alexey](https://github.com/alexeygrigorev), [Manuel](https://github.com/ManuelGuerra1987) and the [Datatalks Club](https://datatalks.club/) community. Their [Data Engineering Course](https://github.com/DataTalksClub/data-engineering-zoomcamp) was instrumental in creating this project.
+
 # Future Goals
 - [ ] get the project **hosted in the cloud**
 - [ ] make **Idempotent**
