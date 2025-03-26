@@ -20,7 +20,7 @@
 2. **Flattens JSON Tables and Converts Parquet** – Transforms the locally stored JSON files into Parquet format for optimized storage, transmission, and processing.
 3. **Upload Data to Google Cloud Storage (GCS)** – Transfers the Parquet files to GCS for centralized cloud storage and accessibility.
 4. **Create BigQuery Profile, Heart Rate and Sleep Table** – Establishes an external BigQuery table for user profiles, sleep data and heart rate data stored in GCS.
-5. **Transform Data with dbt** – Applies SQL-based transformations in BigQuery using dbt to clean, standardize, and prepare data for analysis.
+5. **Transform Data and Partition BigQuery with dbt** – Inject SQL-based transformations to BigQuery to clean, standardize, and prepare data for analysis.
 
 ## [Looker Studio Data Presentation](https://lookerstudio.google.com/reporting/62d48d66-0361-4d53-9927-ed9a604cafd9/page/30qCF)
 ![Looker Studio Preview](https://github.com/MichaelSalata/compare-my-biometrics/blob/main/imgs/Screenshot%20from%202025-03-24%2020-08-14.png)
@@ -29,8 +29,8 @@
 - **Python** to **connect and download** from the Fitbit API and **reformat** the downloaded json files to parquet
 - **Apache Airflow** *orchestrates and schedules* download, reformatting, upload, database transfer and SQL transformation.
 - **PostgreSQL** provides Airflow a **database to store workflow metadata** about DAGs, tasks, runs, and other elements
-- **Google BigQuery** to **process data analytics**.
-- **dbt (Data Build Tool)** injects SQL **data transformations** into BigQuery and enables software management tools to better maintain SQL code 
+- **Google BigQuery** to **process data analytics**. **Table partitioning is done the dbt staging process**
+- **dbt (Data Build Tool)** injects SQL **data transformations** into BigQuery and enables software management tools to better maintain SQL code
 - **Docker** encapsulates the pipeline ensuring portability, and scalable.
 
 # Building the Project Yourself
@@ -83,11 +83,13 @@ terraform apply
 ***NOTE**:* remember to run `terraform destroy `after you're done
 ## Build the Docker Image
 ```bash
+cd airflow-gcp/
 DOCKER_BUILDKIT=1 docker compose build
 ```
 ***NOTE***: building the Docker image may take a LONG time
 ## Run the Docker Image
 ```bash
+cd airflow-gcp/
 docker compose up airflow-init && docker compose up -d
 ```
 ***NOTE**:* starting the image takes ~15 minutes
