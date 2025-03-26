@@ -5,7 +5,7 @@ Doing this allows the project to download, store and analyze YOUR fitbit data in
 - [dev.fitbit.com](https://dev.fitbit.com/) > Manage > [Register An App](https://dev.fitbit.com/apps/new/) > [Log in](https://dev.fitbit.com/login)
 	- `Continue with Google` if you use your google account
 	- **IMPORTANT**: mark the project `Personal` and use Callback URL `http://127.0.0.1:8080/`
-	- [example image](https://miro.medium.com/v2/resize:fit:720/format:webp/1*UJHMOYsFZvrBmpNjFfpBJA.jpeg)
+![fitbit_app_registration image](https://github.com/MichaelSalata/compare-my-biometrics/blob/main/imgs/register_fitbit_app.jpg)
 
 # 2. Get your ACCESS_TOKEN
 OPTION 1:

@@ -44,7 +44,7 @@ gh repo clone MichaelSalata/compare-my-biometrics
 cd compare-my-biometrics
 ```
 
-### OPTIONAL: [Use YOUR Fitbit Data](https://github.com/MichaelSalata/compare-my-biometrics/blob/main/Include-Your-Fitbit-Data.md)
+### OPTIONAL: [Use YOUR Fitbit Data](https://github.com/MichaelSalata/compare-my-biometrics/blob/main/Use-Your-Fitbit-Data.md)
 **NOTE:** By default, the project uses [my example fitbit data](https://github.com/MichaelSalata/compare-my-biometrics/tree/main/airflow-gcp/example_data)  spanning **11-21-2024**  to  **3-16-2025**
 
 ### Setup a Service Account for a GCP Project 
