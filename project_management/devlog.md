@@ -259,8 +259,9 @@ Thanks to Alexey and his community from [datatalks club](https://datatalks.club
 
 
 ## Rough Edges
-
 - [ ] Create a dag to run immediately on Airflow Startup
+
+- [ ] generate documentation for written functions
 
 - [ ] schedule it to run once a month
 
