@@ -205,15 +205,11 @@ ng-hiep repo - [airflow-dbt-gcp-datapipeline](https://github.com/ng-hiep/airflow
 	- [x] add `fitbit_tokens.json` ✅ 2025-03-25
 	- [x] add `.env` ✅ 2025-03-25
 
-- [ ] add Special Mentions part 
+- [x] add Special Mentions part ✅ 2025-03-26
 Thanks to Alexey and his community from [datatalks club](https://datatalks.club/), create this project without the course of [Data Engineering](https://github.com/DataTalksClub/data-engineering-zoomcamp) would have been much more difficult.
-- [ ] future improvements section
+- [x] future improvements section ✅ 2025-03-26
 	- ~~partition core tables, for performance~~
-	- Add a cost analysis of a full pipeline run
-	- extract more value from steam reviews --> new dashboard ?
-	- USE CASE: matrix factorization for recommendations
 	- ~~github action for upload spark script to bucket~~
-	- More tests on the pipeline
 	- Fully normalize the tables as exercise
 
 - [ ] tell user about Partitioning in DBT
@@ -249,12 +245,8 @@ Thanks to Alexey and his community from [datatalks club](https://datatalks.club
 
 ## PHASE 7 - Better transformations
 - [ ] make dag run immediately on start
-	- remove instructions on logging into Airflow
-	- OPTIONAL: Log in and explore Airlfow, explore Data in your BigQuery Database with Looker Studio 
-- [ ] download some test intraday data
-	- estimate if that'd warrant PySpark data processing
+- [x] download some test intraday data & estimate if that'd warrant PySpark data processing ✅ 2025-03-26
 - [ ] look up clustering best practices -> apply them to my schema in DBT
-- [ ] find useful data ratios I can visualize
 - [ ] create a data mart with intraday transformations 
 
 ## Deadlines
@@ -276,6 +268,8 @@ Thanks to Alexey and his community from [datatalks club](https://datatalks.club
 
 - [ ] add data tests in DBT
 
+- [ ] move airflow log-in details to the .env
+
 - [ ] personal data is saved in fitbit_tokens.json and not .env
 
 - [ ] update database dag
@@ -292,8 +286,9 @@ Thanks to Alexey and his community from [datatalks club](https://datatalks.club
 
 - [x] add more bars to the barchart ✅ 2025-03-24
 
-- [ ] research good graphics
+- [ ] research desired metrics and graphics to visualize
 	- look at Google Fit Metrics
+	- correlation matrixes?
 	- how I used my jupyter notebooks
 	- graphics on **[fitbit-web-ui-app](https://github.com/arpanghosh8453/fitbit-web-ui-app)** - github
 	- graphics on https://dashboard.exercise.quest/
@@ -311,6 +306,7 @@ Thanks to Alexey and his community from [datatalks club](https://datatalks.club
 *stuff that requires research/learning/documentation reading*
 
 - [ ] Make ==Idempotent==
+	- [make dbt models incremental](https://docs.getdbt.com/docs/build/incremental-models)
 	- dynamic dag to update DB
 		- checks if DB empty
 			- if so, uploads data since user profile sign-up date to now and processes it
