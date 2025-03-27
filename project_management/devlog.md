@@ -44,7 +44,7 @@
 
 ## PHASE 3 - move data to new GCP project, Bucket & BigQuery
 - [x] move data to ECS ✅ 2025-03-12
-- [ ] setup new GCP *account*, project, Bucket & BigQuery
+
 - [x] setup a Terraform  config to launch, apply, destroy it ✅ 2025-03-12
 
 - [x] upload the data ✅ 2025-03-12
@@ -247,47 +247,48 @@ Thanks to Alexey and his community from [datatalks club](https://datatalks.club
 	- log with airflow airflow
 	- run dag
 
-## PHASE 7 - STRETCH post README -> more DBT transformations
-?
-- [ ] look up clustering best practices -> apply them to my schema in DBT
-- [ ] find useful data ratios I can visualize
-- [ ] create a data mart -> useful data transformations 
-
-## Submission 1 Goals 
-*aka Goals for 3/31*
-
-
-
-## Submission 2 Goals 
-*aka Goals for 4/14*
-
-
-## Interview Ready Goals 
-
-
+## PHASE 7 - Better transformations
 - [ ] make dag run immediately on start
 	- remove instructions on logging into Airflow
 	- OPTIONAL: Log in and explore Airlfow, explore Data in your BigQuery Database with Looker Studio 
+- [ ] download some test intraday data
+	- estimate if that'd warrant PySpark data processing
+- [ ] look up clustering best practices -> apply them to my schema in DBT
+- [ ] find useful data ratios I can visualize
+- [ ] create a data mart with intraday transformations 
 
-- [ ] **==look up how I can create a create a service account json with a monetary processing restriction==**
-	- add these instructions into the README
+## Deadlines
+### Submission 1
+*aka Goals for 3/31*
+### Submission 2
+*aka Goals for 4/14*
+### Interview Ready
+*aka Goals for roughly 4/30???*
 
-- [ ] add data test in DBT
 
+## Rough Edges
+
+- [ ] Create a dag to run immediately on Airflow Startup
+
+- [ ] schedule it to run once a month
+
+- [ ] ensure dbt partitions on dates
+
+- [ ] add data tests in DBT
+
+- [ ] personal data is saved in fitbit_tokens.json and not .env
+
+- [ ] update database dag
+	- check latest date in DB
+	- download data from that date until now
+	- process and update warehouse
 
 - [ ] get a larger dataset analyzed
 	- utilize PySpark
 	- intraday data
 	- find some sort of sleep or heartrate study
 
-- integrate Batch Processing with Spark
-	- [[DataTalks DE Zoomcamp 2025 Syllabus#*Module* 5 Batch Processing - *Spark*]]
-	-  [DataTalksClub](https://github.com/DataTalksClub)/ [data-engineering-zoomcamp](https://github.com/DataTalksClub/data-engineering-zoomcamp)/ [05-batch](https://github.com/DataTalksClub/data-engineering-zoomcamp/tree/main/05-batch "05-batch")
-	-  [ManuelGuerra1987](https://github.com/ManuelGuerra1987) /  [data-engineering-zoomcamp-notes](https://github.com/ManuelGuerra1987/data-engineering-zoomcamp-notes)  / [5_Batch-Processing-Spark](https://github.com/ManuelGuerra1987/data-engineering-zoomcamp-notes/tree/main/5_Batch-Processing-Spark "5_Batch-Processing-Spark")
-
 - [ ] make pipeline **idempotent
-
-- [ ] implement CI/CD
 
 - [x] add more bars to the barchart ✅ 2025-03-24
 
@@ -297,80 +298,57 @@ Thanks to Alexey and his community from [datatalks club](https://datatalks.club
 	- graphics on **[fitbit-web-ui-app](https://github.com/arpanghosh8453/fitbit-web-ui-app)** - github
 	- graphics on https://dashboard.exercise.quest/
 
-- [ ] schedule it to run once a month**
-
 - [ ] dynamically use user-id in created GCP project/bucket/bigquery dataset with Terraform
 
 - [ ] learn how to cost estimate pipeline
 	- gcp financial reports?
 
+- [ ] look at how costs are tracked in GCP
+	- add to talking points
 
-# Resources
- [getting fitbit CLIENT_ID and CLIENT_SECRET - gpt](https://chatgpt.com/c/67945566-6294-8008-963e-90d98c8ffd08)
+## FEATURES
+*stuff I don't know how to do yet*
+*stuff that requires research/learning/documentation reading*
 
-Google Fit has some good charts of emulate
-Someone already did a Fitibit Visualization for their Data Engineering Zoomcamp Project
+- [ ] Make ==Idempotent==
+	- dynamic dag to update DB
+		- checks if DB empty
+			- if so, uploads data since user profile sign-up date to now and processes it
+		- if not, check last seen date in DB -> injects/processes data from that date to now
+		- ==is this the best practice for Idempotency?==
 
-## Fitbit API
+- [ ] STRETCH: optimize BigQuery Tables
+	- Datatalks - wk 3 HW
+	- PARTITION, CLUSTER, index?, etc...
+	- update dbt references
 
-[documentation](https://python-fitbit.readthedocs.io/en/latest/#fitbit-api)
+- [ ] **==look up how I can create a create a service account json with a monetary processing restriction==**
+	- add these instructions into the README
 
-[python-fitbit](https://github.com/orcasgit/python-fitbit/tree/master) -  ==[gather_keys_oauth2.py](https://github.com/orcasgit/python-fitbit/blob/master/gather_keys_oauth2.py)==
+- [ ] create a users table with foreign IDs to staged data
 
-https://python-fitbit.readthedocs.io/en/latest/#fitbit-api
+- [ ] integrate Batch Processing with Spark
+	- get more Data
+		- intraday data
+	- [[DataTalks DE Zoomcamp 2025 Syllabus#*Module* 5 Batch Processing - *Spark*]]
+	- [DataTalksClub](https://github.com/DataTalksClub)/ [data-engineering-zoomcamp](https://github.com/DataTalksClub/data-engineering-zoomcamp)/ [05-batch](https://github.com/DataTalksClub/data-engineering-zoomcamp/tree/main/05-batch "05-batch")
+	- [ManuelGuerra1987](https://github.com/ManuelGuerra1987) /  [data-engineering-zoomcamp-notes](https://github.com/ManuelGuerra1987/data-engineering-zoomcamp-notes)  / [5_Batch-Processing-Spark](https://github.com/ManuelGuerra1987/data-engineering-zoomcamp-notes/tree/main/5_Batch-Processing-Spark "5_Batch-Processing-Spark")
+	- [Spark + Airflow](https://medium.com/doubtnut/github-actions-airflow-for-automating-your-spark-pipeline-c9dff32686b)
+	- generate a GB of data and benchmark performance
+		- lol this is a spark job in of itself
 
-### [Fitbit OAuth 2.0 Tutorial](https://dev.fitbit.com/build/reference/web-api/troubleshooting-guide/oauth2-tutorial/)
+- [ ] implement CI/CD
+	- [Helpful Links from DataTalks](https://github.com/DataTalksClub/data-engineering-zoomcamp/tree/main/projects#helpful-links)
+		- [Unit Tests + CI for Airflow](https://www.astronomer.io/events/recaps/testing-airflow-to-bulletproof-your-code/)
+		- [CI/CD for Airflow (with Gitlab & GCP state file)](https://engineering.ripple.com/building-ci-cd-with-airflow-gitlab-and-terraform-in-gcp)
+		- [CI/CD for Airflow (with GitHub and S3 state file)](https://programmaticponderings.com/2021/12/14/devops-for-dataops-building-a-ci-cd-pipeline-for-apache-airflow-dags/)
+		- [CD for Terraform](https://towardsdatascience.com/git-actions-terraform-for-data-engineers-scientists-gcp-aws-azure-448dc7c60fcc)
 
+- Apache Cloudbyte?
 
-## [Fitpipe](https://github.com/rickyriled/data_engineering_project_1/tree/main) DE Project
-[pt.py](https://github.com/rickyriled/data_engineering_project_1/blob/main/pt.py)
-
-
-fitbit's CLIENT_ID, CLIENT_SECRET  >  Oauth2 token  >  ACCESS_TOKEN, REFRESH_TOKEN  >  Client
-
-```python
-with open("fitbit_login_info.json", "r") as openfile:
-    fitbit_info=json.load(openfile)
-
-server = Oauth2.OAuth2Server(CLIENT_ID, CLIENT_SECRET)
-server.browser_authorize()
-ACCESS_TOKEN = str(server.fitbit.client.session.token['access_token'])
-REFRESH_TOKEN = str(server.fitbit.client.session.token['refresh_token'])
-auth2_client = fitbit.Fitbit(
-							 CLIENT_ID,
-							 CLIENT_SECRET,
-							 oauth2=True, 
-							 access_token=ACCESS_TOKEN, 
-							 refresh_token=REFRESH_TOKEN)
-```
-
-## Fitbit Dashboard by [jlai](https://github.com/jlai)[Jason](https://github.com/jlai)
-[dashboard.exercise.quest](https://dashboard.exercise.quest/)
-[fitness-dashboard](https://github.com/jlai/fitness-dashboard) - github
-[reddit post](https://www.reddit.com/r/fitbit/comments/1eaccv3/fitness_dashboard_an_unofficial_web_dashboard_for/)
-
-## **[fitbit-web-ui-app](https://github.com/arpanghosh8453/fitbit-web-ui-app)** - github
-https://fitbit-report.arpan.app/
-
-[online fitbit wellness report website without premium](https://fitbit-report.arpan.app/)
-src: [reddit page](https://www.reddit.com/r/fitbit/comments/15igabx/update_i_made_a_website_for_all_fitbit_owners/)  [page2](https://www.reddit.com/r/fitbit/comments/18kq520/i_made_a_website_for_all_fitbit_owners_where_you/)
-
-### dev.fitbit.com
-[Fitbit OAuth 2.0 Tutorial](https://dev.fitbit.com/build/reference/web-api/troubleshooting-guide/oauth2-tutorial/?clientEncodedId=23R3K5&redirectUri=https://localhost:8000/&applicationType=PERSONAL)
-[Web API Reference](https://dev.fitbit.com/build/reference/web-api/)
-
-[Collect Your Own Fitbit Data with Python](https://medium.com/towards-data-science/collect-your-own-fitbit-data-with-python-ff145fa10873) - [Stephen Hsu](https://medium.com/@shsu14?source=post_page---byline--ff145fa10873---------------------------------------) medium article
-
-## Device Connect - Google
-https://cloud.google.com/device-connect
-[github](https://github.com/GoogleCloudPlatform/deviceconnect)
-
-```python
-FITBIT_OAUTH_CLIENT_ID = ''                          # fitbit client id (from dev.fitbit.com)
-FITBIT_OAUTH_CLIENT_SECRET = ''                  # fitbit secret (from dev.fitbit.com)
-```
-
-# Project Challenges
+# [[Resources]]
+# Talking Points
+## Project Challenges
 - getting airflow to work??????
 - API
 	- learning about api's
@@ -384,6 +362,12 @@ FITBIT_OAUTH_CLIENT_SECRET = ''                  # fitbit secret (from dev.fitbi
 	- adding in user_id
 	- user_id going null
 	- datetime format changing
+## Cost Tracking
+## Design Process
+1. develop a schema based on the Data API and Analysis needs
+2. incrementally read each technology's documentation and build pipeline
+3. implement pipeline steps with key metrics in mind
+4. learn from feedback from the course peer review process
 # Progress Log
 - Clone [ny-taxi-pipeline](https://github.com/MichaelSalata/ny-taxi-pipeline)
 - `gh auth login`
