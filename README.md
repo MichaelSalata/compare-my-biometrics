@@ -95,9 +95,12 @@ docker compose up airflow-init && docker compose up -d
 ***NOTE**:* starting the image takes ~15 minutes
 ## Run the Airflow Dag
 visit [localhost:8080](http://localhost:8080/)
-log into Airflow with user:pass = airflow:airflow
+log into Airflow (default user:pass = airflow:airflow)
 run the dag 
-
+## Turn off & Remove the Images
+```bash
+docker compose down --volumes --rmi all
+```
 # Special Thanks
 Thanks to [Alexey](https://github.com/alexeygrigorev), [Manuel](https://github.com/ManuelGuerra1987) and the [Datatalks Club](https://datatalks.club/) community. Their [Data Engineering Course](https://github.com/DataTalksClub/data-engineering-zoomcamp) was instrumental in creating this project.
 
@@ -107,3 +110,4 @@ Thanks to [Alexey](https://github.com/alexeygrigorev), [Manuel](https://github.c
 - [ ] implement **CI/CD**
 - [ ] **expose my BigQuery DB**
 	- (allowing connections from tools like PowerBI, Metabase, Looker Studio)
+- [ ] handle secure user data with [Airflow Secrets](https://airflow.apache.org/docs/apache-airflow/stable/security/secrets/index.html)
