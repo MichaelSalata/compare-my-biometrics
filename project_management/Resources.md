@@ -62,3 +62,66 @@ https://cloud.google.com/device-connect
 FITBIT_OAUTH_CLIENT_ID = ''                          # fitbit client id (from dev.fitbit.com)
 FITBIT_OAUTH_CLIENT_SECRET = ''                  # fitbit secret (from dev.fitbit.com)
 ```
+
+
+# Other Projects - Airflow Spark BigQuery
+[Github Search](https://github.com/search?q=Airflow+Spark+Dataproc&type=repositories&s=stars&o=desc)
+
+
+## Batch Processing on DataProc
+
+
+## [steam-data-engineering](https://github.com/VicenteYago/steam-data-engineering)
+by [VicenteYago](https://github.com/VicenteYago)
+
+
+## [dezoomcamp-project](https://github.com/toludaree/dezoomcamp-project)
+by [toludaree](https://github.com/toludaree)
+- processes json file using a schema in [spark_job.py](https://github.com/toludaree/dezoomcamp-project/blob/main/dataproc/spark_job.py)
+- ran in [gharchive_dag.py](https://github.com/toludaree/dezoomcamp-project/blob/e8a6d7f095640ba6039551eb77793e2218b94d77/airflow/dags/gharchive_dag.py#L90)
+- batch processing with [Google DataProc](https://cloud.google.com/dataproc)
+
+## Spark Streaming SQL queries
+
+## [streamify](https://github.com/ankurchavda/streamify)
+by [ankurchavda](https://github.com/ankurchavda)
+- does streaming
+- calls an SQL query on a json file??
+- `from pyspark.sql.functions import from_json`
+
+## [ShowPulse_Ticketmaster](https://github.com/nburkett/ShowPulse_Ticketmaster)
+by [nburkett](https://github.com/nburkett)
+- [**Kafka**](https://kafka.apache.org/), [**Spark Streaming**](https://spark.apache.org/docs/latest/streaming-programming-guide.html)
+- `from pyspark.sql.functions import from_json`
+
+## [GCP_Streaming-Crypto-ETL](https://github.com/ghiles10/GCP_Streaming-Crypto-ETL)
+by [ghiles10](https://github.com/ghiles10)
+- Data Processing	PySpark, Spark Streaming
+- The data is fetched from the Kucoin API, streamed through Kafka, processed using Spark Streaming on a DataProc cluster,
+
+## Other
+## [weather_stream_project](https://github.com/JorgeAbrego/weather_stream_project)
+by [JorgeAbrego](https://github.com/JorgeAbrego)
+- docker encapsulates spark but I don't see him using it........................
+
+## [data_engineer_api_pipeline](https://github.com/VanAltrades/data_engineer_api_pipeline)
+by [VanAltrades](https://github.com/VanAltrades)/
+- **==cloud managed Airflow==**
+- no spark on the repo?
+- is it somehow hidden in the cloud managed Airflow ???
+ETL API data workflow using Google Cloud Platform's Cloud Composer and Databricks services. Introduction to cloud managed Airflow and Spark orchestration.
+
+## [Bandcamp-DE-project](https://github.com/ta-brook/Bandcamp-DE-project)
+by [ta-brook](https://github.com/ta-brook)
+- TECHNICALLY uses spark locally in [spark.py](https://github.com/ta-brook/Bandcamp-DE-project/blob/main/airflow/dags/script/spark.py)
+
+## [airflow-spark-gcp-docker](https://github.com/archie-cm/airflow-spark-gcp-docker)
+by [archie-cm](https://github.com/archie-cm)
+- appears to use spark locally with postgres db
+## [capital_bikeshare_project](https://github.com/JorgeAbrego/capital_bikeshare_project)
+by [JorgeAbrego](https://github.com/JorgeAbrego)
+- wtf no spark
+
+## [BigQuery-ELT](https://github.com/vishu-tyagi/BigQuery-ELT)
+by [vishu-tyagi](https://github.com/vishu-tyagi)
+- uses taxi data, no spark uses
