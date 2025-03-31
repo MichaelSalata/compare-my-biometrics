@@ -106,7 +106,7 @@ request_biometrics  |  `upload_to_datalake >> data_warehouse_transfer`
 - [x] generalize hardcoded fitbit credentials mounting on Docker container
 
 
-- [ ] get Airflow to automatically start the dag on startup
+- [ ] ~~get Airflow to automatically start the dag on startup~~
 
 ### for each stage
 - get variables needed
@@ -200,7 +200,7 @@ ng-hiep repo - [airflow-dbt-gcp-datapipeline](https://github.com/ng-hiep/airflow
 
 **WHAT PROBLEM DOES IT SOLVE**? - course project req
 - [x] add dev.fitbit project creation image to repo and readme ✅ 2025-03-25
-
+I think t
 - add personal data config files to repo
 	- [x] add `fitbit_tokens.json` ✅ 2025-03-25
 	- [x] add `.env` ✅ 2025-03-25
@@ -250,15 +250,13 @@ Thanks to Alexey and his community from [datatalks club](https://datatalks.club
 - [ ] create a data mart with intraday transformations 
 
 ## Deadlines
-### Submission 1
+### TODOs Submission 1 - 3/31
 *aka Goals for 3/31*
-### Submission 2
-*aka Goals for 4/14*
-### Interview Ready
-*aka Goals for roughly 4/30???*
-
+### Submission 2 - 4/14
+### Interview Ready - 4/30???*
 
 ## Rough Edges
+
 - [ ] Create a dag to run immediately on Airflow Startup
 
 - [ ] generate documentation for written functions
@@ -269,19 +267,28 @@ Thanks to Alexey and his community from [datatalks club](https://datatalks.club
 
 - [ ] add data tests in DBT
 
-- [ ] move airflow log-in details to the .env
+- [ ] Need a nicer control flow diagram in README
+	- [Slack resource discussion](https://datatalks-club.slack.com/archives/C01FABYF2RG/p1743432813320519)
+	- Mermaid, JavaScript-based diagramming and charting tool
+	- http://draw.io/
+	- Lucidchart
 
-- [ ] personal data is saved in fitbit_tokens.json and not .env
+- [x] move airflow log-in details to the .env ✅ 2025-03-28
+
+- functionality review/refactor
+	- [ ] dag
+	- [ ] API download
+	- [ ] upload to GCS
+	- [ ] docker compose
+	- [ ] Dockerfile
+
+- ~~personal data is saved in fitbit_tokens.json and not .env~~
+	- 
 
 - [ ] update database dag
 	- check latest date in DB
 	- download data from that date until now
 	- process and update warehouse
-
-- [ ] get a larger dataset analyzed
-	- utilize PySpark
-	- intraday data
-	- find some sort of sleep or heartrate study
 
 - [ ] make pipeline **idempotent
 
@@ -306,14 +313,6 @@ Thanks to Alexey and his community from [datatalks club](https://datatalks.club
 *stuff I don't know how to do yet*
 *stuff that requires research/learning/documentation reading*
 
-- [ ] Make ==Idempotent==
-	- [make dbt models incremental](https://docs.getdbt.com/docs/build/incremental-models)
-	- dynamic dag to update DB
-		- checks if DB empty
-			- if so, uploads data since user profile sign-up date to now and processes it
-		- if not, check last seen date in DB -> injects/processes data from that date to now
-		- ==is this the best practice for Idempotency?==
-
 - [ ] STRETCH: optimize BigQuery Tables
 	- Datatalks - wk 3 HW
 	- PARTITION, CLUSTER, index?, etc...
@@ -324,6 +323,8 @@ Thanks to Alexey and his community from [datatalks club](https://datatalks.club
 
 - [ ] create a users table with foreign IDs to staged data
 
+- [ ] move stack to cloud
+
 - [ ] integrate Batch Processing with Spark
 	- get more Data
 		- intraday data
@@ -333,6 +334,19 @@ Thanks to Alexey and his community from [datatalks club](https://datatalks.club
 	- [Spark + Airflow](https://medium.com/doubtnut/github-actions-airflow-for-automating-your-spark-pipeline-c9dff32686b)
 	- generate a GB of data and benchmark performance
 		- lol this is a spark job in of itself
+	- [ ] get a larger dataset analyzed
+		- utilize PySpark
+		- intraday data
+		- find some sort of sleep or heartrate study
+
+- [ ] Make ==Idempotent==
+	- [make dbt models incremental](https://docs.getdbt.com/docs/build/incremental-models)
+	- dynamic dag to update DB
+		- checks if DB empty
+			- if so, uploads data since user profile sign-up date to now and processes it
+		- if not, check last seen date in DB -> injects/processes data from that date to now
+		- ==is this the best practice for Idempotency?==
+
 
 - [ ] implement CI/CD
 	- [Helpful Links from DataTalks](https://github.com/DataTalksClub/data-engineering-zoomcamp/tree/main/projects#helpful-links)
@@ -345,6 +359,7 @@ Thanks to Alexey and his community from [datatalks club](https://datatalks.club
 
 # [[Resources]]
 # Talking Points
+- lack of data governance
 ## Project Challenges
 - getting airflow to work??????
 - API
