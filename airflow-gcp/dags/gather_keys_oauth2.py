@@ -12,6 +12,8 @@ from base64 import b64encode
 from fitbit.api import Fitbit
 from oauthlib.oauth2.rfc6749.errors import MismatchingStateError, MissingTokenError
 
+# This is a forked version of the official gather_keys_oauth2.py
+# github link: https://github.com/orcasgit/python-fitbit/blob/master/gather_keys_oauth2.py
 
 class OAuth2Server:
     def __init__(self, client_id, client_secret,
