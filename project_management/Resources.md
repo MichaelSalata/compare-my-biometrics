@@ -70,16 +70,26 @@ FITBIT_OAUTH_CLIENT_SECRET = ''                  # fitbit secret (from dev.fitbi
 
 ## Batch Processing on DataProc
 
-
 ## [steam-data-engineering](https://github.com/VicenteYago/steam-data-engineering)
 by [VicenteYago](https://github.com/VicenteYago)
 
-
 ## [dezoomcamp-project](https://github.com/toludaree/dezoomcamp-project)
 by [toludaree](https://github.com/toludaree)
+- fair instructions on setting up the google cloud infrastructure
 - processes json file using a schema in [spark_job.py](https://github.com/toludaree/dezoomcamp-project/blob/main/dataproc/spark_job.py)
 - ran in [gharchive_dag.py](https://github.com/toludaree/dezoomcamp-project/blob/e8a6d7f095640ba6039551eb77793e2218b94d77/airflow/dags/gharchive_dag.py#L90)
 - batch processing with [Google DataProc](https://cloud.google.com/dataproc)
+
+## [JorgeAbrego](https://github.com/JorgeAbrego)
+great infrastructure setup
+## [weather_stream_project](https://github.com/JorgeAbrego/weather_stream_project)
+by [JorgeAbrego](https://github.com/JorgeAbrego)
+- docker encapsulates spark but I don't see him using it........................
+## [capital_bikeshare_project](https://github.com/JorgeAbrego/capital_bikeshare_project)
+by [JorgeAbrego](https://github.com/JorgeAbrego)
+- good infraestructure management with terraform
+- wtf no spark
+
 
 ## Spark Streaming SQL queries
 
@@ -98,11 +108,7 @@ by [nburkett](https://github.com/nburkett)
 by [ghiles10](https://github.com/ghiles10)
 - Data Processing	PySpark, Spark Streaming
 - The data is fetched from the Kucoin API, streamed through Kafka, processed using Spark Streaming on a DataProc cluster,
-
 ## Other
-## [weather_stream_project](https://github.com/JorgeAbrego/weather_stream_project)
-by [JorgeAbrego](https://github.com/JorgeAbrego)
-- docker encapsulates spark but I don't see him using it........................
 
 ## [data_engineer_api_pipeline](https://github.com/VanAltrades/data_engineer_api_pipeline)
 by [VanAltrades](https://github.com/VanAltrades)/
@@ -118,10 +124,10 @@ by [ta-brook](https://github.com/ta-brook)
 ## [airflow-spark-gcp-docker](https://github.com/archie-cm/airflow-spark-gcp-docker)
 by [archie-cm](https://github.com/archie-cm)
 - appears to use spark locally with postgres db
-## [capital_bikeshare_project](https://github.com/JorgeAbrego/capital_bikeshare_project)
-by [JorgeAbrego](https://github.com/JorgeAbrego)
-- wtf no spark
-
 ## [BigQuery-ELT](https://github.com/vishu-tyagi/BigQuery-ELT)
 by [vishu-tyagi](https://github.com/vishu-tyagi)
 - uses taxi data, no spark uses
+
+
+## [Debussy](https://github.com/debussy-labs/debussy_concert/tree/master)
+opinionated Data Architecture and Engineering framework
