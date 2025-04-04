@@ -361,7 +361,6 @@ sudo chown root:docker /var/run/docker.sock
 sudo chmod 660 /var/run/docker.sock
 docker compose up -d airflow-init && sudo docker compose up
 docker compose down
-terraform destroy
 ```
 
 
@@ -372,6 +371,9 @@ need to scp in fitbit_tokens.json
 nano edit .env to adjust for new `google_credentials.json`
 
 added `&& dbt deps` to last dag Operator
+
+terraform destroy
+spin down VM instance
 
 ## Rough Edges
 
