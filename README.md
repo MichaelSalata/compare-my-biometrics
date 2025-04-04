@@ -94,9 +94,9 @@ docker compose up airflow-init && docker compose up -d
 ```
 ***NOTE**:* starting the image takes ~15 minutes
 ## Run the Airflow Dag
-visit [localhost:8080](http://localhost:8080/)
-log into Airflow (default user:pass = airflow:airflow)
-run the dag 
+1. visit [localhost:8080](http://localhost:8080/)
+2. log into Airflow (default user:pass = airflow:airflow)
+3. run the dag
 ## Turn off & Remove the Images
 ```bash
 docker compose down --volumes --rmi all

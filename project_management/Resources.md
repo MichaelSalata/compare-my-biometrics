@@ -82,6 +82,7 @@ by [toludaree](https://github.com/toludaree)
 
 ## [JorgeAbrego](https://github.com/JorgeAbrego)
 great infrastructure setup
+
 ## [weather_stream_project](https://github.com/JorgeAbrego/weather_stream_project)
 by [JorgeAbrego](https://github.com/JorgeAbrego)
 - docker encapsulates spark but I don't see him using it........................
