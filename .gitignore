@@ -152,6 +152,7 @@ fitbit_project_info.json
 # terraform
 .terraform*
 terraform.tfstate*
+*.tfvars
 
 # airflow meta data
 logs/
