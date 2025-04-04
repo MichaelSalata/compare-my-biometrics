@@ -379,15 +379,19 @@ spin down VM instance
 
 - [ ] add `terraform destroy` in README after `docker compose down`
 
-- [ ] Create a dag to run immediately on Airflow Startup
+- [ ] get dag to run immediately on Airflow Startup 
 
 - [ ] generate documentation for written functions
+
+- [ ] create image for DAG for README
 
 - [ ] schedule it to run once a month
 
 - [ ] ensure dbt partitions on dates
 
 - [ ] add data tests in DBT
+
+- [ ] add project environment variables to Airflow Config
 
 - [ ] Need a nicer control flow diagram in README
 	- [Slack resource discussion](https://datatalks-club.slack.com/archives/C01FABYF2RG/p1743432813320519)
