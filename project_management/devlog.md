@@ -193,7 +193,7 @@ ng-hiep repo - [airflow-dbt-gcp-datapipeline](https://github.com/ng-hiep/airflow
 
 ## PHASE 6 - Assemble the README
 
-- [ ] RESOURCES:
+- [x] RESOURCES: ✅ 2025-04-25
 	- [jorge's README](https://github.com/JorgeAbrego/weather_stream_project) as a blueprint
 	- manuel's README
 	- data proj draft README
@@ -243,29 +243,155 @@ Thanks to Alexey and his community from [datatalks club](https://datatalks.club
 	- log with airflow airflow
 	- run dag
 
-## PHASE 7 - Better transformations
-- [ ] make dag run immediately on start
+## PHASE 7 ~~- Better transformations~~ POSTPONED
+- ~~make dag run immediately on start~~
 - [x] download some test intraday data & estimate if that'd warrant PySpark data processing ✅ 2025-03-26
 - [ ] look up clustering best practices -> apply them to my schema in DBT
 - [ ] create a data mart with intraday transformations 
 
-## Deadlines
-### TODOs Submission 1 - 3/31
-*aka Goals for 3/31*
-### Submission 2 - 4/14
-### Interview Ready - 4/30???*
+## Project Review for Submission 1
+[[DE Zoomcamp Project Reviews - 2025-04-02]]
+(submission 1)
+- [x] [Mental-Well-being-Monitor](https://github.com/victorfxz/Mental-Well-being-Monitor) ✅ 2025-04-02
+- [x] [Data-Pipeline-for-E-commerce-Customer-Segmentation](https://github.com/mrvneslihan/Data-Pipeline-for-E-commerce-Customer-Segmentation) ✅ 2025-04-02
+- [x] [road-traffic-injuries](https://github.com/cl3rO3Y/road-traffic-injuries) ✅ 2025-04-02
+
+## PHASE 8 - Cloud Migration
+- create Terraform Cloud resources as if looking it up through the registry
+	- [ ] find sources for compute and vpc
+
+- micro course - read up on modules
+	- [Terraform on Google Cloud documentation](https://cloud.google.com/docs/terraform)
+		- [ ] micro course - [Build Infrastructure with Terraform on Google Cloud](https://www.cloudskillsboost.google/course_templates/636)
+	- [ ] [Terraform Documentation - Create modules](https://developer.hashicorp.com/terraform/tutorials/modules/pattern-module-creation)
+
+- PROOF OF CONCEPT - get cloud migration working
+	- [ ] look at the steps [toludaree](https://github.com/toludaree) used for his [dezoomcamp-project](https://github.com/toludaree/dezoomcamp-project)
+	- [ ] edit `compute/main.tf` to suit my project
+		- install Docker
+		- install Docker compose
+		- ~~install Terraform~~
+		- add file locations for google_credentials.json and stuff
+	- [ ] change default vars and descriptions from Jorge's Terraform code
+	- [ ] separate Terraform Airflow compute module from fitbit datasets
+	- [ ] get VS Code working through ssh
+	- [ ] create/separate project management/documentation branch 
+	- [ ] test my dag
+
+- [ ] insert accreditation/src links for terraform resources
+
+- [ ] finding the origin Jorge's Terraform output code
+- [ ] find registry sources for compute and vpc
+
+- [ ] add `.gitkeep` to airflow, config, logs, plugins
+
+- [ ] update README
+	- [toludaree readme](https://github.com/toludaree/dezoomcamp-project?tab=readme-ov-file#pre-infrastructure-setup) is a good template
+		- enable Compute Engine API and Dataproc API ?
+	- go to [IAM](https://console.cloud.google.com/iam-admin/iam) -> edit service account -> add role: **Compute Network Admin**
+	- 
+### Jorge's instructions
+
+#### Start Cloud Instance
+1. gen ssh key
+2. set .tfvars
+3. init & apply
+	- 1. [compute](https://github.com/JorgeAbrego/weather_stream_project/tree/main/infraestructure/compute) sets up:
+		- connection "ssh"
+		- provisioner "file" "../deployment/" to "/home/${var.ssh_user}"
+		- provisioner "file" "../keys/" to "/home/${var.ssh_user}/.gcp"
+		- provisioner "remote-exec" "chmod 777 ./install-docker.sh", "./install-docker.sh" (runs it)
+4. ???????
+	- "Use the IP address or hostname provided by your cloud provider along with the path to your private SSH key"??
+	- ssh -i path/ssh-key user@host
+5. **Run Locally** steps but through ssh
+
+#### Run locally
+1. clone git repo
+2. set .env variables
+3. set service account json
+4. set processor architecture in the `dbt.Dockerfile`??????????????
+5. `docker-compose up -d --build`
+6. Execute dag
+	- `localhost:8080` -> airflow UI
+	- OR run script `./reprocess_datalake.sh` which executes the dag?
+
+### My Cloud VM Setup
+image-id: f9e41be4ef45
+image-name: apache/airflow     (hardcoded: in docker-compose.yaml)
+image-tag: reqs-lockedv0.1     (hardcoded: in docker-compose.yaml)
+gcp-vm-name: airflow-vm    (from .tfvars)
+serviceAccount: dtc-de-user@dtc-de-446723.iam.gserviceaccount.com   (from credentials.json)
+
+`~/Downloads/airflow_vm_terminal_history.txt`
+
+```bash
+
+gcloud projects add-iam-policy-binding dtc-de-446723 \
+    --member="serviceAccount:dtc-de-user@dtc-de-446723.iam.gserviceaccount.com" \
+    --role="roles/compute.securityAdmin"
+
+gcloud projects add-iam-policy-binding dtc-de-446723 \
+    --member="serviceAccount:SERVICE_ACCOUNT_EMAIL" \
+    --role="roles/compute.networkAdmin"
+
+gcloud projects add-iam-policy-binding dtc-de-446723 \
+    --member="serviceAccount:SERVICE_ACCOUNT_EMAIL" \
+    --role="roles/compute.securityAdmin"
+
+gcloud projects add-iam-policy-binding dtc-de-446723 \
+    --member="serviceAccount:dtc-de-user@dtc-de-446723.iam.gserviceaccount.com" \
+    --role="roles/compute.instanceAdmin"
+
+docker save -o airflow-image.tar apache/airflow:reqs-lockedv0.1
+
+gcloud compute scp airflow-image.tar airflow-vm:~
+
+gcloud compute ssh --zone "us-east1-b" "airflow-vm" --project "dtc-de-446723"
+
+# set local variables and ssh into compute instance
+set -a && source ./terraform/terraform.tfvars && set +a
+gcloud compute ssh --zone zone instance_name --project project
+
+echo "AIRFLOW_UID=$(id -u)" >> .env
+sudo groupadd docker
+sudo usermod -aG docker $(whoami)
+newgrp - docker
+sudo chown root:docker /var/run/docker.sock
+sudo chmod 660 /var/run/docker.sock
+docker compose up -d airflow-init && sudo docker compose up
+docker compose down
+```
+
+
+mkdir ./dags ./logs ./plugins ./config
+
+need to scp in fitbit_tokens.json
+
+nano edit .env to adjust for new `google_credentials.json`
+
+added `&& dbt deps` to last dag Operator
+
+terraform destroy
+spin down VM instance
 
 ## Rough Edges
 
-- [ ] Create a dag to run immediately on Airflow Startup
+- [ ] add `terraform destroy` in README after `docker compose down`
+
+- [ ] get dag to run immediately on Airflow Startup 
 
 - [ ] generate documentation for written functions
+
+- [ ] create image for DAG for README
 
 - [ ] schedule it to run once a month
 
 - [ ] ensure dbt partitions on dates
 
 - [ ] add data tests in DBT
+
+- [ ] add project environment variables to Airflow Config
 
 - [ ] Need a nicer control flow diagram in README
 	- [Slack resource discussion](https://datatalks-club.slack.com/archives/C01FABYF2RG/p1743432813320519)
