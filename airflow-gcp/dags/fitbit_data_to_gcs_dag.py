@@ -150,7 +150,7 @@ with DAG(
 
     dbt_transforms_task = BashOperator(
         task_id='dbt_transforms_task',
-        bash_command=f"cd {airflow_path}/dbt_resources && dbt build --vars {dbt_is_production_var}",
+        bash_command=f"cd {airflow_path}/dbt_resources && dbt deps && dbt build --vars {dbt_is_production_var}",
         depends_on_past=True,
         trigger_rule="all_success"
     )
