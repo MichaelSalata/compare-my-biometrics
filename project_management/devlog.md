@@ -325,12 +325,8 @@ serviceAccount: dtc-de-user@dtc-de-446723.iam.gserviceaccount.com   (from creden
 
 `~/Downloads/airflow_vm_terminal_history.txt`
 
+ROUGH set of steps that need to happen for deployment
 ```bash
-
-gcloud projects add-iam-policy-binding dtc-de-446723 \
-    --member="serviceAccount:dtc-de-user@dtc-de-446723.iam.gserviceaccount.com" \
-    --role="roles/compute.securityAdmin"
-
 gcloud projects add-iam-policy-binding dtc-de-446723 \
     --member="serviceAccount:SERVICE_ACCOUNT_EMAIL" \
     --role="roles/compute.networkAdmin"
@@ -340,7 +336,7 @@ gcloud projects add-iam-policy-binding dtc-de-446723 \
     --role="roles/compute.securityAdmin"
 
 gcloud projects add-iam-policy-binding dtc-de-446723 \
-    --member="serviceAccount:dtc-de-user@dtc-de-446723.iam.gserviceaccount.com" \
+    --member="serviceAccount:SERVICE_ACCOUNT_EMAIL" \
     --role="roles/compute.instanceAdmin"
 
 docker save -o airflow-image.tar apache/airflow:reqs-lockedv0.1
@@ -353,13 +349,18 @@ gcloud compute ssh --zone "us-east1-b" "airflow-vm" --project "dtc-de-446723"
 set -a && source ./terraform/terraform.tfvars && set +a
 gcloud compute ssh --zone zone instance_name --project project
 
-echo "AIRFLOW_UID=$(id -u)" >> .env
 sudo groupadd docker
 sudo usermod -aG docker $(whoami)
 newgrp - docker
 sudo chown root:docker /var/run/docker.sock
 sudo chmod 660 /var/run/docker.sock
+cd compare-my-biometrics/airflow-gcp
+echo "AIRFLOW_UID=$(id -u)" >> .env
 docker compose up -d airflow-init && sudo docker compose up
+EXTERNAL_IP=$(gcloud compute instances describe airflow-vm \
+  --zone=us-east1-b \
+  --format='get(networkInterfaces[0].accessConfigs[0].natIP)')
+echo "You can visit the airflow instance at $EXTERNAL_IP:8080"
 docker compose down
 ```
 
@@ -391,7 +392,7 @@ spin down VM instance
 
 - [ ] add data tests in DBT
 
-- [ ] add project environment variables to Airflow Config
+- [ ] add project environment variables to Airflow Config - [GPT suggestions on the topic](https://chatgpt.com/c/67ef4e9e-d180-8008-bc03-c1972185680a)
 
 - [ ] Need a nicer control flow diagram in README
 	- [Slack resource discussion](https://datatalks-club.slack.com/archives/C01FABYF2RG/p1743432813320519)
