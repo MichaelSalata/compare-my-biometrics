@@ -267,6 +267,8 @@ Thanks to Alexey and his community from [datatalks club](https://datatalks.club
 
 - [ ] add data tests in DBT
 
+- [ ] add project environment variables to Airflow Config - [GPT suggestions on the topic](https://chatgpt.com/c/67ef4e9e-d180-8008-bc03-c1972185680a)
+
 - [ ] Need a nicer control flow diagram in README
 	- [Slack resource discussion](https://datatalks-club.slack.com/archives/C01FABYF2RG/p1743432813320519)
 	- Mermaid, JavaScript-based diagramming and charting tool
