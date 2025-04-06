@@ -1,0 +1,9 @@
+.*snowflake.*\n
+.*azure.*\n
+.*kubernetes.*\n
+.*redshift.*\n
+.*texttospeech.*\n
+.*google-cloud-vision.*\n
+.*google-cloud-videointelligence.*\n
+.*botocore.*\n
+.*boto3.*\n

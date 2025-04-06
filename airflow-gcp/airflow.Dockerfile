@@ -39,7 +39,7 @@ USER airflow
 COPY dags/fitbit_tokens.json .
 RUN pip install --upgrade pip
 RUN --mount=type=cache,target=/root/.cache/pip \
-    pip install --prefer-binary -r requirements.txt
+    pip install --no-deps -r requirements.lock.txt
 
 WORKDIR $AIRFLOW_HOME
 
