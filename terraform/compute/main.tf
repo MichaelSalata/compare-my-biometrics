@@ -17,7 +17,7 @@ resource "google_compute_instance" "default" {
   metadata = {
     ssh-keys = "${var.ssh_user}:${file(var.public_ssh_key_path)}",
     VAR_1 = var.target_bucket,
-    VAR_2 = "capitalbike_dw"    
+    VAR_2 = "compare-my-biometrics_dw"    
   }
 
   connection {
@@ -26,5 +26,27 @@ resource "google_compute_instance" "default" {
         private_key = file(var.private_ssh_key_path)
         host        = google_compute_instance.default.network_interface[0].access_config[0].nat_ip
       }
+      
+  provisioner "file" {
+        source      = "../setup_scripts/"
+        destination = "/home/${var.ssh_user}"
+      }
+
+  provisioner "file" {
+        source      = "./terraform.tfvars"
+        destination = "/home/${var.ssh_user}/terraform.tfvars"
+      }
+
+  provisioner "file" {
+        source      = "../google_credentials.json"
+        destination = "/home/${var.ssh_user}/google_credentials.json"
+      }
+
+  # provisioner "remote-exec" {
+  #       inline = [
+  #         "chmod 777 ./deploy_on_compute_vm.sh",
+  #         "./install-docker.sh"
+  #         ]
+  #     }
       
 }

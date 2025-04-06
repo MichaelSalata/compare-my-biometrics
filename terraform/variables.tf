@@ -9,7 +9,7 @@ variable "credentials" {
   default     = "~/.google/credentials/dtc-de-446723-477851964567.json"
   #ex: if you have a directory where this file is called keys with your service account json file
   #saved there as my-creds.json you could use default = "./keys/my-creds.json"
-  type        = string
+  type = string
 }
 
 variable "region" {
@@ -19,7 +19,7 @@ variable "region" {
 
 variable "location" {
   description = "Project Location"
-  default = "US"
+  default     = "US"
   type        = string
 }
 
@@ -39,12 +39,12 @@ variable "bq_dataset_name" {
   description = ""
   #Update the below to what you want your dataset to be called
   default = "fitbit_dataset"
-  type        = string
+  type    = string
 }
 
 # VPC Variables
 variable "vpc_network_name" {
-  type    = string
+  type = string
 }
 
 variable "firewall_name" {
