@@ -33,11 +33,11 @@
 - **dbt (Data Build Tool)** injects SQL **data transformations** into BigQuery and enables software management tools to better maintain SQL code
 - **Docker** encapsulates the pipeline ensuring portability, and scalable.
 
-# Building the Project Yourself
+# Setup and Usage
 ## Requirements
 [Docker](https://docs.docker.com/get-docker/),  [Docker Compose](https://docs.docker.com/compose/install/) v2,  [Terraform](https://developer.hashicorp.com/terraform/install?product_intent=terraform),  [Google Cloud Platform Project](https://console.cloud.google.com/),  
 
-## SETUP
+## SETUP Locally
 ### Clone this Repository
 ```bash
 gh repo clone MichaelSalata/compare-my-biometrics
@@ -53,6 +53,9 @@ cd compare-my-biometrics
 	2. set a name & Leave all other fields with default values -> Create and continue
 	3. Grant the Viewer role (Basic > Viewer) -> Continue -> Done
 	4. 3 dots below Actions -> Manage keys -> Add key -> Create new key -> JSON -> Create
+	5. Enable these APIs
+		- [IAM API](https://console.cloud.google.com/apis/library/iam.googleapis.com)
+		- [IAM Service Account Credentials API](https://console.cloud.google.com/apis/library/iamcredentials.googleapis.com)
 
 ### Set **Project Name** and the **path to your  .json key file**
 #### OPTION 1: bash script
@@ -73,34 +76,92 @@ sed -i "0,/dtc-de-446723/s|dtc-de-446723|$GCP_PROJECT_ID|" "terraform/variables.
 
 ***NOTE*:** changing `GCP_GCS_BUCKET` and/or `BIGQUERY_DATASET` requires updating `terraform/variables.tf` file
 
-# Usage
-## create cloud infrastructure
+## Usage Locally
+### create cloud infrastructure
 ```
 cd terraform
 terraform init
 terraform apply
 ```
 ***NOTE**:* remember to run `terraform destroy `after you're done
-## Build the Docker Image
+### Build the Docker Image
 ```bash
 cd airflow-gcp/
 DOCKER_BUILDKIT=1 docker compose build
 ```
 ***NOTE***: building the Docker image may take a LONG time
-## Run the Docker Image
+### Run the Docker Image
 ```bash
 cd airflow-gcp/
 docker compose up airflow-init && docker compose up -d
 ```
 ***NOTE**:* starting the image takes ~15 minutes
-## Run the Airflow Dag
+### Run the Airflow Dag
 1. visit [localhost:8080](http://localhost:8080/)
 2. log into Airflow (default user:pass = airflow:airflow)
 3. run the dag
-## Turn off & Remove the Images
+## Turn off, Remove Docker Images, Destroy Cloud Infrastructure
 ```bash
 docker compose down --volumes --rmi all
+terraform destroy
 ```
+
+## Cloud Setup
+
+### Setup a Service Account for a GCP Project 
+- create a service account and download a .json key file
+	1. GCP Dashboard -> IAM & Admin > Service accounts > Create service account
+	2. set a name & Leave all other fields with default values -> Create and continue
+	3. Grant the Viewer role (Basic > Viewer) -> Continue -> Done
+	4. 3 dots below Actions -> Manage keys -> Add key -> Create new key -> JSON -> Create
+	5. Enable the [IAM API](https://console.cloud.google.com/apis/library/iam.googleapis.com) and the [IAM Service Account Credentials API](https://console.cloud.google.com/apis/library/iamcredentials.googleapis.com)
+- Set Google Compute VM permissions
+	1. find your service account at [IAM Cloud UI](https://console.cloud.google.com/iam-admin/iam) 
+	2. `+Add another role` and add
+		- Compute **Instance** Admin
+		- Compute **Network** Admin
+		- Compute **Security** Admin
+	3. Enable the [Compute Engine API](https://console.cloud.google.com/apis/library/compute.googleapis.com)
+
+## Start Compute Instance
+- find service credentials
+	- put path to credentials in .env
+	- OR put credentials file in local dir
+
+### assign  `.env` and `terraform.tfvars` variables
+generate an ssh keys and add the file paths and username to `terraform/terraform.tfvars`
+```bash
+ssh-keygen -t rsa -b 2048 -C "your-email@example.com"
+# Follow the prompts to specify the file in which to save the key
+```
+example `terraform/terraform.tfvars` variables...
+```
+...
+ssh_user = "tatlreach" # email without @gmail.com
+public_ssh_key_path = "~/.ssh/id_rsa.pub"
+private_ssh_key_path = "~/.ssh/id_rsa"
+```
+
+
+
+from service credentials.json?
+NOTE: overwrite/remove `AIRFLOW_UID`?
+NOTE: if you're from the EU you mey need to reassign `region` and/or `location` in terraform.tfvars
+
+
+- terraform init && terraform apply
+	- pushes credentials, terraform.tfvars, fitbit_tokens.json to gcloud instance
+	- remote execute setup script
+	- **NOTE**: terraform deploying ~20 minutes, if you'd like you can Visit your VM in the meantime
+
+## **OPTIONAL**: Visit your VM instance and/or Visit the Airflow Webserver
+
+OPTION 1:
+- get your Compute Instance VM's external IP in [your Google VM instances](https://console.cloud.google.com/compute/instances)
+- visit that IP on port 8080 e.g.
+OPTION 2:
+- run `visit_8080_on_vm.sh` in `./setup_scripts`
+
 # Special Thanks
 Thanks to [Alexey](https://github.com/alexeygrigorev), [Manuel](https://github.com/ManuelGuerra1987) and the [Datatalks Club](https://datatalks.club/) community. Their [Data Engineering Course](https://github.com/DataTalksClub/data-engineering-zoomcamp) was instrumental in creating this project.
 
