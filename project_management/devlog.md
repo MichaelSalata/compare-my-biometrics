@@ -257,9 +257,6 @@ Thanks to Alexey and his community from [datatalks club](https://datatalks.club
 - [x] [road-traffic-injuries](https://github.com/cl3rO3Y/road-traffic-injuries) ✅ 2025-04-02
 
 ## PHASE 8 - Cloud Migration
-- create Terraform Cloud resources as if looking it up through the registry
-	- [ ] find sources for compute and vpc
-
 - micro course - read up on modules
 	- [Terraform on Google Cloud documentation](https://cloud.google.com/docs/terraform)
 		- [ ] micro course - [Build Infrastructure with Terraform on Google Cloud](https://www.cloudskillsboost.google/course_templates/636)
@@ -277,6 +274,9 @@ Thanks to Alexey and his community from [datatalks club](https://datatalks.club
 	- [ ] get VS Code working through ssh
 	- [ ] create/separate project management/documentation branch 
 	- [ ] test my dag
+
+- create Terraform Cloud resources as if looking it up through the registry
+	- [ ] find sources for compute and vpc
 
 - [ ] insert accreditation/src links for terraform resources
 
@@ -316,65 +316,12 @@ Thanks to Alexey and his community from [datatalks club](https://datatalks.club
 	- `localhost:8080` -> airflow UI
 	- OR run script `./reprocess_datalake.sh` which executes the dag?
 
-### My Cloud VM Setup
-image-id: f9e41be4ef45
-image-name: apache/airflow     (hardcoded: in docker-compose.yaml)
-image-tag: reqs-lockedv0.1     (hardcoded: in docker-compose.yaml)
-gcp-vm-name: airflow-vm    (from .tfvars)
-serviceAccount: dtc-de-user@dtc-de-446723.iam.gserviceaccount.com   (from credentials.json)
-
-`~/Downloads/airflow_vm_terminal_history.txt`
-
-ROUGH set of steps that need to happen for deployment
+---
 ```bash
-gcloud projects add-iam-policy-binding dtc-de-446723 \
-    --member="serviceAccount:SERVICE_ACCOUNT_EMAIL" \
-    --role="roles/compute.networkAdmin"
-
-gcloud projects add-iam-policy-binding dtc-de-446723 \
-    --member="serviceAccount:SERVICE_ACCOUNT_EMAIL" \
-    --role="roles/compute.securityAdmin"
-
-gcloud projects add-iam-policy-binding dtc-de-446723 \
-    --member="serviceAccount:SERVICE_ACCOUNT_EMAIL" \
-    --role="roles/compute.instanceAdmin"
-
 docker save -o airflow-image.tar apache/airflow:reqs-lockedv0.1
-
 gcloud compute scp airflow-image.tar airflow-vm:~
-
-gcloud compute ssh --zone "us-east1-b" "airflow-vm" --project "dtc-de-446723"
-
-# set local variables and ssh into compute instance
-set -a && source ./terraform/terraform.tfvars && set +a
-gcloud compute ssh --zone zone instance_name --project project
-
-sudo groupadd docker
-sudo usermod -aG docker $(whoami)
-newgrp - docker
-sudo chown root:docker /var/run/docker.sock
-sudo chmod 660 /var/run/docker.sock
-cd compare-my-biometrics/airflow-gcp
-echo "AIRFLOW_UID=$(id -u)" >> .env
-docker compose up -d airflow-init && sudo docker compose up
-EXTERNAL_IP=$(gcloud compute instances describe airflow-vm \
-  --zone=us-east1-b \
-  --format='get(networkInterfaces[0].accessConfigs[0].natIP)')
-echo "You can visit the airflow instance at $EXTERNAL_IP:8080"
-docker compose down
 ```
 
-
-mkdir ./dags ./logs ./plugins ./config
-
-need to scp in fitbit_tokens.json
-
-nano edit .env to adjust for new `google_credentials.json`
-
-added `&& dbt deps` to last dag Operator
-
-terraform destroy
-spin down VM instance
 
 ## Rough Edges
 
