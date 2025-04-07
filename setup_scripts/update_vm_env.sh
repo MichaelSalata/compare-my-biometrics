@@ -7,12 +7,14 @@ ENV_FILE=~/compare-my-biometrics/airflow-gcp/.env
 # Extract values from terraform.tfvars
 project=$(grep '^project' "$TFVARS_FILE" | awk -F'=' '{print $2}' | tr -d ' "')
 ssh_user=$(grep '^ssh_user' "$TFVARS_FILE" | awk -F'=' '{print $2}' | tr -d ' "')
+bucket_name=$(grep '^gcs_bucket_name' "$TFVARS_FILE" | awk -F'=' '{print $2}' | tr -d ' "')
 
 # Construct variables
 AIRFLOW_UID=$(id -u)
 GOOGLE_CREDENTIALS="/home/${ssh_user}/google_credentials.json"
 GCP_PROJECT_ID="$project"
-GCP_GCS_BUCKET="${project}-fitbit-bucket"
+GCP_GCS_BUCKET="$bucket_name"
+# GCP_GCS_BUCKET="${project}-fitbit-bucket"
 
 # Helper: update or insert key-value pair in .env
 update_env_var() {
