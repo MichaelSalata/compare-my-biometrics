@@ -2,7 +2,7 @@ version: 2
 
 sources:
   - name: staging
-    database: "{{ env_var('DBT_DATABASE', 'dtc-de-446723') }}"
+    database: "{{ env_var('GCP_PROJECT_ID') }}"
     schema: "{{ env_var('DBT_SCHEMA', 'fitbit_dataset') }}"
       # loaded_at_field: record_loaded_at
     tables:

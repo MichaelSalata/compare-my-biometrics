@@ -16,7 +16,7 @@ from airflow.providers.google.cloud.operators.bigquery import BigQueryCreateExte
 from download_locally import download_past_6_months
 from fitbit_json_to_parquet import profile_sleep_heartrate_jsons_to_parquet
 
-PROJECT_ID = str(os.environ.get("GCP_PROJECT_ID", "dtc-de-446723"))
+PROJECT_ID = str(os.environ.get("GCP_PROJECT_ID"))
 GCP_GCS_BUCKET = str(os.environ.get("GCP_GCS_BUCKET", f"{PROJECT_ID}-fitbit-bucket"))
 BIGQUERY_DATASET = str(os.environ.get("BIGQUERY_DATASET", "fitbit_dataset"))
 # CREDENTIALS_FILE = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS", "google_credentials.json")
