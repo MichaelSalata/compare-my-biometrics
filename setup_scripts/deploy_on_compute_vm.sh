@@ -16,7 +16,7 @@ if [ ! -d "compare-my-biometrics" ]; then
   git clone https://github.com/MichaelSalata/compare-my-biometrics.git
 fi  
 
-cp ./terraform.tfvars ./compare-my-biometrics/terraform/terraform.tfvars
+cp -f ./terraform.tfvars ./compare-my-biometrics/terraform/terraform.tfvars
 bash update_vm_env.sh
 
 
