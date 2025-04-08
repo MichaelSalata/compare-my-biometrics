@@ -1,8 +1,10 @@
 import json
 import pandas as pd
 import glob
+import logging
 
-
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 def profile_json_to_parquet(filename):
     try:
@@ -10,7 +12,7 @@ def profile_json_to_parquet(filename):
             profile_data = json.load(file)
             profile = profile_data["user"]
     except (FileNotFoundError, json.JSONDecodeError) as e:
-        print(f"Error loading {filename} file: {e}")
+        logger.error(f"Error loading {filename} file: {e}")
         exit(1)
     
     del profile["features"]
@@ -20,21 +22,19 @@ def profile_json_to_parquet(filename):
     try:
         profile_df["user_id"] = profile_data["user_id"]
         profile_df["age"] = profile_df["age"].astype(int)
-        profile_df["dateOfBirth"] = pd.to_datetime(profile_df["dateOfBirth"]) # example_input: "1989-08-30"
-        profile_df["memberSince"] = pd.to_datetime(profile_df["memberSince"]) # example_input: "2024-11-21"
+        profile_df["dateOfBirth"] = pd.to_datetime(profile_df["dateOfBirth"])
+        profile_df["memberSince"] = pd.to_datetime(profile_df["memberSince"])
         profile_df["weight"] = profile_df["weight"].astype(float)
         profile_df["height"] = profile_df["height"].astype(float)
         profile_df["strideLengthWalking"] = profile_df["strideLengthWalking"].astype(float)
         profile_df["strideLengthRunning"] = profile_df["strideLengthRunning"].astype(float)
     except Exception as e:
-        print(f'Error: {e} reading json file {filename}:')
-        # print(sleep)
+        logger.error(f'Error: {e} reading json file {filename}')
         return
 
     parquet_filename = filename.replace(".json", ".parquet")
     profile_df.to_parquet(parquet_filename)
-    # print(profile_df.info())
-    print(f"Converted {filename} to {parquet_filename}")
+    logger.info(f"Converted {filename} to {parquet_filename}")
 
 
 def sleep_json_to_parquet(filename):
@@ -42,22 +42,18 @@ def sleep_json_to_parquet(filename):
         with open(filename, 'r') as file:
             sleep_data = json.load(file)
     except (FileNotFoundError, json.JSONDecodeError) as e:
-        print(f"Error loading {filename} file: {e}")
+        logger.error(f"Error loading {filename} file: {e}")
         exit(1)
     
     if len(sleep_data["sleep"]) == 0:
-        print(f'{filename} is empty')
+        logger.warning(f'{filename} is empty')
         return
 
     rows = []
     for sleep in sleep_data["sleep"]:
-        # levels = sleep["levels"]["summary"]
         if not sleep["isMainSleep"]:
             continue
 
-        # print(sleep["levels"]["summary"])
-
-        # TODO: Modularize the appending of row data
         try:
             row = {
                 "user_id": sleep_data["user_id"],
@@ -95,8 +91,7 @@ def sleep_json_to_parquet(filename):
                 "wake_thirtyDayAvgMinutes": int(sleep["levels"]["summary"]["wake"]["thirtyDayAvgMinutes"])
             }
         except Exception as e:
-            print(f'Error: {e} reading json file {filename} on date: {sleep.get("dateOfSleep")}:')
-            # print(sleep)
+            logger.error(f'Error: {e} reading json file {filename} on date: {sleep.get("dateOfSleep")}')
             continue
 
         rows.append(row)
@@ -105,33 +100,23 @@ def sleep_json_to_parquet(filename):
         sleep_df = pd.DataFrame(rows)
         parquet_filename = filename.replace(".json", ".parquet")
         sleep_df.to_parquet(parquet_filename)
-        print(f'wrote {len(rows)} entries to {parquet_filename}')
-    # print(sleep_df.info())
-    # print(sleep_df.head())
+        logger.info(f'wrote {len(rows)} entries to {parquet_filename}')
+
 
 def heartrate_json_to_parquet(filename):
     try:
         with open(filename, 'r') as file:
             heartrate_data = json.load(file)
     except (FileNotFoundError, json.JSONDecodeError) as e:
-        print(f"Error loading {file} file: {e}")
+        logger.error(f"Error loading {file} file: {e}")
         exit(1)
-
-
-    zone_map = {
-        "Out of Range":"Zone1",
-        "Fat Burn":"Zone2",
-        "Cardio":"Zone3",
-        "Peak":"Zone4"
-    }
 
     rows = []
     for heartrate in heartrate_data["activities-heart"]:
-        # zname = zone_map[heartrate["value"]["heartRateZones"][0]["name"]]
         try:
             row = {
                 "user_id": heartrate_data["user_id"],
-                "dateTime": pd.to_datetime(heartrate["dateTime"]),  # example_input: "2025-02-01"
+                "dateTime": pd.to_datetime(heartrate["dateTime"]),
 
                 "Zone1_caloriesOut": float(heartrate["value"]["heartRateZones"][0].get("caloriesOut")),
                 "Zone1_max_heartrate": int(heartrate["value"]["heartRateZones"][0]["max"]),
@@ -156,8 +141,7 @@ def heartrate_json_to_parquet(filename):
                 "restingHeartRate": int(heartrate["value"].get("restingHeartRate"))
             }
         except Exception as e:
-            print(f'Error: {e} reading json file {filename} on date: {heartrate.get("dateOfSleep")}:')
-            # print(sleep)
+            logger.error(f'Error: {e} reading json file {filename} on date: {heartrate.get("dateTime")}')
             continue
 
         rows.append(row)
@@ -166,28 +150,23 @@ def heartrate_json_to_parquet(filename):
         heartrate_df = pd.DataFrame(rows)
         parquet_filename = filename.replace(".json", ".parquet")
         heartrate_df.to_parquet(parquet_filename)
-        print(f'wrote {len(rows)} entries to {parquet_filename}')
-    # print(heartrate_df.head())
+        logger.info(f'wrote {len(rows)} entries to {parquet_filename}')
+
 
 def profile_sleep_heartrate_jsons_to_parquet(base_path="/opt/airflow"):
-
     profile_files = glob.glob(f"{base_path}/dags/profile*.json")
     heartrate_files = glob.glob(f"{base_path}/dags/heartrate*.json")
     sleep_files = glob.glob(f"{base_path}/dags/sleep*.json")
 
     if (len(profile_files) + len(heartrate_files) + len(sleep_files)) == 0:
-        print("No Files Found -> parsing example data")
-        print(f"trying {base_path}/example_data/profile*.json")
+        logger.warning("No Files Found -> parsing example data")
         profile_files = glob.glob(f"{base_path}/example_data/profile*.json")
-        print(f"trying {base_path}/example_data/heartrate*.json")
         heartrate_files = glob.glob(f"{base_path}/example_data/heartrate*.json")
-        print(f"trying {base_path}/example_data/sleep*.json")
         sleep_files = glob.glob(f"{base_path}/example_data/sleep*.json")
-        print(f"Attempting to parse files: {sleep_files}")
-        print(f"Attempting to parse files: {profile_files}")
-        print(f"Attempting to parse files: {heartrate_files}")
+        logger.debug(f"Attempting to parse files: {sleep_files}")
+        logger.debug(f"Attempting to parse files: {profile_files}")
+        logger.debug(f"Attempting to parse files: {heartrate_files}")
     
-
     for filename in sleep_files:
         sleep_json_to_parquet(filename)
     
@@ -196,5 +175,3 @@ def profile_sleep_heartrate_jsons_to_parquet(base_path="/opt/airflow"):
 
     for filename in heartrate_files:
         heartrate_json_to_parquet(filename)
-
-
