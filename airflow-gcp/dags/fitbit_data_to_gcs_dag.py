@@ -34,8 +34,7 @@ def upload_to_gcs(bucket_name, max_retries=3):
     bucket = client.bucket(bucket_name)
     CHUNK_SIZE = 8 * 1024 * 1024
 
-    # fitbit_data_regex = ["*.parquet"]
-    regex = "*.parquet"     # currently download_locally.py dumps it's data in the dags folder
+    regex = os.path.join(airflow_path,"*.parquet")
     data_files = glob.glob(regex)
     if len(data_files) == 0:
         print("No Data Files Found -> uploading example data")
