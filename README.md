@@ -1,7 +1,7 @@
 # Introduction
-This is a data pipeline that takes in fitbit data, uploads it a Google Cloud Storage, copies it into a BigQuery database and injects SQL into BigQuery to create a data schema ready for analysis.
+This is a data pipeline that takes in Fitbit data, uploads it a Data Lake (Google Cloud Storage), copies it into a BigQuery database and injects SQL into BigQuery to create a data schema ready for analysis.
 # Goals
-- Visualize changes in fitbit biometrics across time periods
+- Visualize changes in Fitbit biometrics across time periods
 	- **WHY**: my fitbit wellness report has been broken for months and I would like to see how activities impact my health
 	- **Example Use Cases**: see the impact of a...
 		- fitness routine
