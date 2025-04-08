@@ -1,4 +1,4 @@
-TFVARS_FILE=~/compare-my-biometrics/terraform/terraform.tfvars
+TFVARS_FILE=../terraform/terraform.tfvars
 
 instance_zone=$(grep '^zone' "$TFVARS_FILE" | awk -F'=' '{print $2}' | tr -d ' "')
 instance_name=$(grep '^instance_name' "$TFVARS_FILE" | awk -F'=' '{print $2}' | tr -d ' "')

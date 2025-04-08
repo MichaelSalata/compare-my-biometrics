@@ -47,11 +47,11 @@ resource "google_compute_instance" "default" {
         destination = "/home/${var.ssh_user}/google_credentials.json"
       }
 
-  provisioner "remote-exec" {
-        inline = [
-          "chmod +x ./deploy_on_compute_vm.sh",
-          "./deploy_on_compute_vm.sh"
-          ]
-      }
+  # provisioner "remote-exec" {
+  #       inline = [
+  #         "chmod +x ./deploy_on_compute_vm.sh",
+  #         "./deploy_on_compute_vm.sh"
+  #         ]
+  #     }
       
 }

@@ -11,8 +11,7 @@ sudo chmod 660 /var/run/docker.sock
 
 newgrp docker <<EOF
 if [ ! -d "compare-my-biometrics" ]; then
-  # clone and update repo
-  git clone --branch cloud-depoyment --single-branch --depth 1 https://github.com/MichaelSalata/compare-my-biometrics.git
+  git clone --branch cloud-migration --single-branch --depth 1 https://github.com/MichaelSalata/compare-my-biometrics.git
 fi  
 
 cp -f ./terraform.tfvars ./compare-my-biometrics/terraform/terraform.tfvars
