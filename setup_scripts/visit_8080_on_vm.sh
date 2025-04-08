@@ -1,6 +1,10 @@
-# TODO dynamically pull vm_name and zone from .tfvars
-EXTERNAL_IP=$(gcloud compute instances describe airflow-vm \
---zone=us-east1-b \
+TFVARS_FILE=~/compare-my-biometrics/terraform/terraform.tfvars
+
+instance_zone=$(grep '^zone' "$TFVARS_FILE" | awk -F'=' '{print $2}' | tr -d ' "')
+instance_name=$(grep '^instance_name' "$TFVARS_FILE" | awk -F'=' '{print $2}' | tr -d ' "')
+
+EXTERNAL_IP=$(gcloud compute instances describe $instance_name \
+--zone="$instance_zone" \
 --format='get(networkInterfaces[0].accessConfigs[0].natIP)')
 
 if [ -n "$EXTERNAL_IP" ]; then
