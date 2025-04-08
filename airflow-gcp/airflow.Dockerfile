@@ -1,6 +1,5 @@
 # Use BuildKit syntax
 # syntax=docker/dockerfile:1.3
-
 FROM apache/airflow:2.10.4
 
 ENV AIRFLOW_HOME=/opt/airflow
@@ -12,9 +11,7 @@ RUN apt-get update -qq && apt-get install -y --no-install-recommends \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-COPY requirements.lock.txt .
 
-# Install Google Cloud SDK
 ARG CLOUD_SDK_VERSION=480.0.0
 ENV GCLOUD_HOME=/opt/google-cloud-sdk
 ENV PATH="${GCLOUD_HOME}/bin/:${PATH}"
@@ -37,6 +34,8 @@ RUN --mount=type=cache,target=/tmp/gcloud-cache \
 USER airflow
 
 COPY dags/fitbit_tokens.json .
+
+COPY requirements.lock.txt .
 RUN pip install --upgrade pip
 RUN --mount=type=cache,target=/root/.cache/pip \
     pip install --no-deps -r requirements.lock.txt
