@@ -56,5 +56,6 @@ module "compute" {
   public_ssh_key_path  = var.public_ssh_key_path
   private_ssh_key_path = var.private_ssh_key_path
   target_bucket        = var.gcs_bucket_name
+  credentials          = var.credentials
 }
 
