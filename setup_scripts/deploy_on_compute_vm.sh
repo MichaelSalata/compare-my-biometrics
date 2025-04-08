@@ -3,6 +3,9 @@ sudo snap install docker
 sudo groupadd -f docker
 sudo usermod -aG docker $(whoami)
 
+echo "Waiting for Docker socket to be available..."
+while [ ! -S /var/run/docker.sock ]; do sleep 1; done
+
 sudo chown root:docker /var/run/docker.sock
 sudo chmod 660 /var/run/docker.sock
 
