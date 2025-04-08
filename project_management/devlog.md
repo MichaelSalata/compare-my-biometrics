@@ -263,33 +263,30 @@ Thanks to Alexey and his community from [datatalks club](https://datatalks.club
 	- [ ] [Terraform Documentation - Create modules](https://developer.hashicorp.com/terraform/tutorials/modules/pattern-module-creation)
 
 - PROOF OF CONCEPT - get cloud migration working
-	- [ ] look at the steps [toludaree](https://github.com/toludaree) used for his [dezoomcamp-project](https://github.com/toludaree/dezoomcamp-project)
-	- [ ] edit `compute/main.tf` to suit my project
+	- [x] look at the steps [toludaree](https://github.com/toludaree) used for his [dezoomcamp-project](https://github.com/toludaree/dezoomcamp-project) ✅ 2025-04-06
+	- [x] edit `compute/main.tf` to suit my project ✅ 2025-04-06
 		- install Docker
 		- install Docker compose
 		- ~~install Terraform~~
 		- add file locations for google_credentials.json and stuff
-	- [ ] change default vars and descriptions from Jorge's Terraform code
+	- [x] change default vars and descriptions in Terraform code ✅ 2025-04-06
 	- [ ] separate Terraform Airflow compute module from fitbit datasets
 	- [ ] get VS Code working through ssh
 	- [ ] create/separate project management/documentation branch 
-	- [ ] test my dag
+	- [x] test my dag ✅ 2025-04-06
 
 - create Terraform Cloud resources as if looking it up through the registry
 	- [ ] find sources for compute and vpc
 
-- [ ] insert accreditation/src links for terraform resources
-
-- [ ] finding the origin Jorge's Terraform output code
-- [ ] find registry sources for compute and vpc
-
-- [ ] add `.gitkeep` to airflow, config, logs, plugins
-
-- [ ] update README
+- [x] ==update README== ✅ 2025-04-08
 	- [toludaree readme](https://github.com/toludaree/dezoomcamp-project?tab=readme-ov-file#pre-infrastructure-setup) is a good template
 		- enable Compute Engine API and Dataproc API ?
-	- go to [IAM](https://console.cloud.google.com/iam-admin/iam) -> edit service account -> add role: **Compute Network Admin**
-	- 
+
+- [ ] finding the origin Jorge's Terraform output code
+- [x] find registry sources for compute and vpc ✅ 2025-04-02
+
+- [x] add `.gitkeep` to airflow, config, logs, plugins ✅ 2025-04-05
+
 ### Jorge's instructions
 
 #### Start Cloud Instance
@@ -324,8 +321,11 @@ gcloud compute scp airflow-image.tar airflow-vm:~
 
 
 ## Rough Edges
+- [x] made `visit_8080_on_vm.sh` dynamically get terraform values ✅ 2025-04-08
 
 - [ ] add `terraform destroy` in README after `docker compose down`
+
+- [ ] get terraform to find an push the google credentials using the path set in .tfvars
 
 - [ ] get dag to run immediately on Airflow Startup 
 

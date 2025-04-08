@@ -10,15 +10,17 @@ Doing this allows the project to download, store and analyze YOUR fitbit data in
 # 2. Get your ACCESS_TOKEN
 OPTION 1:
 ```bash
-python3 /dags/gather_keys_oauth2.py CLIENT_ID CLIENT_SECRET
+cd ./compare-my-biometrics/airflow-gcp/dags
+python3 /gather_keys_oauth2.py CLIENT_ID CLIENT_SECRET
 ```
-- this saves a `/dags/fitbit_tokens.json` file in the dag directory
+- this saves a `/fitbit_tokens.json` file
 - replace CLIENT_ID and CLIENT_SECRET with what was shown on your app
 	- If you've ran this before, the `CLIENT_ID` and `CLIENT_SECRET` are unnecessary (they're saved in the `fitbit_tokens.json`)
 
 ## ACCESS_TOKENs expire
 run it again
 ```bash
-python3 /dags/gather_keys_oauth2.py
+cd ./compare-my-biometrics/airflow-gcp/dags
+python3 /gather_keys_oauth2.py
 ```
-it reuses `CLIENT_ID` and `CLIENT_SECRET` which were stored in your first `dags/fitbit_tokens`
+gather_keys_oauth2 reuses `CLIENT_ID` and `CLIENT_SECRET` which were stored in your first `dags/fitbit_tokens`
