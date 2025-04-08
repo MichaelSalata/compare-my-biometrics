@@ -42,3 +42,8 @@ variable "target_bucket" {
   description = "Path to the public SSH key file"
   type        = string
 }
+
+variable "credentials" {
+  description = "Path to the service accounts google_credentials.json"
+  type        = string
+}

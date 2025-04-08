@@ -38,15 +38,20 @@ resource "google_compute_instance" "default" {
       }
 
   provisioner "file" {
-        source      = "../google_credentials.json"
+        source      = "../airflow-gcp/dags/fitbit_tokens.json"
+        destination = "/home/${var.ssh_user}/fitbit_tokens.json"
+      }
+
+  provisioner "file" {
+        source      = "${var.credentials}"
         destination = "/home/${var.ssh_user}/google_credentials.json"
       }
 
-  # provisioner "remote-exec" {
-  #       inline = [
-  #         "chmod 777 ./deploy_on_compute_vm.sh",
-  #         "./install-docker.sh"
-  #         ]
-  #     }
+  provisioner "remote-exec" {
+        inline = [
+          "chmod +x ./deploy_on_compute_vm.sh",
+          "./deploy_on_compute_vm.sh"
+          ]
+      }
       
 }
