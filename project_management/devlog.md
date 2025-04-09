@@ -1,17 +1,5 @@
 
-# Motivations - Why
-- my wellness report was broken
-- visualize changes in biometrics between timeframe - facilitate the health impact of life changes
-	- ADHD meds
-	- moving
-	- exercising
-- practice tech involved the DataTalks bootcamp
-- fits in my tight deadline
-	- I understand how meetings and gathering data for a novel project can balloon out the time commitment
-
 ## Desired Visualizations or Metrics
-
-
 - Sleep Phases
 	- stacked bar chart or line chart over window
 	- pie chart
@@ -118,7 +106,6 @@ request_biometrics  |  `upload_to_datalake >> data_warehouse_transfer`
 
 - [x] download_locally ✅ 2025-03-20
 - [x] upload ✅ 2025-03-20
-- [x] transfer to warehouse (BigQuery) ✅ 2025-03-20
 - [x] transfer to warehouse (BigQuery) ✅ 2025-03-20
 #### download_locally needs
 - MY fitbit_tokens.json
@@ -287,31 +274,6 @@ Thanks to Alexey and his community from [datatalks club](https://datatalks.club
 
 - [x] add `.gitkeep` to airflow, config, logs, plugins ✅ 2025-04-05
 
-### Jorge's instructions
-
-#### Start Cloud Instance
-1. gen ssh key
-2. set .tfvars
-3. init & apply
-	- 1. [compute](https://github.com/JorgeAbrego/weather_stream_project/tree/main/infraestructure/compute) sets up:
-		- connection "ssh"
-		- provisioner "file" "../deployment/" to "/home/${var.ssh_user}"
-		- provisioner "file" "../keys/" to "/home/${var.ssh_user}/.gcp"
-		- provisioner "remote-exec" "chmod 777 ./install-docker.sh", "./install-docker.sh" (runs it)
-4. ???????
-	- "Use the IP address or hostname provided by your cloud provider along with the path to your private SSH key"??
-	- ssh -i path/ssh-key user@host
-5. **Run Locally** steps but through ssh
-
-#### Run locally
-1. clone git repo
-2. set .env variables
-3. set service account json
-4. set processor architecture in the `dbt.Dockerfile`??????????????
-5. `docker-compose up -d --build`
-6. Execute dag
-	- `localhost:8080` -> airflow UI
-	- OR run script `./reprocess_datalake.sh` which executes the dag?
 
 ---
 ```bash
@@ -323,17 +285,19 @@ gcloud compute scp airflow-image.tar airflow-vm:~
 ## Rough Edges
 - [x] made `visit_8080_on_vm.sh` dynamically get terraform values ✅ 2025-04-08
 
-- [ ] add `terraform destroy` in README after `docker compose down`
+- [x] add `terraform destroy` in README after `docker compose down` ✅ 2025-04-08
 
-- [ ] get terraform to find an push the google credentials using the path set in .tfvars
+- [ ] make remote-exec run in the background:  add & to end of deployment command
+
+- [x] get terraform to find an push the google credentials using the path set in .tfvars ✅ 2025-04-08
 
 - [ ] get dag to run immediately on Airflow Startup 
 
 - [ ] generate documentation for written functions
 
-- [ ] create image for DAG for README
+- [ ] create UML image for DAG using Airflow webserver and put it in README
 
-- [ ] schedule it to run once a month
+- [x] schedule it to run once a month ✅ 2025-04-08
 
 - [ ] ensure dbt partitions on dates
 
@@ -349,24 +313,8 @@ gcloud compute scp airflow-image.tar airflow-vm:~
 
 - [x] move airflow log-in details to the .env ✅ 2025-03-28
 
-- functionality review/refactor
-	- [ ] dag
-	- [ ] API download
-	- [ ] upload to GCS
-	- [ ] docker compose
-	- [ ] Dockerfile
-
 - ~~personal data is saved in fitbit_tokens.json and not .env~~
 	- 
-
-- [ ] update database dag
-	- check latest date in DB
-	- download data from that date until now
-	- process and update warehouse
-
-- [ ] make pipeline **idempotent
-
-- [x] add more bars to the barchart ✅ 2025-03-24
 
 - [ ] research desired metrics and graphics to visualize
 	- look at Google Fit Metrics
@@ -374,6 +322,8 @@ gcloud compute scp airflow-image.tar airflow-vm:~
 	- how I used my jupyter notebooks
 	- graphics on **[fitbit-web-ui-app](https://github.com/arpanghosh8453/fitbit-web-ui-app)** - github
 	- graphics on https://dashboard.exercise.quest/
+
+- [x] add more bars to the barchart ✅ 2025-03-24
 
 - [ ] dynamically use user-id in created GCP project/bucket/bigquery dataset with Terraform
 
@@ -392,12 +342,9 @@ gcloud compute scp airflow-image.tar airflow-vm:~
 	- PARTITION, CLUSTER, index?, etc...
 	- update dbt references
 
-- [ ] **==look up how I can create a create a service account json with a monetary processing restriction==**
-	- add these instructions into the README
+- [x] ~~**look up how I can create a create a service account json with a monetary processing restriction**~~ ✅ 2025-04-09
 
 - [ ] create a users table with foreign IDs to staged data
-
-- [ ] move stack to cloud
 
 - [ ] integrate Batch Processing with Spark
 	- get more Data
@@ -420,6 +367,10 @@ gcloud compute scp airflow-image.tar airflow-vm:~
 			- if so, uploads data since user profile sign-up date to now and processes it
 		- if not, check last seen date in DB -> injects/processes data from that date to now
 		- ==is this the best practice for Idempotency?==
+- update database dag??
+	- check latest date in DB
+	- download data from that date until now
+	- process and update warehouse
 
 
 - [ ] implement CI/CD
