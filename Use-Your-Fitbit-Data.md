@@ -23,4 +23,4 @@ run it again
 cd ./compare-my-biometrics/airflow-gcp/dags
 python3 /gather_keys_oauth2.py
 ```
-gather_keys_oauth2 reuses `CLIENT_ID` and `CLIENT_SECRET` which were stored in your first `dags/fitbit_tokens`
+gather_keys_oauth2 stores `CLIENT_ID` and `CLIENT_SECRET` in `fitbit_tokens.json` and later reuses them

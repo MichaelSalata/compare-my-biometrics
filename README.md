@@ -70,8 +70,7 @@ git clone https://github.com/MichaelSalata/compare-my-biometrics.git
 ssh-keygen -t rsa -b 2048 -C "your_ssh_username@example.com"
 ```
 ### 3-c. Fill Out `terraform/terraform.tfvars`
-These are the key variables to set.
-**IMPORTANT**: pick a unique gcs_bucket_name. **Recommended**: `projectName` followed by `-fitbit-bucket`
+**NOTE**: pick a **unique** `gcs_bucket_name` like  `projectName-fitbit-bucket`
 ```
 credentials          = "/path/to/service_credentials.json"
 project              = "google_project_name"
@@ -104,6 +103,7 @@ terraform apply
 - get your Compute Instance's **External IP** in [your Google VM instances](https://console.cloud.google.com/compute/instances)
 - visit **External IP**:8080
 ## 6. Close Down Resources
+Ctrl+C will stop Terraform running
 ```bash
 cd ./terraform
 terraform destroy
