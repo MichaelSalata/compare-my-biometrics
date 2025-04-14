@@ -75,7 +75,7 @@ ssh-keygen -t rsa -b 2048 -C "your_ssh_username@example.com"
 credentials          = "/path/to/service_credentials.json"
 project              = "google_project_name"
 gcs_bucket_name      = "UNIQUE-google-bucket-name"
-ssh_user = "your_ssh_username_without@example.com"
+ssh_user = "your_ssh_username_WITHOUT@example.com"
 public_ssh_key_path = "~/path/to/id_rsa.pub"
 private_ssh_key_path = "~/path/to/id_rsa"
 ```
@@ -99,7 +99,8 @@ terraform apply
 ## 5. Launch the DAG from Airflow's Webserver
 **OPTION 1**:
 - run `bash ./setup_scripts/visit_8080_on_vm.sh` 
-**OPTION 2**: manual
+
+**OPTION 2**:
 - get your Compute Instance's **External IP** in [your Google VM instances](https://console.cloud.google.com/compute/instances)
 - visit **External IP**:8080
 ## 6. Close Down Resources
