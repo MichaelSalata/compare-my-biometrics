@@ -109,7 +109,7 @@ celerybeat.pid
 
 # Environments
 # added this to repo for user to fill out
-# .env
+.env
 .venv
 env/
 venv/
