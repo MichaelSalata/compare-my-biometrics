@@ -282,56 +282,22 @@ gcloud compute scp airflow-image.tar airflow-vm:~
 ```
 
 
+
 ## Rough Edges
 - [x] made `visit_8080_on_vm.sh` dynamically get terraform values ✅ 2025-04-08
 
 - [x] add `terraform destroy` in README after `docker compose down` ✅ 2025-04-08
-
-- [ ] make remote-exec run in the background:  add & to end of deployment command
-
 - [x] get terraform to find an push the google credentials using the path set in .tfvars ✅ 2025-04-08
 
-- [ ] get dag to run immediately on Airflow Startup 
-
-- [ ] generate documentation for written functions
-
-- [ ] create UML image for DAG using Airflow webserver and put it in README
+- [ ] get dag to run immediately on Airflow Startup
 
 - [x] schedule it to run once a month ✅ 2025-04-08
-
-- [ ] ensure dbt partitions on dates
-
-- [ ] add data tests in DBT
-
-- [ ] add project environment variables to Airflow Config - [GPT suggestions on the topic](https://chatgpt.com/c/67ef4e9e-d180-8008-bc03-c1972185680a)
-
-- [ ] Need a nicer control flow diagram in README
-	- [Slack resource discussion](https://datatalks-club.slack.com/archives/C01FABYF2RG/p1743432813320519)
-	- Mermaid, JavaScript-based diagramming and charting tool
-	- http://draw.io/
-	- Lucidchart
 
 - [x] move airflow log-in details to the .env ✅ 2025-03-28
 
 - ~~personal data is saved in fitbit_tokens.json and not .env~~
-	- 
-
-- [ ] research desired metrics and graphics to visualize
-	- look at Google Fit Metrics
-	- correlation matrixes?
-	- how I used my jupyter notebooks
-	- graphics on **[fitbit-web-ui-app](https://github.com/arpanghosh8453/fitbit-web-ui-app)** - github
-	- graphics on https://dashboard.exercise.quest/
 
 - [x] add more bars to the barchart ✅ 2025-03-24
-
-- [ ] dynamically use user-id in created GCP project/bucket/bigquery dataset with Terraform
-
-- [ ] learn how to cost estimate pipeline
-	- gcp financial reports?
-
-- [ ] look at how costs are tracked in GCP
-	- add to talking points
 
 ## FEATURES
 *stuff I don't know how to do yet*
@@ -383,8 +349,7 @@ gcloud compute scp airflow-image.tar airflow-vm:~
 - Apache Cloudbyte?
 
 # [[Resources]]
-# Talking Points
-- lack of data governance
+
 ## Project Challenges
 - getting airflow to work??????
 - API
@@ -399,7 +364,6 @@ gcloud compute scp airflow-image.tar airflow-vm:~
 	- adding in user_id
 	- user_id going null
 	- datetime format changing
-## Cost Tracking
 ## Design Process
 1. develop a schema based on the Data API and Analysis needs
 2. incrementally read each technology's documentation and build pipeline
