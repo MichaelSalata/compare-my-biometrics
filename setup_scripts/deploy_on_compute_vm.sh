@@ -20,6 +20,7 @@ fi
 
 cp -f ./terraform.tfvars ./${github_project_name}/terraform/terraform.tfvars
 cp -f ./fitbit_tokens.json ./${github_project_name}/airflow-gcp/dags/fitbit_tokens.json
+cp -f ./.env ./${github_project_name}/airflow-gcp/dags/.env
 bash update_vm_env.sh
 
 cd ./${github_project_name}/airflow-gcp
