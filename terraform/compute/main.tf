@@ -38,7 +38,7 @@ resource "google_compute_instance" "default" {
       }
 
   provisioner "file" {
-        source      = "../airflow-gcp/dags/.env"
+        source      = "../airflow-gcp/.env"
         destination = "/home/${var.ssh_user}/.env"
       }
 

@@ -1,7 +1,7 @@
 #!/bin/bash
 github_project_name="compare-my-biometrics"
-github_repo_name="https://github.com/MichaelSalata/${github_project_name}.git"
-git_branch="main"
+github_repo_name="https://github.com/MichaelSalata/compare-my-biometrics.git"
+git_branch="fitbit-hook"
 
 sudo snap install docker
 sudo groupadd -f docker
@@ -20,7 +20,7 @@ fi
 
 cp -f ./terraform.tfvars ./${github_project_name}/terraform/terraform.tfvars
 cp -f ./fitbit_tokens.json ./${github_project_name}/airflow-gcp/dags/fitbit_tokens.json
-cp -f ./.env ./${github_project_name}/airflow-gcp/dags/.env
+cp -f ./.env ./${github_project_name}/airflow-gcp/.env
 bash update_vm_env.sh
 
 cd ./${github_project_name}/airflow-gcp
