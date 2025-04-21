@@ -32,9 +32,7 @@ variable "gcs_bucket_name" {
 }
 
 variable "bq_dataset_name" {
-  description = ""
-  #Update the below to what you want your dataset to be called
-  default = "fitbit_dataset"
+  description = "Dataset name in BigQuery for which all the tables are located"
   type    = string
 }
 
