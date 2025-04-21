@@ -33,8 +33,6 @@ RUN --mount=type=cache,target=/tmp/gcloud-cache \
 
 USER airflow
 
-COPY dags/fitbit_tokens.json .
-
 COPY requirements.lock.txt .
 RUN pip install --upgrade pip
 RUN --mount=type=cache,target=/root/.cache/pip \
