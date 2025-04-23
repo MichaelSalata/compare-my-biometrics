@@ -102,16 +102,15 @@ if __name__ == '__main__':
     server.browser_authorize()
 
     profile = server.fitbit.user_profile_get()
-    print(f'You are authorized to access data for the user: {profile['user']['fullName']}')
+    print(f'You are authorized to access data for the user: {profile["user"]["fullName"]}')
 
-    # saving a 
     print('TOKENS\n=====\n')
     token_dict = server.fitbit.client.session.token
     token_dict["client_id"] = env_variables["client_id"]
     token_dict["client_secret"] = env_variables["client_secret"]
 
     for key, value in token_dict.items():
-        print(key,' = ', value)
+        print(key, ' = ', value)
 
     with open('fitbit_tokens.json', 'w') as token_file:
         json.dump(token_dict, token_file, indent=4)
