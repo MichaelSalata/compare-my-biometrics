@@ -164,12 +164,12 @@ class FitbitHook(BaseHook):
 
     def download_past_6_months(self, endpoint_id: str):
         if endpoint_id in self.static_endpoints:
-            response = self.fetch_static(endpoint_id)
+            response = self.fetch_from_endpoint(self.static_endpoints[endpoint_id].format(user_id=self._user_id))
             if not response:
                 logging.error(f"Downloading {endpoint_id} failed")
                 logging.error(response)
             else:
-                self.save_data(response, endpoint_id)
+                self._save_data(response, endpoint_id)
 
             return
     
