@@ -81,3 +81,8 @@ variable "private_ssh_key_path" {
   description = "directory path to the PRIVATE SSH key file"
   type        = string
 }
+
+variable "compute_disk_size_GB" {
+  description = "Gigabytes available for the vm disk"
+  type        = string
+}

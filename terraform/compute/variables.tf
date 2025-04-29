@@ -47,3 +47,8 @@ variable "credentials" {
   description = "Path to the service accounts google_credentials.json"
   type        = string
 }
+
+variable "compute_disk_size_GB" {
+  description = "Gigabytes available for the vm disk"
+  type        = string
+}
