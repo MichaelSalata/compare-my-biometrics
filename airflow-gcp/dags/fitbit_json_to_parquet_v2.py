@@ -147,8 +147,10 @@ def profile_sleep_heartrate_jsons_to_parquet(base_path="/opt/airflow"):
 
             except (FileNotFoundError, json.JSONDecodeError) as e:
                 logger.error(f"Error loading {json_file} file: {e}")
+                raise e
             except Exception as e:
                 logger.error(f"Unexpected error processing {json_file}: {e}")
+                raise e
 
 
 def flatten_fitbit_json_file(json_file: str):
@@ -156,9 +158,9 @@ def flatten_fitbit_json_file(json_file: str):
         with open(json_file, 'r') as file:
             fitbit_data = json.load(file)
             flatten_func_map = {
-                "activities-heart":heartrate_flatten_to_df,
-                "profile":profile_flatten_to_df,
-                "sleep":sleep_flatten_to_df
+                "activities-heart":(heartrate_flatten_to_df, "heartrate"),
+                "user":(profile_flatten_to_df, "profile"),
+                "sleep":(sleep_flatten_to_df, "sleep")
             }
             
             for key in fitbit_data.keys():
@@ -166,17 +168,19 @@ def flatten_fitbit_json_file(json_file: str):
                     func_key = key
                     break
 
-            biometric_df = flatten_func_map[func_key](fitbit_data)
+            flatten_func, fitbit_data_type = flatten_func_map[func_key]
+            biometric_df = flatten_func(fitbit_data)
 
-        if biometric_df and len(biometric_df) >= 1:
+        if len(biometric_df) >= 1:
             parquet_filename = json_file.replace(".json", ".parquet")
             biometric_df.to_parquet(parquet_filename)
             logger.info(f'wrote {len(biometric_df)} entries to {parquet_filename}')
 
-            return 
+            return parquet_filename, fitbit_data_type
     
     except (FileNotFoundError, json.JSONDecodeError) as e:
         logger.error(f"Error loading {json_file} file: {e}")
+        raise e
 
 
 def flatten_fitbit_json(endpoint: str, base_path="/opt/airflow"):
@@ -203,6 +207,8 @@ def flatten_fitbit_json(endpoint: str, base_path="/opt/airflow"):
                     logger.info(f'wrote {len(biometric_df)} entries to {parquet_filename}')
 
         except (FileNotFoundError, json.JSONDecodeError) as e:
-            raise Exception(f"Error loading {json_file} file: {e}")
+            logging.error(f"Error loading {json_file} file: {e}")
+            raise e
         except Exception as e:
-            raise Exception(f"Unexpected error processing {json_file}: {e}")
+            logging.error(f"Unexpected error processing {json_file}: {e}")
+            raise e
