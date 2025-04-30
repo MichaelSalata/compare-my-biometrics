@@ -23,6 +23,10 @@ class FitbitHook(BaseHook):
         self._access_token = self.connection.extra_dejson.get("access_token")
         self._refresh_token = self.connection.extra_dejson.get("refresh_token")
         self._scope = self.connection.extra_dejson.get("scope")
+
+        self.max_fetchrange = {
+            "sleep": timedelta(days=100)
+        }
         
         self.day_specific_endpoints = {
             "azm": "/1/user/{user_id}/activities/active-zone-minutes/date/{date}/{date}/1min.json",    # intraday
@@ -81,26 +85,24 @@ class FitbitHook(BaseHook):
         elif response.status_code == 401:
             logging.error("Authentication failed. Refresh the token.")
             raise Exception("Authentication failed.")
-
         else:
-            logging.error(f"HTTP {response.status_code}: Failed to fetch data from {url}")
-            raise Exception(f"HTTP {response.status_code}: Failed fetch_from_endpoint {url}")
+            logging.error(f"HTTP {response.status_code}: Failed fetch_from_endpoint from {url}) response.text-> {response.text}")
+            raise Exception(f"HTTP {response.status_code}: Failed fetch_from_endpoint from {url}) response.text-> {response.text}")
 
 
     def fetch_daterange(self, endpoint_id: str, start: datetime, end: datetime):
         if endpoint_id in self._scope:
             dayrange_suffix_fmt = self.dayrange_endpoints.get(endpoint_id, None)
             if dayrange_suffix_fmt:
-                # TODO make sure this can handle datetimes with times
-                endpoint = dayrange_suffix_fmt.format(user_id=self.user_id, start=start.strftime("%Y-%m-%d"), end=end.strftime("%Y-%m-%d"))
-                return self.fetch_from_endpoint(endpoint)
-            # else:
-                # TODO: since it wasn't in dayrange endpoints, try day specific pointments
-                # TODO loop over day/hours between start & end
-                # day_specific_suffix_fmt = self.day_specific_endpoints.get(endpoint_id, None)
-                # day_specific_suffix_fmt.format(user_id=self._user_id, start=start.strftime("%Y-%m-%d"), end=end.strftime("%Y-%m-%d"))
+                if endpoint_id in self.max_fetchrange:
+                    fetch_range_max = self.max_fetchrange.get(endpoint_id)
+                    print(f"fetch_range_max: {fetch_range_max}")
+                    end = start + min(fetch_range_max, end-start)
+
+                endpoint_suffix = dayrange_suffix_fmt.format(user_id=self.user_id, start=start.strftime("%Y-%m-%d"), end=end.strftime("%Y-%m-%d"))
+                return self.fetch_from_endpoint(endpoint_suffix)
             
-            logging.error(f"Unrecognized dayrange endpoint {endpoint}")
+            logging.error(f"Unrecognized dayrange endpoint {endpoint_suffix}")
             return None
         else:
             logging.warning(f"Don't have permissions to download {endpoint_id}")
@@ -152,7 +154,7 @@ class FitbitHook(BaseHook):
         session.commit()
 
 
-    def save_data(self, data, endpoint_name, start_date=None, end_date=None, filename=None):
+    def save_data(self, data, endpoint_name: str, start_date: datetime=None, end_date: datetime=None, filename=None):
         if not filename:
             if (not start_date) and (not end_date):
                 filename = f'{endpoint_name}.json'
