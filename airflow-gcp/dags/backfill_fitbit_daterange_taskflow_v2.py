@@ -12,7 +12,7 @@ from airflow.utils.dates import days_ago
 
 from google.cloud import bigquery
 
-from fitbit_json_to_parquet import flatten_fitbit_json_file
+from fitbit_json_to_parquet_v2 import flatten_fitbit_json_file
 from fitbit_hook import FitbitHook
 from airflow.providers.google.cloud.hooks.gcs import GCSHook
 # from download_locally import download_past_6_months
@@ -142,7 +142,8 @@ default_args = {
 
 
 @dag(
-    dag_id="fitbit_gcshook_taskflow.py",
+    dag_id="backfill_fitbit_from_signup",
+    default_args=default_args,
     schedule_interval="@monthly",
     start_date=days_ago(1),
     catchup=False,
@@ -159,19 +160,25 @@ def fitbit_pipeline():
         fitbit_hook = FitbitHook()
         print("fitbit hook created successfully")
         response = fitbit_hook.fetch_from_endpoint(f"https://api.fitbit.com/1/user/{fitbit_hook.user_id}/profile.json")
+        signup_date = response.get("memberSince", None)
+        if not signup_date:
+            days_since_signup_est = 150
+            signup_date = days_ago(days_since_signup_est)
+            print(f"signup date not found, estimating {days_since_signup_est} days_since_signup_est: {signup_date}")
+        
         if response:
             return {
                 "json_file": FitbitHook.save_data(response),
                 "signup_date": response["memberSince"]
             }
     
-    @task
-    def get_signup_date(profile_data: dict):
-        return profile_data["signup_date"]
+    # @task
+    # def get_signup_date(profile_data: dict):
+    #     return profile_data["signup_date"]
 
-    @task
-    def get_profile_path(profile_data: dict):
-        return profile_data["json_file"]
+    # @task
+    # def get_profile_path(profile_data: dict):
+    #     return profile_data["json_file"]
     
     @task
     def download_since_signup(signup_date: str, endpoint_id: str):
@@ -188,7 +195,7 @@ def fitbit_pipeline():
                 return None
 
     @task
-    def flatten_fitbit_json(json_file: str):
+    def flatten_fitbit_data(json_file: str):
         parquet_file, endpoint_id = flatten_fitbit_json_file(json_file)
         return {"filename": parquet_file, "endpoint_id": endpoint_id}
 
@@ -232,11 +239,11 @@ def fitbit_pipeline():
     # signup_date, profile_json, user_id = get_profile_data()
     print("about to attempt DAG....")
     profile_data = download_profile()
-    flattened_profile = flatten_fitbit_json(json_file=get_profile_path(profile_data))
+    flattened_profile = flatten_fitbit_data(json_file=profile_data["json_file"])
     profile_parquets_in_gcs = upload_to_gcs(filename=flattened_profile["filename"], endpoint_id=flattened_profile["endpoint_id"])
 
-    biometric_jsons = download_since_signup.partial(signup_date=get_signup_date(profile_data)).expand(endpoint_id=FITBIT_BIOMETRICS)
-    biometric_parquets = flatten_fitbit_json.expand(json_file=biometric_jsons)
+    biometric_jsons = download_since_signup.partial(signup_date=profile_data["signup_date"]).expand(endpoint_id=FITBIT_BIOMETRICS)
+    biometric_parquets = flatten_fitbit_data.expand(json_file=biometric_jsons)
     biometrics_in_gcs = upload_to_gcs.expand_kwargs(biometric_parquets)
 
     setup_bq_ext_tables = create_bq_table.expand(endpoint_id=BQ_TABLES)
@@ -251,7 +258,3 @@ def fitbit_pipeline():
     # )
 
 fitbit_dag = fitbit_pipeline()
-
-
-if __name__ == "__main__":
-    dag.test()
