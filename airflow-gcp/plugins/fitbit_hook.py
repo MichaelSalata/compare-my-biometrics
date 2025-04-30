@@ -19,7 +19,7 @@ class FitbitHook(BaseHook):
         self.connection = self.get_connection(conn_id)
         self._client_id = self.connection.login
         self._client_secret = self.connection.password
-        self._user_id = self.connection.extra_dejson.get("user_id")
+        self.user_id = self.connection.extra_dejson.get("user_id")
         self._access_token = self.connection.extra_dejson.get("access_token")
         self._refresh_token = self.connection.extra_dejson.get("refresh_token")
         self._scope = self.connection.extra_dejson.get("scope")
@@ -63,11 +63,9 @@ class FitbitHook(BaseHook):
             logging.info(f"Successfully downloaded: {url}")
             return response.json()
         elif response.status_code == 401:
-            logging.error("Authentication failed")
-            return None
+            raise Exception("Authentication failed")
         else:
-            logging.error(f"HTTP {response.status_code} : Download failed for {url}: ")
-            return None
+            raise Exception(f"HTTP {response.status_code} : Download failed for {url}: ")
 
     def fetch_from_endpoint(self, endpoint_suffix: str):
         headers = {
@@ -83,16 +81,18 @@ class FitbitHook(BaseHook):
         elif response.status_code == 401:
             logging.error("Authentication failed. Refresh the token.")
             raise Exception("Authentication failed.")
+
         else:
             logging.error(f"HTTP {response.status_code}: Failed to fetch data from {url}")
             raise Exception(f"HTTP {response.status_code}: Failed fetch_from_endpoint {url}")
+
 
     def fetch_daterange(self, endpoint_id: str, start: datetime, end: datetime):
         if endpoint_id in self._scope:
             dayrange_suffix_fmt = self.dayrange_endpoints.get(endpoint_id, None)
             if dayrange_suffix_fmt:
                 # TODO make sure this can handle datetimes with times
-                endpoint = dayrange_suffix_fmt.format(user_id=self._user_id, start=start.strftime("%Y-%m-%d"), end=end.strftime("%Y-%m-%d"))
+                endpoint = dayrange_suffix_fmt.format(user_id=self.user_id, start=start.strftime("%Y-%m-%d"), end=end.strftime("%Y-%m-%d"))
                 return self.fetch_from_endpoint(endpoint)
             # else:
                 # TODO: since it wasn't in dayrange endpoints, try day specific pointments
@@ -100,8 +100,11 @@ class FitbitHook(BaseHook):
                 # day_specific_suffix_fmt = self.day_specific_endpoints.get(endpoint_id, None)
                 # day_specific_suffix_fmt.format(user_id=self._user_id, start=start.strftime("%Y-%m-%d"), end=end.strftime("%Y-%m-%d"))
             
+            logging.error(f"Unrecognized dayrange endpoint {endpoint}")
+            return None
         else:
             logging.warning(f"Don't have permissions to download {endpoint_id}")
+            return None
 
         # TODO determine if Intraday endpoint access is affected by self._scope (try downloading intraday data out of _scope)
         # TODO attempt to download from Intraday endpoints, stop download attempts if get a permissions error as intraday is either all or nothing from Personal dev account access
@@ -125,7 +128,7 @@ class FitbitHook(BaseHook):
         if response.status_code == 200:
             tokens = response.json()
 
-            self._user_id = tokens["user_id"]
+            self.user_id = tokens["user_id"]
             self._access_token = tokens["access_token"]
             self._refresh_token = tokens["refresh_token"]
             self._scope = tokens["scope"]
@@ -149,7 +152,7 @@ class FitbitHook(BaseHook):
         session.commit()
 
 
-    def _save_data(self, data, endpoint_name, start_date=None, end_date=None, filename=None):
+    def save_data(self, data, endpoint_name, start_date=None, end_date=None, filename=None):
         if not filename:
             if (not start_date) and (not end_date):
                 filename = f'{endpoint_name}.json'
@@ -157,21 +160,20 @@ class FitbitHook(BaseHook):
                 # TODO: refactor file naming to append month at file end to better adhere with download schedule and data governance
                 filename = f'{endpoint_name}_{start_date.strftime("%Y-%m-%d")}_{end_date.strftime("%Y-%m-%d")}.json'
         
-        data["user_id"] = self._user_id
+        data["user_id"] = self.user_id
         with open(filename, 'w') as data_file:
             json.dump(data, data_file, indent=4)
             logging.info(f"{endpoint_name} data saved to {filename}")
+            return filename
 
     def download_past_6_months(self, endpoint_id: str):
         if endpoint_id in self.static_endpoints:
-            response = self.fetch_from_endpoint(self.static_endpoints[endpoint_id].format(user_id=self._user_id))
+            response = self.fetch_from_endpoint(self.static_endpoints[endpoint_id].format(user_id=self.user_id))
             if not response:
                 logging.error(f"Downloading {endpoint_id} failed")
                 logging.error(response)
             else:
-                self._save_data(response, endpoint_id)
-
-            return
+                return self.save_data(response, endpoint_id)
     
         end_date = datetime.now()
         start_date = end_date.replace(day=1)
@@ -180,7 +182,7 @@ class FitbitHook(BaseHook):
         while past_month_count >= 1:
             response = self.fetch_daterange(endpoint_id, start=start_date, end=end_date)
             if response:
-                self._save_data(response, endpoint_id, start_date=start_date, end_date=end_date)
+                self.save_data(response, endpoint_id, start_date=start_date, end_date=end_date)
             else:
                 logging.warning(f"No data retrieved for {endpoint_id} from {start_date} to {end_date}")
             end_date = start_date - timedelta(days=1)
