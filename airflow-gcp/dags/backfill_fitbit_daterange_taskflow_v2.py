@@ -23,8 +23,8 @@ GCP_GCS_BUCKET = str(os.environ.get("GCP_GCS_BUCKET", f"{PROJECT_ID}-fitbit-buck
 BIGQUERY_DATASET = str(os.environ.get("BIGQUERY_DATASET", "fitbit_dataset"))
 # CREDENTIALS_FILE = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS", "google_credentials.json")
 
-airflow_path = os.environ.get("AIRFLOW_HOME")
-dbt_is_test_run = "'{is_test_run: " + str(os.environ.get("IS_DEV_ENV", "False")) + "}'"
+AIRFLOW_PATH = os.environ.get("AIRFLOW_HOME")
+DBT_IS_TEST_RUN = "'{is_test_run: " + str(os.environ.get("IS_DEV_ENV", "False")) + "}'"
 
 
 @provide_session
@@ -63,7 +63,6 @@ def update_fitbit_connection(session=None):
                 print("Connection 'fitbit_default' created successfully.")
             
             session.commit()
-            os.remove(tokens_file)
             return tokens.get("user_id")
     except FileNotFoundError:
         print(f"fitbit_tokens.json not found")
@@ -74,6 +73,12 @@ def update_fitbit_connection(session=None):
             print("No fitbit connection or tokens to estabilish one!")
             user_id = None
 
+    if os.path.exists("fitbit_tokens.json"):
+        try:
+            os.remove("fitbit_tokens.json")
+        except OSError as e:
+            print(f"Error removing fitbit_tokens.json: {e}")
+        
     session.commit()
     return user_id
 
@@ -99,13 +104,24 @@ def fitbit_pipeline():
     update_fitbit_connection()
 
     @task
-    def get_signup_date():
+    def download_profile():
         fitbit_hook = FitbitHook()
         response = fitbit_hook.fetch_from_endpoint(f"https://api.fitbit.com/1/user/{fitbit_hook.user_id}/profile.json")
-        return response["memberSince"], FitbitHook.save_data(response), response["user_id"]
+        return {
+            "json_file": FitbitHook.save_data(response),
+            "signup_date": response["memberSince"]
+        }
+    
+    @task
+    def get_signup_date(profile_data: dict):
+        return profile_data["signup_date"]
 
     @task
-    def download_since_signup(signup_date, endpoint_id: str):
+    def get_profile_path(profile_data: dict):
+        return profile_data["json_file"]
+    
+    @task
+    def download_since_signup(signup_date: str, endpoint_id: str):
         fitbit_hook = FitbitHook()
         context = get_current_context()
         end_date = context['execution_date'].date().isoformat()
@@ -125,7 +141,7 @@ def fitbit_pipeline():
 
     @task
     def upload_to_gcs(filename: str, endpoint_id: str):
-        gcp_blob = f"{user_id}/{endpoint_id}/{filename}"
+        gcp_blob = f"{endpoint_id}/{filename}"
         print(f"Uploading {filename} to {gcp_blob}...")
         gcs_hook = GCSHook()
         gcs_hook.upload(bucket_name=GCP_GCS_BUCKET, object_name=gcp_blob, filename=filename)
@@ -133,14 +149,14 @@ def fitbit_pipeline():
         return gcp_blob
 
     @task
-    def create_bq_table(endpoint_id: str, user_id: str):
+    def create_bq_table(endpoint_id: str):
         client = bigquery.Client()
 
         table_id = f"{PROJECT_ID}.{BIGQUERY_DATASET}.external_{endpoint_id}"
 
         table = bigquery.Table(table_id)
         external_config = bigquery.ExternalConfig(source_format=bigquery.SourceFormat.PARQUET)
-        external_config.source_uris = [f"gs://{GCP_GCS_BUCKET}/{user_id}/{endpoint_id}/{endpoint_id}*.parquet"]
+        external_config.source_uris = [f"gs://{GCP_GCS_BUCKET}/{endpoint_id}/{endpoint_id}*.parquet"]
 
         table.external_data_configuration = external_config
 
@@ -148,18 +164,19 @@ def fitbit_pipeline():
 
         return endpoint_id
 
-    signup_date, profile_json, user_id = get_signup_date()
-    profile_parquet = flatten_fitbit_json(json_file=profile_json)
-    profile_parquets_in_gcs = upload_to_gcs(profile_parquet, "profile")
+    # signup_date, profile_json, user_id = get_profile_data()
+    profile_data = download_profile()
+    flattened_profile = flatten_fitbit_json(json_file=profile_data.output["json_file"])
+    profile_parquets_in_gcs = upload_to_gcs(**flattened_profile)
 
-    biometric_jsons = download_since_signup.partial(signup_date=signup_date).expand(endpoint_id=default_args["FITBIT_BIOMETRICS"])
-    biometric_parquets = flatten_fitbit_json(json_file=biometric_jsons)
-    profile_biometrics_in_gcs = upload_to_gcs(biometric_parquets)
+    biometric_jsons = download_since_signup.partial(signup_date=profile_data.output["signup_date"]).expand(endpoint_id=default_args["FITBIT_BIOMETRICS"])
+    biometric_parquets = flatten_fitbit_json.expand(json_file=biometric_jsons)
+    profile_biometrics_in_gcs = upload_to_gcs.expand_kwargs(biometric_parquets)
 
-    setup_bq_ext_tables = create_bq_table.partial(user_id=user_id).expand(endpoint_id=BQ_TABLES)
+    setup_bq_ext_tables = create_bq_table.expand(endpoint_id=BQ_TABLES)
 
-    get_signup_date >> [profile_biometrics_in_gcs, profile_parquets_in_gcs, setup_bq_ext_tables] >> BashOperator(
-        bash_command=f"cd {airflow_path}/dbt_resources && dbt deps && dbt build --vars {dbt_is_test_run}",
+    [profile_biometrics_in_gcs, profile_parquets_in_gcs, setup_bq_ext_tables] >> BashOperator(
+        bash_command=f"cd {AIRFLOW_PATH}/dbt_resources && dbt deps && dbt build --vars {DBT_IS_TEST_RUN}",
         trigger_rule="all_success"
     )
 
