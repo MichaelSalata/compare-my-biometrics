@@ -6,15 +6,8 @@ import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-def profile_json_to_parquet(filename):
-    try:
-        with open(filename, 'r') as file:
-            profile_data = json.load(file)
-            profile = profile_data["user"]
-    except (FileNotFoundError, json.JSONDecodeError) as e:
-        logger.error(f"Error loading {filename} file: {e}")
-        exit(1)
-    
+def profile_flatten_to_df(profile_data):
+    profile = profile_data["user"]
     del profile["features"]
     del profile["topBadges"]
     profile_df = pd.DataFrame([profile])
@@ -29,25 +22,15 @@ def profile_json_to_parquet(filename):
         profile_df["strideLengthWalking"] = profile_df["strideLengthWalking"].astype(float)
         profile_df["strideLengthRunning"] = profile_df["strideLengthRunning"].astype(float)
     except Exception as e:
-        logger.error(f'Error: {e} reading json file {filename}')
-        return
+        logger.error(f'Error: {e} reading profile.json')
+        return pd.DataFrame()
 
-    parquet_filename = filename.replace(".json", ".parquet")
-    profile_df.to_parquet(parquet_filename)
-    logger.info(f"Converted {filename} to {parquet_filename}")
+    return profile_df
 
-
-def sleep_json_to_parquet(filename):
-    try:
-        with open(filename, 'r') as file:
-            sleep_data = json.load(file)
-    except (FileNotFoundError, json.JSONDecodeError) as e:
-        logger.error(f"Error loading {filename} file: {e}")
-        exit(1)
-    
-    if len(sleep_data["sleep"]) == 0:
-        logger.warning(f'{filename} is empty')
-        return
+def sleep_flatten_to_df(sleep_data):
+    if sleep_data and len(sleep_data["sleep"]) == 0:
+        logger.warning('sleep_data is empty')
+        return pd.DataFrame()
 
     rows = []
     for sleep in sleep_data["sleep"]:
@@ -91,26 +74,15 @@ def sleep_json_to_parquet(filename):
                 "wake_thirtyDayAvgMinutes": int(sleep["levels"]["summary"]["wake"]["thirtyDayAvgMinutes"])
             }
         except Exception as e:
-            logger.error(f'Error: {e} reading json file {filename} on date: {sleep.get("dateOfSleep")}')
+            logger.error(f'Error: {e} reading json file sleep on date: {sleep.get("dateOfSleep")}')
             continue
 
         rows.append(row)
-
-    if len(rows) >= 1:
-        sleep_df = pd.DataFrame(rows)
-        parquet_filename = filename.replace(".json", ".parquet")
-        sleep_df.to_parquet(parquet_filename)
-        logger.info(f'wrote {len(rows)} entries to {parquet_filename}')
+    
+    return pd.DataFrame(rows)
 
 
-def heartrate_json_to_parquet(filename):
-    try:
-        with open(filename, 'r') as file:
-            heartrate_data = json.load(file)
-    except (FileNotFoundError, json.JSONDecodeError) as e:
-        logger.error(f"Error loading {file} file: {e}")
-        exit(1)
-
+def heartrate_flatten_to_df(heartrate_data):
     rows = []
     for heartrate in heartrate_data["activities-heart"]:
         try:
@@ -141,37 +113,96 @@ def heartrate_json_to_parquet(filename):
                 "restingHeartRate": int(heartrate["value"].get("restingHeartRate"))
             }
         except Exception as e:
-            logger.error(f'Error: {e} reading json file {filename} on date: {heartrate.get("dateTime")}')
+            logger.error(f'Error: {e} reading sleep json on date: {heartrate.get("dateTime")}')
             continue
 
         rows.append(row)
 
-    if len(rows) >= 1:
-        heartrate_df = pd.DataFrame(rows)
-        parquet_filename = filename.replace(".json", ".parquet")
-        heartrate_df.to_parquet(parquet_filename)
-        logger.info(f'wrote {len(rows)} entries to {parquet_filename}')
+    return pd.DataFrame(rows)
 
 
 def profile_sleep_heartrate_jsons_to_parquet(base_path="/opt/airflow"):
-    profile_files = glob.glob(f"{base_path}/profile*.json")
-    heartrate_files = glob.glob(f"{base_path}/heartrate*.json")
-    sleep_files = glob.glob(f"{base_path}/sleep*.json")
 
-    if (len(profile_files) + len(heartrate_files) + len(sleep_files)) == 0:
-        logger.warning("No Files Found -> parsing example data")
-        profile_files = glob.glob(f"{base_path}/example_data/profile*.json")
-        heartrate_files = glob.glob(f"{base_path}/example_data/heartrate*.json")
-        sleep_files = glob.glob(f"{base_path}/example_data/sleep*.json")
-        logger.debug(f"Attempting to parse files: {sleep_files}")
-        logger.debug(f"Attempting to parse files: {profile_files}")
-        logger.debug(f"Attempting to parse files: {heartrate_files}")
-    
-    for filename in sleep_files:
-        sleep_json_to_parquet(filename)
-    
-    for filename in profile_files:
-        profile_json_to_parquet(filename)
+    flatten_func_map = {
+        "heartrate":heartrate_flatten_to_df,
+        "profile":profile_flatten_to_df,
+        "sleep":sleep_flatten_to_df
+    }
 
-    for filename in heartrate_files:
-        heartrate_json_to_parquet(filename)
+    for endpoint, flatten_func in flatten_func_map.items():
+        logger.debug(f"Attempting to parse {endpoint} files")
+        json_files = glob.glob(f"{base_path}/{endpoint}*.json")
+        if len(json_files) == 0:
+            logger.warning(f"No {endpoint} files Found -> parsing example data")
+            json_files = glob.glob(f"{base_path}/example_data/{endpoint}*.json")
+
+        for json_file in json_files:
+            try:
+                with open(json_file, 'r') as file:
+                    biometric_df = flatten_func(json.load(file))
+                    if len(biometric_df) >= 1:
+                        parquet_filename = json_file.replace(".json", ".parquet")
+                        biometric_df.to_parquet(parquet_filename)
+                        logger.info(f'wrote {len(biometric_df)} entries to {parquet_filename}')
+
+            except (FileNotFoundError, json.JSONDecodeError) as e:
+                logger.error(f"Error loading {json_file} file: {e}")
+            except Exception as e:
+                logger.error(f"Unexpected error processing {json_file}: {e}")
+
+
+def flatten_fitbit_json_file(json_file: str):
+    try:
+        with open(json_file, 'r') as file:
+            fitbit_data = json.load(file)
+            flatten_func_map = {
+                "activities-heart":heartrate_flatten_to_df,
+                "profile":profile_flatten_to_df,
+                "sleep":sleep_flatten_to_df
+            }
+            
+            for key in fitbit_data.keys():
+                if key != "user_id":
+                    func_key = key
+                    break
+
+            biometric_df = flatten_func_map[func_key](fitbit_data)
+
+        if biometric_df and len(biometric_df) >= 1:
+            parquet_filename = json_file.replace(".json", ".parquet")
+            biometric_df.to_parquet(parquet_filename)
+            logger.info(f'wrote {len(biometric_df)} entries to {parquet_filename}')
+
+            return 
+    
+    except (FileNotFoundError, json.JSONDecodeError) as e:
+        logger.error(f"Error loading {json_file} file: {e}")
+
+
+def flatten_fitbit_json(endpoint: str, base_path="/opt/airflow"):
+
+    flatten_func_map = {
+        "heartrate":heartrate_flatten_to_df,
+        "profile":profile_flatten_to_df,
+        "sleep":sleep_flatten_to_df
+    }
+
+    logger.debug(f"Attempting to parse {endpoint} files")
+    json_files = glob.glob(f"{base_path}/{endpoint}*.json")
+    if len(json_files) == 0:
+        logger.warning(f"No {endpoint} files Found -> parsing example data")
+        json_files = glob.glob(f"{base_path}/example_data/{endpoint}*.json")
+
+    for json_file in json_files:
+        try:
+            with open(json_file, 'r') as file:
+                biometric_df = flatten_func_map[endpoint](json.load(file))
+                if len(biometric_df) >= 1:
+                    parquet_filename = json_file.replace(".json", ".parquet")
+                    biometric_df.to_parquet(parquet_filename)
+                    logger.info(f'wrote {len(biometric_df)} entries to {parquet_filename}')
+
+        except (FileNotFoundError, json.JSONDecodeError) as e:
+            raise Exception(f"Error loading {json_file} file: {e}")
+        except Exception as e:
+            raise Exception(f"Unexpected error processing {json_file}: {e}")
