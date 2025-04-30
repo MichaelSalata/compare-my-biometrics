@@ -27,7 +27,7 @@ BIGQUERY_DATASET = str(os.environ.get("BIGQUERY_DATASET", "fitbit_dataset"))
 # CREDENTIALS_FILE = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS", "google_credentials.json")
 
 airflow_path = os.environ.get("AIRFLOW_HOME")
-dbt_is_test_run = "'{is_test_run: " + f"{os.environ.get("IS_DEV_ENV", False)}" + "}'"
+dbt_is_test_run = "'{is_test_run: " + f"{os.environ.get("IS_DEV_ENV", True)}" + "}'"
 
 
 def upload_to_gcs(bucket_name, max_retries=3):
