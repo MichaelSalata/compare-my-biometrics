@@ -18,6 +18,7 @@ from airflow.providers.google.cloud.hooks.gcs import GCSHook
 # from download_locally import download_past_6_months
 
 import subprocess
+from datetime import datetime
 
 
 PROJECT_ID = str(os.environ.get("GCP_PROJECT_ID"))
@@ -26,7 +27,7 @@ BIGQUERY_DATASET = str(os.environ.get("BIGQUERY_DATASET", "fitbit_dataset"))
 # CREDENTIALS_FILE = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS", "google_credentials.json")
 
 airflow_path = os.environ.get("AIRFLOW_HOME")
-DBT_IS_TEST_RUN = "'{is_test_run: " + f"{os.environ.get("IS_DEV_ENV", True)}" + "}'"
+DBT_IS_TEST_RUN = os.environ.get("IS_DEV_ENV", True)
 
 
 # @provide_session
@@ -137,7 +138,7 @@ default_args = {
     "owner": "MSalata",             # default: airflow
     "start_date": days_ago(1),
     "depends_on_past": False,       # default: False
-    "retries": 3,                   # default: 0
+    "retries": 0,                   # default: 0
 }
 
 
@@ -159,35 +160,34 @@ def fitbit_pipeline():
         print("attempting profile download")
         fitbit_hook = FitbitHook()
         print("fitbit hook created successfully")
-        response = fitbit_hook.fetch_from_endpoint(f"https://api.fitbit.com/1/user/{fitbit_hook.user_id}/profile.json")
-        signup_date = response.get("memberSince", None)
-        if not signup_date:
-            days_since_signup_est = 150
-            signup_date = days_ago(days_since_signup_est)
-            print(f"signup date not found, estimating {days_since_signup_est} days_since_signup_est: {signup_date}")
-        
-        if response:
-            return {
-                "json_file": FitbitHook.save_data(response),
-                "signup_date": response["memberSince"]
-            }
-    
-    # @task
-    # def get_signup_date(profile_data: dict):
-    #     return profile_data["signup_date"]
 
-    # @task
-    # def get_profile_path(profile_data: dict):
-    #     return profile_data["json_file"]
+        endpoint_suffix = fitbit_hook.static_endpoints.get("profile").format(user_id=fitbit_hook.user_id)
+        response = fitbit_hook.fetch_from_endpoint(endpoint_suffix=endpoint_suffix)
+        if response:
+            signup_date_str = response.get("user").get("memberSince")
+            signup_date = datetime.strptime(signup_date_str, "%Y-%m-%d")
+            return {
+                "json_file": fitbit_hook.save_data(data=response, endpoint_name="profile"),
+                "signup_date": signup_date
+            }
+        else:
+            raise Exception("empty profile API response")
     
     @task
-    def download_since_signup(signup_date: str, endpoint_id: str):
+    def get_signup_date(profile_data: dict):
+        return profile_data["signup_date"]
+
+    @task
+    def get_profile_path(profile_data: dict):
+        return profile_data["json_file"]
+    
+    @task(retries=3)
+    def download_since_signup(signup_date: datetime, endpoint_id: str):
         fitbit_hook = FitbitHook()
-        context = get_current_context()
-        end_date = context['execution_date'].date().isoformat()
+        end_date = get_current_context()['execution_date'].date()
         # end_date = {{start_date}}   # jinja references the when the task starts
         if endpoint_id in fitbit_hook.dayrange_endpoints:
-            response = fitbit_hook.fetch_daterange(endpoint_id, start=signup_date, end=end_date)
+            response = fitbit_hook.fetch_daterange(endpoint_id=endpoint_id, start=signup_date, end=end_date)
             if response:
                 return fitbit_hook.save_data(response, endpoint_id, start_date=signup_date, end_date=end_date)
             else:
@@ -196,7 +196,7 @@ def fitbit_pipeline():
 
     @task
     def flatten_fitbit_data(json_file: str):
-        parquet_file, endpoint_id = flatten_fitbit_json_file(json_file)
+        parquet_file, endpoint_id = flatten_fitbit_json_file(json_file=json_file)
         return {"filename": parquet_file, "endpoint_id": endpoint_id}
 
 
@@ -227,7 +227,10 @@ def fitbit_pipeline():
     
     @task
     def run_dbt():
-        dbt_command = f"cd {airflow_path}/dbt_resources && dbt deps && dbt build --vars '{DBT_IS_TEST_RUN}'"
+        
+        dbt_command = " && ".join([f"cd {airflow_path}/dbt_resources",
+                                  "dbt deps",
+                                  "dbt build --vars '{is_test_run: " + str(DBT_IS_TEST_RUN) + "}'"])
         try:
             print("Executing:", dbt_command)
             subprocess.run(dbt_command, shell=True, check=True, text=True)
@@ -239,10 +242,10 @@ def fitbit_pipeline():
     # signup_date, profile_json, user_id = get_profile_data()
     print("about to attempt DAG....")
     profile_data = download_profile()
-    flattened_profile = flatten_fitbit_data(json_file=profile_data["json_file"])
-    profile_parquets_in_gcs = upload_to_gcs(filename=flattened_profile["filename"], endpoint_id=flattened_profile["endpoint_id"])
+    flattened_profile = flatten_fitbit_data(json_file=get_profile_path(profile_data))
+    profile_parquets_in_gcs = upload_to_gcs.expand_kwargs([flattened_profile])
 
-    biometric_jsons = download_since_signup.partial(signup_date=profile_data["signup_date"]).expand(endpoint_id=FITBIT_BIOMETRICS)
+    biometric_jsons = download_since_signup.partial(signup_date=get_signup_date(profile_data)).expand(endpoint_id=FITBIT_BIOMETRICS)
     biometric_parquets = flatten_fitbit_data.expand(json_file=biometric_jsons)
     biometrics_in_gcs = upload_to_gcs.expand_kwargs(biometric_parquets)
 
