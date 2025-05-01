@@ -1,7 +1,7 @@
 import os
 import json
 
-from airflow.decorators import dag, task
+from airflow.decorators import dag, task, task_group
 from airflow.operators.bash import BashOperator
 
 from airflow.models import Connection
@@ -28,61 +28,6 @@ BIGQUERY_DATASET = str(os.environ.get("BIGQUERY_DATASET", "fitbit_dataset"))
 
 airflow_path = os.environ.get("AIRFLOW_HOME")
 DBT_IS_TEST_RUN = os.environ.get("IS_DEV_ENV", True)
-
-
-# @provide_session
-# def update_fitbit_connection(session=None):
-
-#     existing_conn = session.query(Connection).filter(Connection.conn_id == "fitbit_default").first()
-#     try:
-#         with open("fitbit_tokens.json", 'r') as tokens_file:
-#             tokens = json.load(tokens_file)
-
-#             # Update connection if it already exists
-#             if existing_conn:
-#                 print("Connection 'fitbit_default' already exists. Updating access_token...")
-
-#                 existing_conn.login = tokens["client_id"]
-#                 existing_conn.password = tokens["client_secret"]
-                
-#                 extra_kv_tokens = json.loads(existing_conn.extra) if existing_conn.extra else {}
-#                 extra_kv_tokens["access_token"] = tokens.get("access_token", extra_kv_tokens.get("access_token"))
-#                 extra_kv_tokens["user_id"] = tokens.get("user_id")
-#                 existing_conn.extra = json.dumps(extra_kv_tokens)
-#                 print("user_id, client_id, client_secret, access_token and refresh_token updated successfully.")
-
-#             else:
-#                 extra_kv_tokens = tokens.copy()
-#                 del extra_kv_tokens["client_id"]
-#                 del extra_kv_tokens["client_secret"]
-#                 conn = Connection(
-#                     conn_id="fitbit_default",
-#                     conn_type="http",
-#                     login=tokens["client_id"],
-#                     password=tokens["client_secret"],
-#                     extra=json.dumps(extra_kv_tokens)
-#                 )
-#                 session.add(conn)
-#                 print("Connection 'fitbit_default' created successfully.")
-            
-#             session.commit()
-#             return tokens.get("user_id")
-#     except FileNotFoundError:
-#         print(f"fitbit_tokens.json not found")
-#         if existing_conn:
-#             print(f"Using existing fitbit connection {existing_conn.conn_id}")
-#             user_id = json.loads(existing_conn.extra).get("user_id")
-#         else:
-#             print("No fitbit connection or tokens to estabilish one!")
-#             user_id = None
-
-#     if os.path.exists("fitbit_tokens.json"):
-#         try:
-#             os.remove("fitbit_tokens.json")
-#         except OSError as e:
-#             print(f"Error removing fitbit_tokens.json: {e}")
-
-#     return user_id
 
 
 
@@ -136,30 +81,27 @@ def update_fitbit_connection(session=None):
 
 default_args = {
     "owner": "MSalata",             # default: airflow
-    "start_date": days_ago(1),
     "depends_on_past": False,       # default: False
     "retries": 0,                   # default: 0
 }
 
 
 @dag(
-    dag_id="backfill_fitbit_from_signup",
+    dag_id="parallel_backfill_fitbit_from_signup",
     default_args=default_args,
-    schedule_interval="@monthly",
-    start_date=days_ago(1),
+    schedule=None,
     catchup=False,
     tags=['dtc-de']
 )
 def fitbit_pipeline():
-    FITBIT_BIOMETRICS=["sleep", "heartrate"]
+    # Retrieve FITBIT_BIOMETRICS from dag_run.conf or use a default value
+    FITBIT_BIOMETRICS = ["sleep", "heartrate"]
     BQ_TABLES = FITBIT_BIOMETRICS + ["profile"]
     update_fitbit_connection()
 
     @task
     def download_profile():
-        print("attempting profile download")
         fitbit_hook = FitbitHook()
-        print("fitbit hook created successfully")
 
         endpoint_suffix = fitbit_hook.static_endpoints.get("profile").format(user_id=fitbit_hook.user_id)
         response = fitbit_hook.fetch_from_endpoint(endpoint_suffix=endpoint_suffix)
@@ -173,10 +115,6 @@ def fitbit_pipeline():
         else:
             raise Exception("empty profile API response")
     
-    @task
-    def get_signup_date(profile_data: dict):
-        return profile_data["signup_date"]
-
     @task
     def get_profile_path(profile_data: dict):
         return profile_data["json_file"]
@@ -201,7 +139,10 @@ def fitbit_pipeline():
 
 
     @task
-    def upload_to_gcs(filename: str, endpoint_id: str):
+    def upload_to_gcs(endpoint_file: dict):
+        endpoint_id = endpoint_file["endpoint_id"]
+        filename = endpoint_file["filename"]
+
         gcp_blob = f"{endpoint_id}/{filename}"
         print(f"Uploading {filename} to {gcp_blob}...")
         gcs_hook = GCSHook()
@@ -225,33 +166,42 @@ def fitbit_pipeline():
 
         return endpoint_id
     
+    # download, flatten and upload profile
+    profile_data = download_profile()
+    flattened_profile = flatten_fitbit_data(json_file=get_profile_path(profile_data))
+    profile_parquets_in_gcs = upload_to_gcs(flattened_profile)
+
+    @task
+    def prep_biometric_jobs(profile_data: dict, biometrics: list[str]):
+        signup_date = profile_data["signup_date"]
+        return [{"signup_date": signup_date, "biometric": b} for b in biometrics]
+
+    @task_group
+    def ETL_biometrics(signup_date: datetime, biometric: str):
+        biometric_json = download_since_signup(signup_date=signup_date, endpoint_id=biometric)
+        biometric_parquet = flatten_fitbit_data(json_file=biometric_json)
+        upload_to_gcs(biometric_parquet)
+
+
+    biometrics_in_gcs = ETL_biometrics.expand_kwargs(prep_biometric_jobs(profile_data, FITBIT_BIOMETRICS))
+
+    setup_bq_ext_tables = create_bq_table.expand(endpoint_id=BQ_TABLES)
+
     @task
     def run_dbt():
-        
-        dbt_command = " && ".join([f"cd {airflow_path}/dbt_resources",
-                                  "dbt deps",
-                                  "dbt build --vars '{is_test_run: " + str(DBT_IS_TEST_RUN) + "}'"])
+        dbt_command = " && ".join([
+            f"cd {airflow_path}/dbt_resources",
+            "dbt deps",
+            "dbt build --vars '{is_test_run: " + str(DBT_IS_TEST_RUN) + "}'"
+            ])
         try:
             print("Executing:", dbt_command)
             subprocess.run(dbt_command, shell=True, check=True, text=True)
             print("DBT commands ran successfully.")
         except subprocess.CalledProcessError as e:
             print(f"DBT command failed: {e}")
-            raise
+            raise e
 
-    # signup_date, profile_json, user_id = get_profile_data()
-    print("about to attempt DAG....")
-    profile_data = download_profile()
-    flattened_profile = flatten_fitbit_data(json_file=get_profile_path(profile_data))
-    profile_parquets_in_gcs = upload_to_gcs.expand_kwargs([flattened_profile])
-
-    biometric_jsons = download_since_signup.partial(signup_date=get_signup_date(profile_data)).expand(endpoint_id=FITBIT_BIOMETRICS)
-    biometric_parquets = flatten_fitbit_data.expand(json_file=biometric_jsons)
-    biometrics_in_gcs = upload_to_gcs.expand_kwargs(biometric_parquets)
-
-    setup_bq_ext_tables = create_bq_table.expand(endpoint_id=BQ_TABLES)
-
-    print("DAG dependancies after this...")
     [profile_parquets_in_gcs, biometrics_in_gcs, setup_bq_ext_tables] >> run_dbt()
     
     # >> BashOperator(
