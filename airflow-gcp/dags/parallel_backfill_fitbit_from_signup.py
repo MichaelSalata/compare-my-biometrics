@@ -202,7 +202,7 @@ def fitbit_pipeline():
             print(f"DBT command failed: {e}")
             raise e
 
-    [profile_parquets_in_gcs, biometrics_in_gcs, setup_bq_ext_tables] >> run_dbt()
+    [profile_parquets_in_gcs, biometrics_in_gcs] >> setup_bq_ext_tables >> run_dbt()
     
     # >> BashOperator(
     #     task_id="run_dbt_build",
