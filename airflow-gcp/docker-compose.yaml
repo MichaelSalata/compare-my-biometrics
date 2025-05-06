@@ -56,7 +56,7 @@ x-airflow-common:
   environment:
     &airflow-common-env
     GOOGLE_APPLICATION_CREDENTIALS: /opt/airflow/google_credentials.json
-    AIRFLOW__CORE__LOGGING_LEVEL: "${AIRFLOW__CORE__LOGGING_LEVEL}"
+    AIRFLOW__LOGGING__LOGGING_LEVEL: "${AIRFLOW__LOGGING__LOGGING_LEVEL}"
     GCP_PROJECT_ID: "${GCP_PROJECT_ID}"
     GCP_GCS_BUCKET: "${GCP_GCS_BUCKET}"
     BIGQUERY_DATASET: "${BIGQUERY_DATASET}"
