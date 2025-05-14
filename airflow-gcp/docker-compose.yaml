@@ -61,13 +61,9 @@ x-airflow-common:
     GCP_GCS_BUCKET: "${GCP_GCS_BUCKET}"
     BIGQUERY_DATASET: "${BIGQUERY_DATASET}"
     AIRFLOW_CONN_GOOGLE_CLOUD_DEFAULT: "google-cloud-platform://?extra__google_cloud_platform__key_path=/opt/airflow/google_credentials.json"
+    AIRFLOW_CONN_BIGQUERY_CONN: "google-cloud-platform://?extra__google_cloud_platform__project=${GCP_PROJECT_ID}&extra__google_cloud_platform__key_path=/opt/airflow/google_credentials.json&extra__google_cloud_platform__location=US"
     AIRFLOW__CORE__EXECUTOR: LocalExecutor
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
-    PG_HOST: "${PG_HOST}"
-    PG_USER: "${PG_USER}"
-    PG_PASSWORD: "${PG_PASSWORD}"
-    PG_PORT: "${PG_PORT}"
-    PG_DATABASE: "${PG_DATABASE}"
   volumes:
     - ../dbt_resources:/opt/airflow/dbt_resources
     - ../dbt_profiles.yml:/home/airflow/.dbt/profiles.yml
@@ -117,9 +113,8 @@ services:
       <<: *airflow-common-env
       _AIRFLOW_DB_MIGRATE: 'true'
       _AIRFLOW_WWW_USER_CREATE: 'true'
-      _AIRFLOW_WWW_USER_USERNAME: ${_AIRFLOW_WWW_USER_USERNAME:-airflow}
-      _AIRFLOW_WWW_USER_PASSWORD: ${_AIRFLOW_WWW_USER_PASSWORD:-airflow}
-      # _PIP_ADDITIONAL_REQUIREMENTS: ''
+      _AIRFLOW_WWW_USER_USERNAME: ${_AIRFLOW_WWW_USER_USERNAME}
+      _AIRFLOW_WWW_USER_PASSWORD: ${_AIRFLOW_WWW_USER_PASSWORD}
     user: "0:0"
     # volumes:
     #   - ${AIRFLOW_PROJ_DIR:-.}:/sources
