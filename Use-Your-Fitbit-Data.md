@@ -11,6 +11,7 @@ Doing this allows the project to download, store and analyze YOUR fitbit data in
 OPTION 1:
 ```bash
 cd ./compare-my-biometrics/airflow-gcp/dags
+pip install -r gather_keys_oauth2_requirements.txt
 python3 /gather_keys_oauth2.py CLIENT_ID CLIENT_SECRET
 ```
 - this saves a `/fitbit_tokens.json` file
