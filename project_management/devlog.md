@@ -8,6 +8,14 @@
 	- pie chart?
 - STRETCH: visualize notable dates
 	- notable dates will be put on the graphs as vertical lines
+- STRETCH: HRV/Stress Graph
+	- color HRV by stress level
+	- Mon: COLORED BAR
+	- Tue: COLORED BAR
+	- Wed: COLORED BAR
+	- etc...
+ 	- missing data = transparent/white
+  	- HOURS: adjustable, defaults to 7am-11pm
 
 # TODOs
 **==NOTE==**: ***Document project steps*** in the [[devlog#Project Step Log]] below
