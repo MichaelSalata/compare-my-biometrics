@@ -23,7 +23,7 @@ This is a data pipeline that takes in Fitbit data, uploads it a Data Lake (Googl
 5. **Partitions and Transforms Data in BigQuery** – Using DBT, inject SQL-based transformations to BigQuery to clean, standardize, and prepare data for analysis.
 
 ## [Looker Studio Data Presentation](https://lookerstudio.google.com/reporting/62d48d66-0361-4d53-9927-ed9a604cafd9/page/30qCF)
-![Looker Studio Preview](https://github.com/MichaelSalata/compare-my-biometrics/blob/main/imgs/Screenshot%20from%202025-03-24%2020-08-14.png)
+[![Looker Studio Preview](https://github.com/MichaelSalata/compare-my-biometrics/blob/main/imgs/Screenshot%20from%202025-03-24%2020-08-14.png)](https://lookerstudio.google.com/reporting/62d48d66-0361-4d53-9927-ed9a604cafd9/page/30qCF)
 
 ## Technologies Used
 - **Python** to **connect and download** from the Fitbit API and **reformat** the downloaded json files to parquet
