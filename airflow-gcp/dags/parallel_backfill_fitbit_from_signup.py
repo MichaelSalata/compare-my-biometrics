@@ -1,30 +1,23 @@
 import os
 import json
+import subprocess
 
-from airflow.decorators import dag, task, task_group
-from airflow.operators.bash import BashOperator
-
-from airflow.models import Connection
-from airflow.utils.db import provide_session
-
-from airflow.operators.python import get_current_context
-from airflow.utils.dates import days_ago
+from datetime import datetime
 
 from google.cloud import bigquery
 
+from airflow.decorators import dag, task, task_group
+from airflow.models import Connection
+from airflow.utils.db import provide_session
+from airflow.operators.python import get_current_context
+from airflow.providers.google.cloud.hooks.gcs import GCSHook
+
 from fitbit_json_to_parquet import flatten_fitbit_json_file
 from fitbit_hook import FitbitHook
-from airflow.providers.google.cloud.hooks.gcs import GCSHook
-# from download_locally import download_past_6_months
-
-import subprocess
-from datetime import datetime
-
 
 PROJECT_ID = str(os.environ.get("GCP_PROJECT_ID"))
 GCP_GCS_BUCKET = str(os.environ.get("GCP_GCS_BUCKET", f"{PROJECT_ID}-fitbit-bucket"))
 BIGQUERY_DATASET = str(os.environ.get("BIGQUERY_DATASET", "fitbit_dataset"))
-# CREDENTIALS_FILE = os.environ.get("GOOGLE_APPLICATION_CREDENTIALS", "google_credentials.json")
 
 airflow_path = os.environ.get("AIRFLOW_HOME")
 DBT_IS_TEST_RUN = os.environ.get("IS_DEV_ENV", True)
@@ -94,7 +87,6 @@ default_args = {
     tags=['dtc-de']
 )
 def fitbit_pipeline():
-    # Retrieve FITBIT_BIOMETRICS from dag_run.conf or use a default value
     FITBIT_BIOMETRICS = ["sleep", "heartrate"]
     BQ_TABLES = FITBIT_BIOMETRICS + ["profile"]
     update_fitbit_connection()
@@ -123,7 +115,6 @@ def fitbit_pipeline():
     def download_since_signup(signup_date: datetime, endpoint_id: str):
         fitbit_hook = FitbitHook()
         end_date = get_current_context()['execution_date'].date()
-        # end_date = {{start_date}}   # jinja references the when the task starts
         if endpoint_id in fitbit_hook.dayrange_endpoints:
             response = fitbit_hook.fetch_daterange(endpoint_id=endpoint_id, start=signup_date, end=end_date)
             if response:
@@ -204,10 +195,5 @@ def fitbit_pipeline():
 
     [profile_parquets_in_gcs, biometrics_in_gcs] >> setup_bq_ext_tables >> run_dbt()
     
-    # >> BashOperator(
-    #     task_id="run_dbt_build",
-    #     bash_command=f"cd {AIRFLOW_PATH}/dbt_resources && dbt deps && dbt build --vars {DBT_IS_TEST_RUN}",
-    #     trigger_rule="all_success"
-    # )
 
 fitbit_dag = fitbit_pipeline()
