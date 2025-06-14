@@ -57,5 +57,6 @@ module "compute" {
   private_ssh_key_path = var.private_ssh_key_path
   target_bucket        = var.gcs_bucket_name
   credentials          = var.credentials
+  compute_disk_size_GB = var.compute_disk_size_GB
 }
 
