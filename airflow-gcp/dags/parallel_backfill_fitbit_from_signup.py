@@ -12,7 +12,7 @@ from airflow.utils.dates import days_ago
 
 from google.cloud import bigquery
 
-from fitbit_json_to_parquet_v2 import flatten_fitbit_json_file
+from fitbit_json_to_parquet import flatten_fitbit_json_file
 from fitbit_hook import FitbitHook
 from airflow.providers.google.cloud.hooks.gcs import GCSHook
 # from download_locally import download_past_6_months
