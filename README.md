@@ -89,7 +89,7 @@ public_ssh_key_path  = "~/.ssh/id_rsa.pub"
 private_ssh_key_path = "~/.ssh/id_rsa"
 ```
 ## OPTIONAL: [Use YOUR Fitbit Data](https://github.com/MichaelSalata/compare-my-biometrics/blob/main/Use-Your-Fitbit-Data.md)
-By default, the project uses [my example fitbit data](https://github.com/MichaelSalata/compare-my-biometrics/tree/main/airflow-gcp/example_data)  spanning **11-21-2024**  to  **3-16-2025**
+Alternatively, you can run the example DAG(`parallel_backfill_fitbit_example_data`) which uses [my example fitbit data](https://github.com/MichaelSalata/compare-my-biometrics/tree/main/airflow-gcp/example_data)  spanning **11-21-2024**  to  **3-16-2025**
 ## 4. Launch with Terraform
 ```bash
 cd ./terraform
@@ -103,8 +103,11 @@ terraform apply
 **OPTION 2**:
 - get your Compute Instance's **External IP** in [your Google VM instances](https://console.cloud.google.com/compute/instances)
 - visit **External IP**:8080
+- choose and run the appropriate DAG
+
 ## 6. Close Down Resources
-Ctrl+C will stop Terraform running
+1. Ctrl+C will stop Terraform running
+2. These commands will destroy the resources the your services account provisioned
 ```bash
 cd ./terraform
 terraform destroy
