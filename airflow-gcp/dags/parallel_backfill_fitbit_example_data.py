@@ -4,8 +4,6 @@ import subprocess
 import logging
 import glob
 
-from datetime import datetime
-
 from google.cloud import bigquery
 
 from airflow.decorators import dag, task
