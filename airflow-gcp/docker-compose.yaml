@@ -60,6 +60,7 @@ x-airflow-common:
     GCP_PROJECT_ID: "${GCP_PROJECT_ID}"
     GCP_GCS_BUCKET: "${GCP_GCS_BUCKET}"
     BIGQUERY_DATASET: "${BIGQUERY_DATASET}"
+    AIRFLOW_CONN_FITBIT_HTTP: "${AIRFLOW_CONN_FITBIT_HTTP}"
     AIRFLOW_CONN_GOOGLE_CLOUD_DEFAULT: "google-cloud-platform://?extra__google_cloud_platform__key_path=/opt/airflow/google_credentials.json"
     AIRFLOW_CONN_BIGQUERY_CONN: "google-cloud-platform://?extra__google_cloud_platform__project=${GCP_PROJECT_ID}&extra__google_cloud_platform__key_path=/opt/airflow/google_credentials.json&extra__google_cloud_platform__location=US"
     AIRFLOW__CORE__EXECUTOR: LocalExecutor

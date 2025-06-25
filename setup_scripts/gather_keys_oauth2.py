@@ -6,9 +6,9 @@ import threading
 import traceback
 import webbrowser
 import json
+from dotenv import load_dotenv, set_key
 
 from urllib.parse import urlparse
-from base64 import b64encode
 from fitbit.api import Fitbit
 from oauthlib.oauth2.rfc6749.errors import MismatchingStateError, MissingTokenError
 
@@ -115,3 +115,29 @@ if __name__ == '__main__':
     with open('fitbit_tokens.json', 'w') as token_file:
         json.dump(token_dict, token_file, indent=4)
         print('tokens saved to fitbit_tokens.json')
+
+    # Build Airflow connection dict-style variable
+    airflow_conn = {
+        "conn_type": "http",
+        "login": token_dict["client_id"],
+        "password": token_dict["client_secret"],
+        "host": "api.fitbit.com",
+    }
+    del token_dict["client_id"]
+    del token_dict["client_secret"]
+    airflow_conn["extra"] = token_dict
+
+    
+    serialized_conn = json.dumps(airflow_conn, indent=4)
+    DEFAULT_DOTENV_PATH = '../airflow-gcp/.env'
+
+    if not os.path.exists(DEFAULT_DOTENV_PATH):
+        open(DEFAULT_DOTENV_PATH, 'a').close()
+
+    # Check writable
+    if not os.access(DEFAULT_DOTENV_PATH, os.W_OK):
+        print(f"Error: The file {DEFAULT_DOTENV_PATH} is not writable.")
+        sys.exit(1)
+
+    load_dotenv(DEFAULT_DOTENV_PATH)
+    set_key(DEFAULT_DOTENV_PATH, "AIRFLOW_CONN_FITBIT_HTTP", serialized_conn)

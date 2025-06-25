@@ -25,56 +25,6 @@ DBT_IS_TEST_RUN = os.environ.get("IS_DEV_ENV", True)
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 task_logger = logging.getLogger(__name__)
 
-@provide_session
-def update_fitbit_connection(session=None):
-    try:
-        # Check if the connection already exists
-        existing_conn = session.query(Connection).filter(Connection.conn_id == "fitbit_default").first()
-        if existing_conn:
-            task_logger.info("Connection 'fitbit_default' already exists. Updating access_token...")
-            try:
-                with open("fitbit_tokens.json", 'r') as file:
-                    tokens = json.load(file)
-            except FileNotFoundError:
-                task_logger.warning(f"fitbit_tokens.json not found")
-                return
-
-            existing_conn.login = tokens["client_id"]
-            existing_conn.password = tokens["client_secret"]
-            
-            extra_kv_tokens = json.loads(existing_conn.extra) if existing_conn.extra else {}
-            extra_kv_tokens["access_token"] = tokens.get("access_token", extra_kv_tokens.get("access_token"))
-            extra_kv_tokens["user_id"] = tokens.get("user_id", extra_kv_tokens.get("access_token"))
-            existing_conn.extra = json.dumps(extra_kv_tokens)
-            session.commit()
-            task_logger.info("user_id, client_id, client_secret, access_token and refresh_token updated successfully.")
-            return
-    except Exception as e:
-        task_logger.error(f"Exception {e} checking or updating Fitbit connection")
-
-    try:
-        with open("fitbit_tokens.json", 'r') as file:
-            tokens = json.load(file)
-    except FileNotFoundError:
-        task_logger.error(f"fitbit_tokens.json not found")
-        return
-
-    extra_kv_tokens = tokens.copy()
-    del extra_kv_tokens["client_id"]
-    del extra_kv_tokens["client_secret"]
-    conn = Connection(
-        conn_id="fitbit_default",
-        conn_type="http",
-        login=tokens["client_id"],
-        password=tokens["client_secret"],
-        extra=json.dumps(extra_kv_tokens)
-    )
-    session.add(conn)
-    session.commit()
-    task_logger.info("Connection 'fitbit_default' created successfully.")
-
-
-
 
 @task
 def flatten_fitbit_data(json_file: str):
@@ -156,7 +106,6 @@ def fitbit_example_data_pipeline():
         # keyword mapped in fitbit_json_to_parquet.py  flatten_fitbit_json func
     FITBIT_BIOMETRICS = ["sleep", "heartrate"]
     BQ_TABLES = FITBIT_BIOMETRICS + ["profile"]
-    update_fitbit_connection()
 
     # flatten and upload profile
     flattened_profile = flatten_fitbit_data(json_file="./example_data/profile.json")

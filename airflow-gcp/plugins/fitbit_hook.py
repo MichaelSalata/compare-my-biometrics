@@ -13,7 +13,7 @@ class FitbitHook(BaseHook):
     Handles authentication and provides methods to fetch data.
     """
 
-    def __init__(self, conn_id="fitbit_default"):
+    def __init__(self, conn_id="FITBIT_HTTP"):
         super().__init__()
         self.conn_id = conn_id
         self.connection = self.get_connection(conn_id)
