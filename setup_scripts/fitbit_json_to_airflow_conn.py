@@ -6,9 +6,8 @@ from dotenv import load_dotenv, set_key
 import argparse
 import logging
 
-# Constants
 DEFAULT_JSON_PATH = 'fitbit_tokens.json'
-DEFAULT_DOTENV_PATH = '.env'
+DEFAULT_DOTENV_PATH = '../airflow-gcp/.env'
 CONN_NAME = "AIRFLOW_CONN_FITBIT_HTTP"
 
 # Setup logging

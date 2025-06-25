@@ -43,11 +43,6 @@ resource "google_compute_instance" "default" {
       }
 
   provisioner "file" {
-        source      = "../airflow-gcp/dags/fitbit_tokens.json"
-        destination = "/home/${var.ssh_user}/fitbit_tokens.json"
-      }
-
-  provisioner "file" {
         source      = "${var.credentials}"
         destination = "/home/${var.ssh_user}/google_credentials.json"
       }

@@ -8,20 +8,17 @@ Doing this allows the project to download, store and analyze YOUR fitbit data in
 ![fitbit_app_registration image](https://github.com/MichaelSalata/compare-my-biometrics/blob/main/imgs/register_fitbit_app.jpg)
 
 # 2. Get your ACCESS_TOKEN
-OPTION 1:
 ```bash
-cd ./compare-my-biometrics/airflow-gcp/dags
+cd ./compare-my-biometrics/airflow-gcp/setup_scripts/
+```
+- RECOMMENDED: setup a python virtual environment here/now. e.g. `python3 -m venv venv`
+- replace `CLIENT_ID` and `CLIENT_SECRET` with yours
+```bash
 pip install -r gather_keys_oauth2_requirements.txt
 python3 /gather_keys_oauth2.py CLIENT_ID CLIENT_SECRET
 ```
-- this saves a `/fitbit_tokens.json` file
-- replace CLIENT_ID and CLIENT_SECRET with what was shown on your app
-	- If you've ran this before, the `CLIENT_ID` and `CLIENT_SECRET` are unnecessary (they're saved in the `fitbit_tokens.json`)
+- this saves a your Fitbit Http tokens to a variable in your `airflow-gcp/.env` file for Airflow
+- If you've ran this before, it will reuse the previously saved values
 
 ## ACCESS_TOKENs expire
-run it again
-```bash
-cd ./compare-my-biometrics/airflow-gcp/dags
-python3 /gather_keys_oauth2.py
-```
-gather_keys_oauth2 stores `CLIENT_ID` and `CLIENT_SECRET` in `fitbit_tokens.json` and later reuses them
+run it or delete the `AIRFLOW_CONN_FITBIT_CONN` from your `.env` and let it renew it via refresh tokens

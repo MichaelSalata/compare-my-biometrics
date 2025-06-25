@@ -140,7 +140,6 @@ dmypy.json
 dbt
 .vscode
 example_resources
-# fitbit_tokens.json
 fitbit_project_info.json
 
 # data files

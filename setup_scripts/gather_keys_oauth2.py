@@ -84,40 +84,49 @@ class OAuth2Server:
 
 
 if __name__ == '__main__':
+    DEFAULT_DOTENV_PATH = '../airflow-gcp/.env'
+    CONN_NAME = "AIRFLOW_CONN_FITBIT_HTTP"
+
     if (len(sys.argv) == 3):
         server = OAuth2Server(*sys.argv[1:])
         env_variables = {}
         env_variables["client_id"], env_variables["client_secret"] = sys.argv[1], sys.argv[2]
     else:
-        print("proper argument count:3 wasn't used")
-        if os.path.exists(f"fitbit_tokens.json"):
-            print(f"Found fitbit_tokens.json Locally...")
-            with open('fitbit_tokens.json', 'r') as file:
-                env_variables = json.load(file)
-                server = OAuth2Server(client_id=env_variables["client_id"], client_secret=env_variables["client_secret"])
+        if os.path.exists(DEFAULT_DOTENV_PATH):
+            load_dotenv(DEFAULT_DOTENV_PATH)
+            env_variables = os.getenv(CONN_NAME)
+            if not env_variables:
+                print(f"{CONN_NAME} not in {DEFAULT_DOTENV_PATH}")
+                sys.exit(1)
+            env_variables = json.loads(env_variables)
+            if not env_variables.get("login") or not env_variables.get("password"):
+                print(f"{CONN_NAME} doesn't have login or password set")
+                sys.exit(1)
+
+            env_variables["client_id"], env_variables["client_secret"] = env_variables["login"], env_variables["password"]
+            del env_variables["login"]
+            del env_variables["password"]
+
+            server = OAuth2Server(client_id=env_variables["client_id"], client_secret=env_variables["client_secret"])
+            
         else:
-            print(f"didn't find fitbit_tokens.json locally...")
-            sys.exit(1)
+            raise(f"tried and didn't find {DEFAULT_DOTENV_PATH} locally...")
+
 
     server.browser_authorize()
-
     profile = server.fitbit.user_profile_get()
     print(f'You are authorized to access data for the user: {profile["user"]["fullName"]}')
 
-    print('TOKENS\n=====\n')
     token_dict = server.fitbit.client.session.token
+    print('TOKENS RETRIEVED\n=====\n')
     token_dict["client_id"] = env_variables["client_id"]
     token_dict["client_secret"] = env_variables["client_secret"]
 
     for key, value in token_dict.items():
         print(key, ' = ', value)
 
-    with open('fitbit_tokens.json', 'w') as token_file:
-        json.dump(token_dict, token_file, indent=4)
-        print('tokens saved to fitbit_tokens.json')
-
     # Build Airflow connection dict-style variable
-    airflow_conn = {
+    fitbit_airflow_conn = {
         "conn_type": "http",
         "login": token_dict["client_id"],
         "password": token_dict["client_secret"],
@@ -125,11 +134,10 @@ if __name__ == '__main__':
     }
     del token_dict["client_id"]
     del token_dict["client_secret"]
-    airflow_conn["extra"] = token_dict
+    fitbit_airflow_conn["extra"] = token_dict
 
     
-    serialized_conn = json.dumps(airflow_conn, indent=4)
-    DEFAULT_DOTENV_PATH = '../airflow-gcp/.env'
+    serialized_conn = json.dumps(fitbit_airflow_conn, indent=4)
 
     if not os.path.exists(DEFAULT_DOTENV_PATH):
         open(DEFAULT_DOTENV_PATH, 'a').close()
@@ -140,4 +148,5 @@ if __name__ == '__main__':
         sys.exit(1)
 
     load_dotenv(DEFAULT_DOTENV_PATH)
-    set_key(DEFAULT_DOTENV_PATH, "AIRFLOW_CONN_FITBIT_HTTP", serialized_conn)
+    set_key(DEFAULT_DOTENV_PATH, CONN_NAME, serialized_conn)
+    print(f'tokens saved to {DEFAULT_DOTENV_PATH} AS {CONN_NAME}')
