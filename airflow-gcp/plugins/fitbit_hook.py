@@ -5,6 +5,9 @@ import json
 import calendar
 import logging
 import os
+import base64
+from airflow.utils.db import provide_session
+from airflow.models import Connection
 
 
 class FitbitHook(BaseHook):
@@ -54,11 +57,63 @@ class FitbitHook(BaseHook):
             "profile": "/1/user/{user_id}/profile.json"
         }
 
-    def fetch_static(self, endpoint_id: str):
+    def refresh_tokens(self):
+        # TODO: fix `refresh_tokens`, `__init__` and `_update_db_connection` using different Airflow connections (one uses .env conneciton, other uses the MetaDB connection)
+        url = "https://api.fitbit.com/oauth2/token"
+        # Prepare HTTP Basic Auth header
+        client_creds = f"{self._client_id}:{self._client_secret}"
+        b64_creds = base64.b64encode(client_creds.encode()).decode()
+        headers = {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Authorization": f"Basic {b64_creds}"
+        }
+        data = {
+            "grant_type": "refresh_token",
+            "refresh_token": self._refresh_token,
+            "client_id": self._client_id,
+            "client_secret": self._client_secret
+        }
+        response = requests.post(url, headers=headers, data=data)
+        if response.status_code == 200:
+            tokens = response.json()
+            self.user_id = tokens["user_id"]
+            self._access_token = tokens["access_token"]
+            self._refresh_token = tokens["refresh_token"]
+            self._scope = tokens["scope"]
+            # Update Airflow connection extra in DB
+            self._update_db_connection(tokens)
+            logging.info("Fitbit tokens refreshed and connection updated.")
+        else:
+            logging.error(f"Failed to refresh tokens: {response.text}")
+            raise Exception(f"Failed to refresh tokens: {response.text}")
+
+    @staticmethod
+    @provide_session
+    def _update_db_connection(tokens, session=None):
+        conn = session.query(Connection).filter_by(conn_id="FITBIT_HTTP").one()
+        extra = conn.extra_dejson
+        extra.update({
+            "access_token": tokens["access_token"],
+            "refresh_token": tokens["refresh_token"],
+            "scope": tokens["scope"],
+            "user_id": tokens["user_id"],
+            "expires_at": tokens.get("expires_at"),
+            "token_type": tokens.get("token_type"),
+            "expires_in": tokens.get("expires_in"),
+        })
+        conn.extra = json.dumps(extra)
+        session.commit()
+
+    @staticmethod
+    @provide_session
+    def _commit_connection(conn, session=None):
+        session.add(conn)
+        session.commit()
+
+    def fetch_static(self, endpoint_id: str, retry_on_unauth=True):
         headers = {
             'Authorization': f'Bearer {self._access_token}'
         }
-
         endpoint_suffix = self.static_endpoints[endpoint_id]
         url = f"https://api.fitbit.com{endpoint_suffix}"
         logging.info(f"Attempting to download: {url}")
@@ -66,12 +121,16 @@ class FitbitHook(BaseHook):
         if response.status_code == 200:
             logging.info(f"Successfully downloaded: {url}")
             return response.json()
+        elif response.status_code == 401 and retry_on_unauth:
+            logging.warning("401 Unauthorized. Attempting token refresh...")
+            self.refresh_tokens()
+            return self.fetch_static(endpoint_id, retry_on_unauth=False)
         elif response.status_code == 401:
-            raise Exception("Authentication failed")
+            raise Exception("Authentication failed after refresh attempt")
         else:
             raise Exception(f"HTTP {response.status_code} : Download failed for {url}: ")
 
-    def fetch_from_endpoint(self, endpoint_suffix: str):
+    def fetch_from_endpoint(self, endpoint_suffix: str, retry_on_unauth=True):
         headers = {
             'Authorization': f'Bearer {self._access_token}'
         }
@@ -82,9 +141,13 @@ class FitbitHook(BaseHook):
 
         if response.status_code == 200:
             return response.json()
+        elif response.status_code == 401 and retry_on_unauth:
+            logging.warning("401 Unauthorized. Attempting token refresh...")
+            self.refresh_tokens()
+            return self.fetch_from_endpoint(endpoint_suffix, retry_on_unauth=False)
         elif response.status_code == 401:
-            logging.error("Authentication failed. Refresh the token.")
-            raise Exception("Authentication failed.")
+            logging.error("Authentication failed after refresh attempt.")
+            raise Exception("Authentication failed after refresh attempt.")
         else:
             logging.error(f"HTTP {response.status_code}: Failed fetch_from_endpoint from {url}) response.text-> {response.text}")
             raise Exception(f"HTTP {response.status_code}: Failed fetch_from_endpoint from {url}) response.text-> {response.text}")
@@ -112,46 +175,6 @@ class FitbitHook(BaseHook):
         # TODO attempt to download from Intraday endpoints, stop download attempts if get a permissions error as intraday is either all or nothing from Personal dev account access
 
 
-    def refresh_tokens(self):
-        # WARNING: FUNCTION IS CURRENTLY UNTESTED
-        url = "https://api.fitbit.com/oauth2/token"
-        headers = {
-            "Content-Type": "application/x-www-form-urlencoded"
-        }
-        data = {
-            "grant_type": "refresh_token",
-            "refresh_token": self._refresh_token,
-            "client_id": self._client_id,
-            "client_secret": self._client_secret
-        }
-
-        response = requests.post(url, headers=headers, data=data)
-
-        if response.status_code == 200:
-            tokens = response.json()
-
-            self.user_id = tokens["user_id"]
-            self._access_token = tokens["access_token"]
-            self._refresh_token = tokens["refresh_token"]
-            self._scope = tokens["scope"]
-
-            self.update_connection(tokens)
-            return
-        else:
-            logging.error(f"Failed to refresh self._tokens: {response.text}")
-            raise Exception(f"Failed to refresh self._tokens: {response.text}")
-
-    def update_connection(self, tokens):
-        # WARNING: FUNCTION IS CURRENTLY UNTESTED
-        conn = self.get_connection(self.conn_id)
-
-        tokens.pop("client_id", None)  # Safely remove "client_id" if it exists
-        tokens.pop("client_secret", None)  # Safely remove "client_secret" if it exists
-        conn.extra=json.dumps(tokens)
-
-        session = self.get_session()
-        session.add(conn)
-        session.commit()
 
 
     def save_data(self, data, endpoint_name: str, start_date: datetime=None, end_date: datetime=None, filename=None):
