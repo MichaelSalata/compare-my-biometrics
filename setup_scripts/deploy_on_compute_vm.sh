@@ -1,7 +1,7 @@
 #!/bin/bash
 github_project_name="compare-my-biometrics"
 github_repo_name="https://github.com/MichaelSalata/compare-my-biometrics.git"
-git_branch="fitbit-hook"
+git_branch="main"
 
 sudo snap install docker
 sudo groupadd -f docker

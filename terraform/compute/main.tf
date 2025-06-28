@@ -28,9 +28,25 @@ resource "google_compute_instance" "default" {
       }
       
   provisioner "file" {
-        source      = "../setup_scripts/"
-        destination = "/home/${var.ssh_user}"
+        source      = "../setup_scripts/deploy_on_compute_vm.sh"
+        destination = "/home/${var.ssh_user}/deploy_on_compute_vm.sh"
       }
+      
+  provisioner "file" {
+        source      = "../setup_scripts/gather_keys_oauth2.py"
+        destination = "/home/${var.ssh_user}/gather_keys_oauth2.py"
+      }
+      
+  provisioner "file" {
+        source      = "../setup_scripts/gather_keys_oauth2_requirements.txt"
+        destination = "/home/${var.ssh_user}/gather_keys_oauth2_requirements.txt"
+      }
+      
+  provisioner "file" {
+        source      = "../setup_scripts/update_vm_env.sh"
+        destination = "/home/${var.ssh_user}/update_vm_env.sh"
+      }
+
 
   provisioner "file" {
         source      = "./terraform.tfvars"
@@ -49,8 +65,8 @@ resource "google_compute_instance" "default" {
 
   provisioner "remote-exec" {
         inline = [
-          "chmod +x ./deploy_on_compute_vm.sh",
-          "./deploy_on_compute_vm.sh"
+          "chmod +x /home/${var.ssh_user}/deploy_on_compute_vm.sh",
+          "/home/${var.ssh_user}/deploy_on_compute_vm.sh"
           ]
       }
       
